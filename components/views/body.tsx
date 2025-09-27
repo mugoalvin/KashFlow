@@ -1,27 +1,28 @@
 import React from "react";
-import { StatusBar, useColorScheme } from "react-native";
+import { StatusBar, StyleProp, useColorScheme, View, ViewProps } from "react-native";
 import { useTheme } from "react-native-paper";
-import { SafeAreaView } from "react-native-safe-area-context";
 
 interface BodyProps {
 	children?: React.ReactNode
 	className?: string
+	style?: StyleProp<ViewProps>
 }
 
-export default function Body({ children, className }: BodyProps) {
+export default function Body({ children, className, style }: BodyProps) {
 	const theme = useTheme()
 	const colorScheme = useColorScheme()
 
 	return (
 		<>
-			<SafeAreaView
-				className={`flex-1 ${className}`}
+			<View
+				className={`flex-1 p-2 ${className}`}
 				style={{
-					backgroundColor: theme.colors.background
+					backgroundColor: theme.colors.background,
+					...(typeof style === "object" && !Array.isArray(style) ? style : {})
 				}}
 			>
 				{children}
-			</SafeAreaView>
+			</View>
 			<StatusBar barStyle={colorScheme === 'dark' ? 'light-content' : 'dark-content'} />
 		</>
 	)

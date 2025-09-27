@@ -11,6 +11,12 @@ export default function IndexLayout() {
 				headerStyle: {
 					backgroundColor: theme.colors.elevation.level1
 				},
+				// headerTransparent: true,
+				contentStyle: {
+					// marginTop: -50
+				},
+
+				headerLargeTitle: true,
 				headerTintColor: theme.colors.onBackground,
 				headerLeft: ({ canGoBack }) => {
 					return canGoBack && canGoBack && (
