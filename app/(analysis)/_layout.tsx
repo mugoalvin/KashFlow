@@ -3,7 +3,7 @@ import { Ionicons } from "@expo/vector-icons";
 import { router, Stack } from "expo-router";
 import { IconButton, useTheme } from "react-native-paper";
 
-export default function IndexLayout() {
+export default function AnalysisLayout() {
 	const theme = useTheme()
 
 	return (
@@ -19,8 +19,8 @@ export default function IndexLayout() {
 				}
 			}}
 		>
-			<Stack.Screen name="index" options={{ title: "Home" }} />
-			<Stack.Screen name="page" options={{ title: "Page 2" }} />
+			<Stack.Screen name="index" options={{ title: "Analysis" }} />
+			<Stack.Screen name="analysis_more" options={{ title: "Analysis 2" }} />
 		</Stack >
 	)
 }

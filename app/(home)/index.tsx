@@ -1,6 +1,6 @@
 import Body from "@/components/views/body";
 import { Mpesa } from "@/interface/mpesa";
-import { calculateMpesaBalance, fechSMSMessage, getListOfBalances, parseMpesaMessage } from "@/utils/functions";
+import { calculateMpesaBalance, fetchSMSMessage, parseMpesaMessage } from "@/utils/functions";
 import { Ionicons } from "@expo/vector-icons";
 import { FlashList } from '@shopify/flash-list';
 import { router, useNavigation } from "expo-router";
@@ -14,7 +14,6 @@ export default function Index() {
 	const [messages, setMessages] = useState<Mpesa[]>([])
 	const [balance, setBalance] = useState<number>(0)
 	const [fulizaLimit, setFulizaLimit] = useState<number>(0)
-	const [listOfBalances, setListOfBalances] = useState<number[]>([])
 
 	const parsedMessages = useMemo(() =>
 		messages.map(msg => parseMpesaMessage(msg.body)),
@@ -32,7 +31,7 @@ export default function Index() {
 					<IconButton
 						icon={({ color, size }) => <Ionicons name="search" color={color} size={size - 5} />}
 						onPress={async () => {
-							const msgs = await fechSMSMessage(10)
+							const msgs = await fetchSMSMessage(100)
 							setMessages(msgs || [])
 						}}
 					/>
@@ -43,12 +42,9 @@ export default function Index() {
 
 	useEffect(() => {
 		const { balance, limit } = calculateMpesaBalance(parsedMessages)
-		const balanceList = getListOfBalances(parsedMessages)
 
 		setBalance(balance)
 		setFulizaLimit(limit || 0)
-		setListOfBalances(balanceList)
-
 	}, [parsedMessages])
 
 

@@ -8,11 +8,10 @@ import '../global.css';
 import { SnackbarProvider } from '@/contexts/SnackbarContext';
 import { darkCustomTheme, lightCustomTheme } from '@/utils/colors';
 import { requestSmsPermission } from '@/utils/permissions';
-import { Icon, Label, NativeTabs } from 'expo-router/unstable-native-tabs';
 import { useEffect } from 'react';
 
+import { Icon, Label, NativeTabs } from 'expo-router/unstable-native-tabs';
 
-// import Feather from '@expo/vector-icons/Feather';
 // import Ionicons from '@expo/vector-icons/Ionicons';
 // import { Tabs } from 'expo-router';
 
@@ -39,43 +38,47 @@ export default function RootLayout() {
 			<PaperProvider theme={paperTheme}>
 				<SnackbarProvider>
 					<GestureHandlerRootView>
-						{/* <Tabs
-					screenOptions={{
-						headerStyle: {
-							backgroundColor: theme[colorScheme].elevation.level1
-						},
-						headerTintColor: theme[colorScheme].onBackground,
-						headerShadowVisible: false,
 
-						tabBarStyle: {
-							backgroundColor: theme[colorScheme].elevation.level1,
-							borderTopColor: theme[colorScheme].elevation.level1,
-						},
-						tabBarActiveTintColor: theme[colorScheme].tertiary,
-						tabBarInactiveTintColor: theme[colorScheme].onBackground
-					}}
-				>
-					<Tabs.Screen
-						name='(home)'
-						options={{
-							title: "Dashboard",
-							tabBarLabel: "Home",
-							tabBarIcon: ({ color, size }) => <Ionicons name='home' color={color} size={size} />
-						}}
-					/>
-					<Tabs.Screen
-						name='settings'
-						options={{
-							tabBarIcon: ({ color, size }) => <Feather name="settings" color={color} size={size} />
-						}}
-					/>
-					<Tabs.Screen
-						name='notification'
-						options={{
-							tabBarBadge: '9+',
-							tabBarIcon: ({ color, size }) => <Ionicons name='notifications-outline' color={color} size={size} />
-						}} />
-				</Tabs> */}
+						{/* <Tabs
+							initialRouteName='(home)'
+							screenOptions={{
+								headerStyle: {
+									backgroundColor: theme[colorScheme].elevation.level1
+								},
+								headerTintColor: theme[colorScheme].onBackground,
+								headerShadowVisible: false,
+								headerShown: false,
+
+								tabBarStyle: {
+									backgroundColor: theme[colorScheme].elevation.level1,
+									borderTopColor: theme[colorScheme].elevation.level1,
+								},
+								tabBarActiveTintColor: theme[colorScheme].tertiary,
+								tabBarInactiveTintColor: theme[colorScheme].onBackground
+							}}
+						>
+							<Tabs.Screen
+								name='(home)'
+								options={{
+									title: "Dashboard",
+									tabBarLabel: "Home",
+									tabBarIcon: ({ color, size, focused }) => <Ionicons name={focused ? 'home' : 'home-outline'} color={color} size={size - 5} />
+								}}
+							/>
+							<Tabs.Screen
+								name='(analysis)'
+								options={{
+									title: "Analysis",
+									tabBarIcon: ({ color, size, focused }) => <Ionicons name={focused ? 'notifications' : 'notifications-outline'} color={color} size={size - 5} />
+								}} />
+							<Tabs.Screen
+								name='settings'
+								options={{
+									title: "Settings",
+									tabBarIcon: ({ color, size, focused }) => <Ionicons name={focused ? 'settings' : 'settings-outline'} color={color} size={size - 5} />
+								}}
+							/>
+						</Tabs> */}
 
 						<NativeTabs
 							tintColor={theme[colorScheme].tertiary}
@@ -88,7 +91,7 @@ export default function RootLayout() {
 								<Icon drawable='home' />
 							</NativeTabs.Trigger>
 
-							<NativeTabs.Trigger name='analysis'>
+							<NativeTabs.Trigger name='(analysis)'>
 								<Label>Analysis</Label>
 								<Icon drawable='plus' />
 							</NativeTabs.Trigger>
@@ -97,8 +100,9 @@ export default function RootLayout() {
 								<Label>Settings</Label>
 								<Icon drawable='settings' />
 							</NativeTabs.Trigger>
-
+							
 						</NativeTabs>
+
 					</GestureHandlerRootView>
 				</SnackbarProvider>
 			</PaperProvider>

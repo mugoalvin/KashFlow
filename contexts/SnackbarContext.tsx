@@ -45,8 +45,8 @@ export const SnackbarProvider = ({ children }: { children: ReactNode }) => {
 					marginBlockEnd: 100,
 					padding: 0,
 					backgroundColor:
-						isError ? theme.colors.errorContainer :
-							isWarning ? theme.colors.warningContainer :
+						isError ? theme.colors.errorContainer : // @ts-expect-error
+							isWarning ? theme.colors.warningContainer :  // @ts-expect-error
 								theme.colors.successContainer
 				}}
 			>
@@ -54,8 +54,8 @@ export const SnackbarProvider = ({ children }: { children: ReactNode }) => {
 					className="text-xl"
 					style={{
 						color:
-							isError ? theme.colors.onErrorContainer :
-								isWarning ? theme.colors.onWarningContainer :
+							isError ? theme.colors.onErrorContainer : // @ts-expect-error
+								isWarning ? theme.colors.onWarningContainer :  // @ts-expect-error
 									theme.colors.onSuccessContainer
 					}}
 				>

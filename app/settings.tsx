@@ -1,6 +1,6 @@
 import Body from "@/components/views/body";
 import { Mpesa } from "@/interface/mpesa";
-import { fechSMSMessage, getListOfBalances, parseMpesaMessage } from "@/utils/functions";
+import { fetchSMSMessage, getListOfBalances, parseMpesaMessage } from "@/utils/functions";
 import { FlashList } from "@shopify/flash-list";
 import { useEffect, useMemo, useState } from "react";
 import { StatusBar, View } from "react-native";
@@ -21,7 +21,6 @@ export default function Settings() {
 	useEffect(() => {
 		const balanceList = getListOfBalances(parsedMessages)
 		setListOfBalances(balanceList)
-
 	}, [parsedMessages])
 
 	return ( // @ts-ignore
@@ -31,9 +30,9 @@ export default function Settings() {
 			<View className="flex-row justify-between mt-5">
 				<Button
 					mode="contained-tonal"
-					disabled={ limit === 0 }
+					disabled={limit === 0}
 					onPress={async () => {
-						const msgs = await fechSMSMessage(limit)
+						const msgs = await fetchSMSMessage(limit)
 						setMessages(msgs || [])
 					}}
 				>
@@ -58,7 +57,7 @@ export default function Settings() {
 						entering={FadeInRight.duration(500).delay(index * 100)}
 						exiting={FadeOutLeft.duration(500).delay(index * 100)}
 					>
-						<Text>{ index + 1 }: {item}</Text>
+						<Text>{index + 1}: {item}</Text>
 					</Animated.View>
 				)}
 			/>
