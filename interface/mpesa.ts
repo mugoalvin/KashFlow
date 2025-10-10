@@ -22,6 +22,7 @@ export interface MpesaParced {
 	dueDate?: string
 	fee?: number
 	limit?: number
+	message?: string
 	number?: number
 	outstanding?: number
 	paid?: number

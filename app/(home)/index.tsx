@@ -1,19 +1,18 @@
+import BalanceInfo from "@/components/information/balanceInfo";
 import Body from "@/components/views/body";
+import TodaysTransaction from "@/components/views/todaysTransactions";
 import { Mpesa } from "@/interface/mpesa";
-import { calculateMpesaBalance, fetchSMSMessage, parseMpesaMessage } from "@/utils/functions";
+import { calculateMpesaBalance, fetchDailyTransaction, parseMpesaMessage } from "@/utils/functions";
 import { Ionicons } from "@expo/vector-icons";
-import { FlashList } from '@shopify/flash-list';
 import { router, useNavigation } from "expo-router";
 import { useEffect, useLayoutEffect, useMemo, useState } from "react";
-import { View } from "react-native";
-import { Button, IconButton, Text } from "react-native-paper";
-import Animated, { FadeInLeft, FadeOutRight } from 'react-native-reanimated';
+import { IconButton, useTheme } from "react-native-paper";
 
 export default function Index() {
+	const theme = useTheme()
 	const navigation = useNavigation()
 	const [messages, setMessages] = useState<Mpesa[]>([])
 	const [balance, setBalance] = useState<number>(0)
-	const [fulizaLimit, setFulizaLimit] = useState<number>(0)
 
 	const parsedMessages = useMemo(() =>
 		messages.map(msg => parseMpesaMessage(msg.body)),
@@ -31,7 +30,15 @@ export default function Index() {
 					<IconButton
 						icon={({ color, size }) => <Ionicons name="search" color={color} size={size - 5} />}
 						onPress={async () => {
-							const msgs = await fetchSMSMessage(100)
+							const date = new Date()
+							// 2025-10-08
+							const currentDate =
+								date.getFullYear().toString()
+									.concat("-")
+									.concat((date.getMonth() + 1).toString())
+									.concat("-")
+									.concat((date.getDate()).toString())
+							const msgs = await fetchDailyTransaction(currentDate)
 							setMessages(msgs || [])
 						}}
 					/>
@@ -41,55 +48,16 @@ export default function Index() {
 	}, [])
 
 	useEffect(() => {
-		const { balance, limit } = calculateMpesaBalance(parsedMessages)
+		const { balance } = calculateMpesaBalance(parsedMessages)
 
 		setBalance(balance)
-		setFulizaLimit(limit || 0)
 	}, [parsedMessages])
-
-
-	const renderItem = ({ item, index }: { item: Mpesa, index: number }) => {
-		const object = parseMpesaMessage(item.body)
-		return (
-			<Animated.View
-				className="py-4"
-				entering={FadeInLeft.duration(500).delay(index * 100)}
-				exiting={FadeOutRight.duration(500).delay(index * 100)}
-			>
-
-				<Text>{index + 1}. {object.counterparty} ___ Ksh.{object.amount}</Text>
-				<Text className="ms-4">{object.type}</Text>
-			</Animated.View>
-		)
-	}
 
 
 	return (
 		<Body className="gap-3">
-			<View className="flex-row justify-around">
-				{
-					balance !== 0 &&
-					<Text>M-Pesa Balance: {balance}</Text>
-				}
-				{
-					balance !== 0 &&
-					<Text>Fuliza Limit: {fulizaLimit}</Text>
-				}
-			</View>
-
-			<Button
-				onPress={() =>
-					setMessages([])
-				}
-			>
-				Clear Data
-			</Button>
-
-			<FlashList
-				className="flex-1"
-				data={messages}
-				renderItem={renderItem}
-			/>
+			<BalanceInfo balance={balance} />
+			<TodaysTransaction messages={messages} />
 
 		</Body>
 	);

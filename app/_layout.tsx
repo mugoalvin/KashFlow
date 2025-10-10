@@ -10,6 +10,7 @@ import { darkCustomTheme, lightCustomTheme } from '@/utils/colors';
 import { requestSmsPermission } from '@/utils/permissions';
 import { useEffect } from 'react';
 
+import { DialogProvider } from '@/contexts/DialogContext';
 import { Icon, Label, NativeTabs } from 'expo-router/unstable-native-tabs';
 
 // import Ionicons from '@expo/vector-icons/Ionicons';
@@ -36,10 +37,11 @@ export default function RootLayout() {
 	return (
 		<ThemeContext.Provider value={{ resetTheme, updateTheme }}>
 			<PaperProvider theme={paperTheme}>
-				<SnackbarProvider>
-					<GestureHandlerRootView>
+				<DialogProvider>
+					<SnackbarProvider>
+						<GestureHandlerRootView>
 
-						{/* <Tabs
+							{/* <Tabs
 							initialRouteName='(home)'
 							screenOptions={{
 								headerStyle: {
@@ -66,7 +68,7 @@ export default function RootLayout() {
 								}}
 							/>
 							<Tabs.Screen
-								name='(analysis)'
+								name='(transactions)'
 								options={{
 									title: "Analysis",
 									tabBarIcon: ({ color, size, focused }) => <Ionicons name={focused ? 'notifications' : 'notifications-outline'} color={color} size={size - 5} />
@@ -80,31 +82,32 @@ export default function RootLayout() {
 							/>
 						</Tabs> */}
 
-						<NativeTabs
-							tintColor={theme[colorScheme].tertiary}
-							backgroundColor={theme[colorScheme].elevation.level1}
-							labelVisibilityMode='selected'
-							indicatorColor={theme[colorScheme].surfaceVariant}
-						>
-							<NativeTabs.Trigger name='(home)'>
-								<Label>Home</Label>
-								<Icon drawable='home' />
-							</NativeTabs.Trigger>
+							<NativeTabs
+								tintColor={theme[colorScheme].tertiary}
+								backgroundColor={theme[colorScheme].elevation.level1}
+								labelVisibilityMode='selected'
+								indicatorColor={theme[colorScheme].surfaceVariant}
+							>
+								<NativeTabs.Trigger name='(home)'>
+									<Label>Home</Label>
+									<Icon drawable='home' />
+								</NativeTabs.Trigger>
 
-							<NativeTabs.Trigger name='(analysis)'>
-								<Label>Analysis</Label>
-								<Icon drawable='plus' />
-							</NativeTabs.Trigger>
+								<NativeTabs.Trigger name='(transactions)'>
+									<Label>Transactions</Label>
+									<Icon drawable='ic_menu_recent_history' />
+								</NativeTabs.Trigger>
 
-							<NativeTabs.Trigger name='settings'>
-								<Label>Settings</Label>
-								<Icon drawable='settings' />
-							</NativeTabs.Trigger>
-							
-						</NativeTabs>
+								<NativeTabs.Trigger name='settings'>
+									<Label>Settings</Label>
+									<Icon drawable='ic_menu_manage' />
+								</NativeTabs.Trigger>
 
-					</GestureHandlerRootView>
-				</SnackbarProvider>
+							</NativeTabs>
+
+						</GestureHandlerRootView>
+					</SnackbarProvider>
+				</DialogProvider>
 			</PaperProvider>
 		</ThemeContext.Provider>
 	)

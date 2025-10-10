@@ -7,7 +7,6 @@ const { SmsReader } = NativeModules
 export function parseMpesaMessage(message: string): MpesaParced {
 	let
 		account: string | undefined,
-		// amount: number | undefined,
 		balance: number | undefined,
 		counterparty: string | undefined,
 		dueDate: string | undefined,
@@ -156,4 +155,9 @@ export function getListOfBalances(parsedMessages: any[]): number[] {
 			msg.outstanding && msg.outstanding * -1
 
 	).filter(value => value)
+}
+
+
+export async function fetchDailyTransaction(date: string) {
+	return await SmsReader.getInboxFilteredByDate("Mpesa", date)
 }

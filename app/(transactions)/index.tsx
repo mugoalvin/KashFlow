@@ -22,7 +22,7 @@ export default function Analysis() {
 			headerRight: () =>
 				<IconButton
 					icon={({ color, size }) => <Ionicons name="arrow-redo-outline" color={color} size={size - 5} />}
-					onPress={() => router.push('/(analysis)/analysis_more')}
+					onPress={() => router.push('/(transactions)/analysis_more')}
 				/>
 		})
 	}, [navigation])
