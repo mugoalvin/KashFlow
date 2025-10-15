@@ -1,21 +1,11 @@
 import Body from "@/components/views/body";
-import { Mpesa } from "@/interface/mpesa";
-import { parseMpesaMessage } from "@/utils/functions";
 import { Ionicons } from "@expo/vector-icons";
 import { router, useNavigation } from "expo-router";
-import { useEffect, useMemo, useState } from "react";
-import { NativeModules } from "react-native";
-import { Button, IconButton } from "react-native-paper";
+import { useEffect } from "react";
+import { IconButton } from "react-native-paper";
 
-export default function Analysis() {
-	const { SmsReader } = NativeModules
+export default function Transactions() {
 	const navigation = useNavigation()
-	const [messages, setMessages] = useState<Mpesa[]>([])
-
-	const parsedMessages = useMemo(() =>
-		messages.map(msg => parseMpesaMessage(msg.body)),
-		[messages]
-	)
 
 	useEffect(() => {
 		navigation.setOptions({
@@ -27,20 +17,7 @@ export default function Analysis() {
 		})
 	}, [navigation])
 
-	useEffect(() => {
-		console.log(parsedMessages)
-	}, [parsedMessages])
-
 	return (
-		<Body className="items-center">
-			<Button
-				onPress={async () => {
-					const messages = await SmsReader.getInboxFilteredByDate("Mpesa", "2025-09-29")
-					setMessages(messages)
-				}}
-			>
-				Test Module
-			</Button>
-		</Body>
+		<Body className="items-center" />
 	)
 }

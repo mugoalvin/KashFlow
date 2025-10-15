@@ -16,7 +16,7 @@ export default function TodaysTransaction({ messages }: TodaysTransactionProps) 
 	function EmptyComponent() {
 		return (
 			<View className="items-center justify-center" style={{ height: 310 }}>
-				<Text style={{ color: theme.colors.onSurfaceDisabled }}>Empty Component</Text>
+				<Text style={{ color: theme.colors.onSurfaceDisabled }}>No Transactions Today</Text>
 			</View>
 		)
 	}
@@ -37,19 +37,20 @@ export default function TodaysTransaction({ messages }: TodaysTransactionProps) 
 							/>
 						}
 						onPress={() => { }}
-					// onPress={() => setMessages([])}
 					/>
 				}
 			/>
 
 			<FlatList
-				// style={{ maxHeight: 310, }}
+				style={{
+					maxHeight: 310,
+				}}
 				contentContainerStyle={{
 					justifyContent: 'center',
 				}}
+				
 				className="flex-1"
 				data={messages}
-				
 				renderItem={({ item, index }) =>
 					<TransInfo key={index} item={item} index={index} length={messages.length} />
 				}

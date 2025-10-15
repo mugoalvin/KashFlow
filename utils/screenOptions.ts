@@ -28,7 +28,6 @@ export function getStackScreenOptions(theme: MD3Theme) {
 		contentStyle: {
 			// marginTop: -50
 		},
-
 		headerLargeTitle: true,
 		headerTintColor: theme.colors.onBackground,
 	}
