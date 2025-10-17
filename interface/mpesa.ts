@@ -31,7 +31,7 @@ export interface MpesaParced {
 }
 
 export interface Mpesa {
-	id: string
+	id?: string
 	address: string
 	body: string
 	date: string

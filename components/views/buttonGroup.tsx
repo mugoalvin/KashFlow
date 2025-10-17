@@ -26,7 +26,7 @@ export default function ButtonGroup() {
 
 		useEffect(() => {
 			// Default radii
-			let newTL = 12, newBL = 12, newTR = 12, newBR = 12;
+			let newTL = 6, newBL = 6, newTR = 6, newBR = 6;
 			if (index === 0) {
 				newTL = 24;
 				newBL = 24;

@@ -7,6 +7,7 @@ import Animated, { FadeInLeft, FadeOutRight } from 'react-native-reanimated'
 
 import useDialogContext from '@/contexts/DialogContext'
 import FontAwesome6 from '@expo/vector-icons/FontAwesome6'
+import moment from 'moment'
 import LightText from '../text/lightText'
 
 
@@ -30,6 +31,9 @@ export default function TransInfo({ item, index, length }: TransInfoProps) {
 
 	const AnimatedPressable = Animated.createAnimatedComponent(Pressable)
 
+	function getTimeFromTransaction(timeString: string): string {
+		return moment(timeString, "DD/MM/YY [at] h:mm A").fromNow();
+	}
 
 	return (
 		<>
@@ -42,7 +46,15 @@ export default function TransInfo({ item, index, length }: TransInfoProps) {
 					color: theme.colors.secondaryContainer,
 					foreground: true
 				}}
-				className={`flex-row justify-between p-4 ${index === 0 ? 'rounded-s-3xl rounded-e-md' : 'rounded-md'} ${index + 1 === length ? 'rounded-e-3xl' : 'rounded-md'}`}
+				className={`flex-row justify-between p-4 ${length === 1
+						? 'rounded-3xl'
+						: index === 0
+							? 'rounded-s-3xl rounded-e-md'
+							: index + 1 === length
+								? 'rounded-e-3xl'
+								: 'rounded-md'
+					}`}
+
 				entering={FadeInLeft.duration(500).delay(index * 100)}
 				exiting={FadeOutRight.duration(500).delay(index * 80)}
 				style={{
@@ -59,7 +71,7 @@ export default function TransInfo({ item, index, length }: TransInfoProps) {
 			>
 				<View>
 					<Text>{index + 1}. {counterParty}</Text>
-					<LightText className="ms-4 text-sm" text={transactionType} />
+					<LightText className="ms-4 text-sm" text={`${transactionType} : ${getTimeFromTransaction(object.time!)}`} />
 				</View>
 				<View className='flex-row justify-between min-w-24'>
 					<Icon source={() =>

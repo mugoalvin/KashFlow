@@ -1,4 +1,5 @@
 import { Mpesa, MpesaParced, MpesaTransactionType, typeMap } from "@/interface/mpesa";
+import moment from "moment";
 import { NativeModules, ToastAndroid } from 'react-native';
 import { extractAmount, extractFulizaDetails, extractPartialFulizaPay, extractPayFulizaDetails, extractReceiveDetails, extractSendDetails, extractWithdrawDetails } from "./extractDetails";
 
@@ -160,4 +161,39 @@ export function getListOfBalances(parsedMessages: any[]): number[] {
 
 export async function fetchDailyTransaction(date: string) {
 	return await SmsReader.getInboxFilteredByDate("Mpesa", date)
+}
+
+
+export function groupDatesByWeek(dates: string[]) {
+	if (!dates.length) return [];
+
+	const moments = dates.map(d => moment(d));
+	const grouped = [];
+	let currentWeek = [];
+	let currentWeekStart = moments[0].clone().startOf("week");
+
+	for (const d of moments) {
+		const weekStart = d.clone().startOf("week");
+		if (!weekStart.isSame(currentWeekStart, "day")) {
+			grouped.push(currentWeek);
+			currentWeek = [];
+			currentWeekStart = weekStart;
+		}
+		currentWeek.push(d);
+	}
+
+	if (currentWeek.length) grouped.push(currentWeek);
+
+	return grouped.map(week => week.map(d => d.format("YYYY-MM-DD")));
+}
+
+export function generatePastDates(daysBack: number): string[] {
+  const today = moment().startOf("day");
+  const dates = [];
+
+  for (let i = 0; i < daysBack; i++) {
+    dates.push(today.clone().subtract(i, "days").format("YYYY-MM-DD"));
+  }
+
+  return dates;
 }

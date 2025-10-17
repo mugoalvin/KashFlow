@@ -1,4 +1,6 @@
+import MonthlyTransactionInfo from "@/components/information/monthlyTransactionInfo";
 import Body from "@/components/views/body";
+import ButtonGroup from "@/components/views/buttonGroup";
 import { Ionicons } from "@expo/vector-icons";
 import { router, useNavigation } from "expo-router";
 import { useEffect } from "react";
@@ -18,6 +20,9 @@ export default function Transactions() {
 	}, [navigation])
 
 	return (
-		<Body className="items-center" />
+		<Body>
+			<ButtonGroup />
+			<MonthlyTransactionInfo />
+		</Body>
 	)
 }

@@ -6,17 +6,12 @@ import { calculateMpesaBalance, fetchDailyTransaction, parseMpesaMessage } from 
 import { Ionicons } from "@expo/vector-icons";
 import { router, useNavigation } from "expo-router";
 import { useEffect, useLayoutEffect, useMemo, useState } from "react";
-import { Button, IconButton, useTheme } from "react-native-paper";
-import { NativeModules } from 'react-native'
-import useSnackbarContext from "@/contexts/SnackbarContext";
+import { IconButton } from "react-native-paper";
 
 export default function Index() {
-	const theme = useTheme()
-	const { SmsReader } = NativeModules
 	const navigation = useNavigation()
 	const [messages, setMessages] = useState<Mpesa[]>([])
 	const [balance, setBalance] = useState<number>(0)
-	const { showSnackbar } = useSnackbarContext()
 
 	const parsedMessages = useMemo(() =>
 		messages.map(msg => parseMpesaMessage(msg.body)),
@@ -35,7 +30,6 @@ export default function Index() {
 						icon={({ color, size }) => <Ionicons name="search" color={color} size={size - 5} />}
 						onPress={async () => {
 							const date = new Date()
-							// 2025-10-08
 							const currentDate =
 								date.getFullYear().toString()
 									.concat("-")
@@ -62,27 +56,6 @@ export default function Index() {
 		<Body className="gap-3">
 			<BalanceInfo balance={balance} />
 			<TodaysTransaction messages={messages} />
-
-			<Button
-				className="mb-28"
-				mode="elevated"
-				onPress={async () => {
-					try {
-						const confirmation = await SmsReader.testModule()
-						showSnackbar({
-							message: confirmation
-						})
-					}
-					catch (e: any) {
-						showSnackbar({
-							message: e.error,
-							isError: true
-						})
-					}
-				}}
-			>
-				Test Module
-			</Button>
 		</Body>
 	);
 }
