@@ -26,7 +26,9 @@ export interface MpesaParced {
 	number?: number
 	outstanding?: number
 	paid?: number
-	time?: string
+	rawTime: string
+	parsedDate?: string
+	parsedTime?: string
 	transactionCost?: number
 }
 

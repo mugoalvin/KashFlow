@@ -1,55 +1,53 @@
-import useSnackbarContext from "@/contexts/SnackbarContext"
-import { Mpesa } from "@/interface/mpesa"
-import { fetchDailyTransaction } from "@/utils/functions"
+import { MpesaParced } from "@/interface/mpesa"
+import { Ionicons } from "@expo/vector-icons"
+import { router } from "expo-router"
 import moment from "moment"
-import { useEffect, useState } from "react"
-import { FlatList } from "react-native-gesture-handler"
+import { View } from "react-native"
+import { IconButton, useTheme } from "react-native-paper"
 import LightText from "../text/lightText"
 import TransInfo from "./transInfo"
-import { Text, useTheme } from "react-native-paper"
-import { View } from "react-native"
 
 interface DailyTransactionInfoProps {
 	date: string
-	index: number
+	transactions: MpesaParced[]
+	length: number
 }
 
-export default function DailyTransactionInfo({ date }: DailyTransactionInfoProps) {
+export default function DailyTransactionInfo({ date, transactions, length }: DailyTransactionInfoProps) {
 	const theme = useTheme()
-	const { showSnackbar } = useSnackbarContext()
-	const [messages, setMessages] = useState<Mpesa[]>([])
-
-	useEffect(() => {
-		fetchDailyTransaction(date)
-			.then(data => {
-				setMessages(data as Mpesa[])
-			})
-			.catch((e: any) => {
-				showSnackbar({
-					message: e.message,
-					isError: true
-				})
-			})
-	}, [])
 
 	return (
-		<>
-			<LightText className="mt-5 mb-2" text={`${moment(date).format('dddd')} - ${date}`} />
-			<FlatList
-				data={messages}
-				renderItem={({ item, index }) => (
+		<View className="mb-4">
+			<View className="flex-row items-baseline justify-between">
+				<LightText
+					className="mb-2"
+					text={`${moment(date).format("dddd")} - ${date}`}
+				/>
+				<IconButton
+					icon={() => <Ionicons name="chevron-forward" size={16} color={theme.colors.inversePrimary} />}
+					onPress={() => router.push({
+						pathname: '/(transactions)/analysis_more',
+						params: {
+							transactions: JSON.stringify(transactions),
+							date,
+						}
+					})}
+				/>
+			</View>
+			{length ? (
+				transactions.map((tx, i) => (
 					<TransInfo
-						item={item}
-						index={index}
-						length={messages.length}
+						key={`${date}-${i}`}
+						item={tx}
+						index={i}
+						length={length}
 					/>
-				)}
-				ListEmptyComponent={
-					<View className="h-24 items-center justify-center">
-						<Text style={{ color: theme.colors.onPrimaryContainer }}>No Transactions Made This Day</Text>
-					</View>
-				}
-			/>
-		</>
+				))
+			) : (
+				<View className="h-20 justify-center items-center">
+					<LightText text="No Transactions Made This Day" />
+				</View>
+			)}
+		</View>
 	)
 }

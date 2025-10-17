@@ -5,6 +5,21 @@ import { extractAmount, extractFulizaDetails, extractPartialFulizaPay, extractPa
 
 const { SmsReader } = NativeModules
 
+
+const parseDate = (raw: string | undefined) => {
+	if (!raw) return;
+
+	const [d, m, yAndTime] = raw.split("/");
+	const [y] = yAndTime.split(" at ");
+
+	const day = d.padStart(2, "0");
+	const month = m.padStart(2, "0");
+	const year = `20${y}`;
+
+	return `${year}-${month}-${day}`;
+}
+
+
 export function parseMpesaMessage(message: string): MpesaParced {
 	let
 		account: string | undefined,
@@ -16,7 +31,8 @@ export function parseMpesaMessage(message: string): MpesaParced {
 		number: string | undefined,
 		outstanding: number | undefined,
 		paid: number | undefined,
-		time: string | undefined,
+		rawTime: string | undefined,
+		parsedDate: string | undefined,
 		transactionCost: number | undefined
 
 	let type: MpesaTransactionType = 'send';
@@ -32,13 +48,14 @@ export function parseMpesaMessage(message: string): MpesaParced {
 	const amount = extractAmount(message)
 
 	const timeMatch = message.match(/on ([\d\/]+ at [\d:]+ [AP]M)/);
-	time = timeMatch ? timeMatch[1] : undefined;
+	rawTime = timeMatch ? timeMatch[1] : undefined;
 
 	const balanceMatch = message.match(/New M-PESA balance is Ksh([\d,]+\.\d{2})/);
 	balance = balanceMatch ? parseFloat(balanceMatch[1].replace(/,/g, '')) : undefined;
 
 	const transactionCostMatch = message.match(/Transaction cost, Ksh([\d]+\.\d{2})/);
 	transactionCost = transactionCostMatch ? parseFloat(transactionCostMatch[1]) : undefined;
+
 
 	if (type === "fuliza") {
 		const { extractedAmount, extractedDueDate, extractedFee, extractedOutstanding } = extractFulizaDetails(message)
@@ -80,8 +97,10 @@ export function parseMpesaMessage(message: string): MpesaParced {
 	}
 
 
+	parsedDate = parseDate(rawTime)
+
 	// @ts-ignore
-	return { type, amount, account, counterparty, dueDate, fee, limit, message, number, outstanding, paid, time, balance, transactionCost };
+	return { type, amount, account, counterparty, dueDate, fee, limit, message, number, outstanding, paid, rawTime, balance, transactionCost, parsedDate };
 }
 
 
@@ -163,37 +182,51 @@ export async function fetchDailyTransaction(date: string) {
 	return await SmsReader.getInboxFilteredByDate("Mpesa", date)
 }
 
-
-export function groupDatesByWeek(dates: string[]) {
-	if (!dates.length) return [];
-
-	const moments = dates.map(d => moment(d));
-	const grouped = [];
-	let currentWeek = [];
-	let currentWeekStart = moments[0].clone().startOf("week");
-
-	for (const d of moments) {
-		const weekStart = d.clone().startOf("week");
-		if (!weekStart.isSame(currentWeekStart, "day")) {
-			grouped.push(currentWeek);
-			currentWeek = [];
-			currentWeekStart = weekStart;
-		}
-		currentWeek.push(d);
-	}
-
-	if (currentWeek.length) grouped.push(currentWeek);
-
-	return grouped.map(week => week.map(d => d.format("YYYY-MM-DD")));
+export async function fetchMonthTransaction(month: string) {
+	const rawMessages = await SmsReader.getMonthlyTransactions("Mpesa", month) as Mpesa[]
+	return rawMessages.map(msg =>
+		parseMpesaMessage(msg.body)
+	)
 }
 
+export function groupDatesByWeek(dates: string[]) {
+	if (!dates.length) return []
+
+	// Filter empty strings, remove duplicates, and sort chronologically
+	const uniqueDates = Array.from(new Set(dates.filter(Boolean))).sort(
+		(a, b) => moment(a).valueOf() - moment(b).valueOf()
+	)
+
+	const moments = uniqueDates.map(d => moment(d))
+	const grouped: moment.Moment[][] = []
+
+	let currentWeek: moment.Moment[] = []
+	let currentWeekStart = moments[0].clone().startOf("week")
+
+	for (const d of moments) {
+		const weekStart = d.clone().startOf("week")
+		if (!weekStart.isSame(currentWeekStart, "day")) {
+			grouped.push(currentWeek)
+			currentWeek = []
+			currentWeekStart = weekStart
+		}
+		currentWeek.push(d)
+	}
+
+	if (currentWeek.length) grouped.push(currentWeek)
+
+	// Return array of arrays of strings
+	return grouped.map(week => week.map(d => d.format("YYYY-MM-DD")))
+}
+
+
 export function generatePastDates(daysBack: number): string[] {
-  const today = moment().startOf("day");
-  const dates = [];
+	const today = moment().startOf("day");
+	const dates = [];
 
-  for (let i = 0; i < daysBack; i++) {
-    dates.push(today.clone().subtract(i, "days").format("YYYY-MM-DD"));
-  }
+	for (let i = 0; i < daysBack; i++) {
+		dates.push(today.clone().subtract(i, "days").format("YYYY-MM-DD"));
+	}
 
-  return dates;
+	return dates;
 }
