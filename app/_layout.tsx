@@ -13,9 +13,6 @@ import { useEffect } from 'react';
 import { DialogProvider } from '@/contexts/DialogContext';
 import { Icon, Label, NativeTabs } from 'expo-router/unstable-native-tabs';
 
-// import Ionicons from '@expo/vector-icons/Ionicons';
-// import { Tabs } from 'expo-router';
-
 
 export default function RootLayout() {
 	const { theme, resetTheme, updateTheme } = useMaterial3Theme()

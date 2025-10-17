@@ -7,7 +7,7 @@ export default function LightText({ color, className, text }: MyTextProps) {
 
 	return (
 		<Text
-			className={`ms-4 ${className}`}
+			className={className}
 			style={{
 				color: color || theme.colors.onSurfaceDisabled
 			}}

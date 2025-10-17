@@ -1,4 +1,4 @@
-import { Mpesa } from '@/interface/mpesa'
+import { Mpesa, MpesaParced } from '@/interface/mpesa'
 import { parseMpesaMessage } from '@/utils/functions'
 import React from 'react'
 import { Pressable, View } from 'react-native'
@@ -7,29 +7,32 @@ import Animated, { FadeInLeft, FadeOutRight } from 'react-native-reanimated'
 
 import useDialogContext from '@/contexts/DialogContext'
 import FontAwesome6 from '@expo/vector-icons/FontAwesome6'
+import moment from 'moment'
 import LightText from '../text/lightText'
 
 
 interface TransInfoProps {
-	item: Mpesa
+	item: MpesaParced 
 	index: number
 	length: number
 }
 
 export default function TransInfo({ item, index, length }: TransInfoProps) {
 	const theme = useTheme()
-	const object = parseMpesaMessage(item.body)
 	const { showDialog } = useDialogContext()
 
-	const counterParty = (object.counterparty)?.toLowerCase().split(' ').map(word =>
+	const counterParty = (item.counterparty)?.toLowerCase().split(' ').map(word =>
 		word.slice(0, 1).toUpperCase().concat(word.slice(1)).concat(' ')
 	)
-	const transactionType = (object.type)
-		? object.type.charAt(0).toUpperCase() + object.type.slice(1)
+	const transactionType = (item.type)
+		? item.type.charAt(0).toUpperCase() + item.type.slice(1)
 		: ''
 
 	const AnimatedPressable = Animated.createAnimatedComponent(Pressable)
 
+	function getTimeFromTransaction(timeString: string): string {
+		return moment(timeString, "DD/MM/YY [at] h:mm A").fromNow();
+	}
 
 	return (
 		<>
@@ -42,7 +45,15 @@ export default function TransInfo({ item, index, length }: TransInfoProps) {
 					color: theme.colors.secondaryContainer,
 					foreground: true
 				}}
-				className={`flex-row justify-between p-4 ${index === 0 ? 'rounded-s-3xl rounded-e-md' : 'rounded-md'} ${index + 1 === length ? 'rounded-e-3xl' : 'rounded-md'}`}
+				className={`flex-row justify-between p-4 ${length === 1
+					? 'rounded-3xl'
+					: index === 0
+						? 'rounded-s-3xl rounded-e-md'
+						: index + 1 === length
+							? 'rounded-e-3xl'
+							: 'rounded-md'
+					}`}
+
 				entering={FadeInLeft.duration(500).delay(index * 100)}
 				exiting={FadeOutRight.duration(500).delay(index * 80)}
 				style={{
@@ -50,7 +61,7 @@ export default function TransInfo({ item, index, length }: TransInfoProps) {
 				}}
 				onPress={() => showDialog({
 					title: "Transaction Message",
-					message: object.message!,
+					message: item.message!,
 					actions: [{
 						dialogText: "OK",
 						action: () => { }
@@ -59,18 +70,18 @@ export default function TransInfo({ item, index, length }: TransInfoProps) {
 			>
 				<View>
 					<Text>{index + 1}. {counterParty}</Text>
-					<LightText className="ms-4 text-sm" text={transactionType} />
+					<LightText className="ms-4 text-sm" text={`${transactionType} : ${getTimeFromTransaction(item.rawTime!)}`} />
 				</View>
 				<View className='flex-row justify-between min-w-24'>
 					<Icon source={() =>
 						<FontAwesome6
-							name={object.type === 'receive' ? "arrow-up-long" : "arrow-down-long"}
+							name={item.type === 'receive' ? "arrow-up-long" : "arrow-down-long"}
 							size={14}
-							color={object.type === 'receive' ? "green" : "red"}
+							color={item.type === 'receive' ? "green" : "red"}
 						/>
 					}
 						size={16} />
-					<Text>Ksh.{object.amount}</Text>
+					<Text>Ksh.{item.amount}</Text>
 				</View>
 			</AnimatedPressable>
 		</>

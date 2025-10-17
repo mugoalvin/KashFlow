@@ -8,15 +8,11 @@ import com.facebook.react.bridge.Promise
 import java.text.SimpleDateFormat
 import java.util.Locale
 import androidx.core.net.toUri
+import java.util.Calendar
 
 class SmsReaderModule(private val reactContext: ReactApplicationContext): ReactContextBaseJavaModule(reactContext) {
     override fun getName(): String {
         return "SmsReader"
-    }
-
-    @ReactMethod
-    fun testModule(promise: Promise) {
-        promise.resolve("Hello From Kotlin Once Again")
     }
 
     @ReactMethod
@@ -96,6 +92,65 @@ class SmsReaderModule(private val reactContext: ReactApplicationContext): ReactC
             promise.resolve(messages)
         } catch (e: Exception) {
             promise.reject("SMS_READ_ERROR", e.message)
+        }
+    }
+
+    @ReactMethod
+    fun getMonthlyTransactions(sender: String, month: String, promise: Promise) {
+        try {
+            val smsUri = "content://sms/inbox".toUri()
+            val resolver: ContentResolver = reactContext.contentResolver
+            val sdf = SimpleDateFormat("yyyy-MM", Locale.getDefault())
+            val parsedMonth = sdf.parse(month)
+
+            if (parsedMonth == null) {
+                promise.reject("INVALID_MONTH", "Invalid month format. Use yyyy-MM (e.g. 2025-10)")
+                return
+            }
+
+            val startCal = Calendar.getInstance().apply {
+                time = parsedMonth
+                set(Calendar.DAY_OF_MONTH, 1)
+                set(Calendar.HOUR_OF_DAY, 0)
+                set(Calendar.MINUTE, 0)
+                set(Calendar.SECOND, 0)
+                set(Calendar.MILLISECOND, 0)
+            }
+
+            val endCal = startCal.clone() as Calendar
+            endCal.add(Calendar.MONTH, 1)
+
+            val startTime = startCal.timeInMillis
+            val endTime = endCal.timeInMillis
+
+            val cursor: Cursor? = resolver.query(
+                smsUri,
+                arrayOf("address", "body", "date"),
+                "address LIKE ? AND date BETWEEN ? AND ?",
+                arrayOf("%$sender%", startTime.toString(), endTime.toString()),
+                "date DESC"
+            )
+
+            val messages = WritableNativeArray()
+
+            cursor?.use {
+                val addressIdx = it.getColumnIndex("address")
+                val bodyIdx = it.getColumnIndex("body")
+                val dateIdx = it.getColumnIndex("date")
+
+                while(it.moveToNext()) {
+                    val msg = WritableNativeMap()
+                    msg.putString("address", it.getString(addressIdx))
+                    msg.putString("body", it.getString(bodyIdx))
+                    msg.putString("date", it.getString(dateIdx))
+                    messages.pushMap(msg)
+                }
+            }
+
+            promise.resolve(messages)
+        }
+        catch (e: Exception) {
+            promise.reject("SMS_READ_ERROR", e.message);
         }
     }
 }

@@ -26,12 +26,14 @@ export interface MpesaParced {
 	number?: number
 	outstanding?: number
 	paid?: number
-	time?: string
+	rawTime: string
+	parsedDate?: string
+	parsedTime?: string
 	transactionCost?: number
 }
 
 export interface Mpesa {
-	id: string
+	id?: string
 	address: string
 	body: string
 	date: string
