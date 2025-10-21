@@ -1,22 +1,18 @@
 import BalanceInfo from "@/components/information/balanceInfo";
 import Body from "@/components/views/body";
 import TodaysTransaction from "@/components/views/todaysTransactions";
-import { Mpesa } from "@/interface/mpesa";
-import { calculateMpesaBalance, fetchDailyTransaction, parseMpesaMessage } from "@/utils/functions";
+import { MpesaParced } from "@/interface/mpesa";
+import { calculateMpesaBalance, fetchDailyTransaction } from "@/utils/functions";
 import { Ionicons } from "@expo/vector-icons";
 import { router, useNavigation } from "expo-router";
-import { useEffect, useLayoutEffect, useMemo, useState } from "react";
+import { useEffect, useLayoutEffect, useState } from "react";
 import { IconButton } from "react-native-paper";
 
 export default function Index() {
 	const navigation = useNavigation()
-	const [messages, setMessages] = useState<Mpesa[]>([])
+	const [messages, setMessages] = useState<MpesaParced[]>([])
 	const [balance, setBalance] = useState<number>(0)
 
-	const parsedMessages = useMemo(() =>
-		messages.map(msg => parseMpesaMessage(msg.body)),
-		[messages]
-	)
 
 	useLayoutEffect(() => {
 		navigation.setOptions({
@@ -36,6 +32,7 @@ export default function Index() {
 									.concat((date.getMonth() + 1).toString())
 									.concat("-")
 									.concat((date.getDate()).toString())
+
 							const msgs = await fetchDailyTransaction(currentDate)
 							setMessages(msgs || [])
 						}}
@@ -46,10 +43,10 @@ export default function Index() {
 	}, [])
 
 	useEffect(() => {
-		const { balance } = calculateMpesaBalance(parsedMessages)
+		const { balance } = calculateMpesaBalance(messages)
 
 		setBalance(balance)
-	}, [parsedMessages])
+	}, [messages])
 
 
 	return (

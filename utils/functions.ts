@@ -104,28 +104,6 @@ export function parseMpesaMessage(message: string): MpesaParced {
 }
 
 
-
-
-export async function fetchSMSMessage(limit: number) {
-	try {
-		const mpesaMsgs = await SmsReader.getInboxFiltered("Mpesa", limit) as Mpesa[]
-		ToastAndroid.showWithGravity(
-			`Found ${mpesaMsgs.length}`,
-			ToastAndroid.LONG,
-			ToastAndroid.BOTTOM,
-		)
-		return mpesaMsgs
-	}
-	catch (e: any) {
-		ToastAndroid.showWithGravity(
-			e.message,
-			ToastAndroid.LONG,
-			ToastAndroid.BOTTOM,
-		)
-	}
-}
-
-
 export function calculateMpesaBalance(parsedMessages: any[]): { balance: number; limit: number | null } {
 	let foundBalance: number | null = null;
 	let foundOutstanding: number | null = null;
@@ -179,7 +157,10 @@ export function getListOfBalances(parsedMessages: any[]): number[] {
 
 
 export async function fetchDailyTransaction(date: string) {
-	return await SmsReader.getInboxFilteredByDate("Mpesa", date)
+	const transactions = await SmsReader.getInboxFilteredByDate("Mpesa", date) as Mpesa[]
+	return transactions.map(transaction => 
+		parseMpesaMessage(transaction.body)
+	)
 }
 
 export async function fetchMonthTransaction(month: string) {

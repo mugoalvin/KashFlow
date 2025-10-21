@@ -1,4 +1,4 @@
-import { Mpesa } from "@/interface/mpesa";
+import { MpesaParced } from "@/interface/mpesa";
 import { Ionicons, MaterialIcons } from "@expo/vector-icons";
 import { FlatList, View } from "react-native";
 import { IconButton, Text, useTheme } from "react-native-paper";
@@ -6,7 +6,7 @@ import TransInfo from "../information/transInfo";
 import Title from "../text/title";
 
 interface TodaysTransactionProps {
-	messages: Mpesa[]
+	messages: MpesaParced[]
 }
 
 
@@ -48,7 +48,7 @@ export default function TodaysTransaction({ messages }: TodaysTransactionProps) 
 				contentContainerStyle={{
 					justifyContent: 'center',
 				}}
-				
+
 				className="flex-1"
 				data={messages}
 				renderItem={({ item, index }) =>
