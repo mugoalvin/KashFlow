@@ -16,6 +16,47 @@ class SmsReaderModule(private val reactContext: ReactApplicationContext): ReactC
     }
 
     @ReactMethod
+    fun getLatestMessages(sender: String, lastId: Int, promise: Promise) {
+        try {
+            val smsUri = "content://sms/inbox".toUri();
+            val resolver: ContentResolver = reactContext.contentResolver
+
+            val cursor: Cursor? = resolver.query(
+                smsUri,
+                arrayOf("_id", "address", "body", "date"),
+                "_id > ? AND address LIKE ?",
+                arrayOf(lastId.toString(), "%$sender%"),
+                "date ASC"
+            )
+
+            val messages = WritableNativeArray()
+            var count = 0
+
+            cursor?.use {
+                val idIdx = it.getColumnIndex("_id")
+                val addressIdx = it.getColumnIndex("address")
+                val bodyIdx = it.getColumnIndex("body")
+                val dateIdx = it.getColumnIndex("date")
+
+                while (it.moveToNext()) {
+                    val msg = WritableNativeMap()
+                    msg.putString("id", it.getString(idIdx))
+                    msg.putString("address", it.getString(addressIdx))
+                    msg.putString("body", it.getString(bodyIdx))
+                    msg.putString("date", it.getString(dateIdx))
+                    messages.pushMap(msg)
+                    count++
+                }
+            }
+
+            promise.resolve(messages)
+        }
+        catch (e: Exception) {
+            promise.reject("SMS_READER_ERROR", e.message);
+        }
+    }
+
+    @ReactMethod
     fun getInboxFiltered(sender: String, limit: Int, promise: Promise) {
         try {
             val smsUri = "content://sms/inbox".toUri()
@@ -33,12 +74,14 @@ class SmsReaderModule(private val reactContext: ReactApplicationContext): ReactC
             var count = 0
 
             cursor?.use {
+                val idIdx = it.getColumnIndex("_id")
                 val addressIdx = it.getColumnIndex("address")
                 val bodyIdx = it.getColumnIndex("body")
                 val dateIdx = it.getColumnIndex("date")
 
                 while (it.moveToNext() && count < limit) {
                     val msg = WritableNativeMap()
+                    msg.putString("id", it.getString(idIdx))
                     msg.putString("address", it.getString(addressIdx))
                     msg.putString("body", it.getString(bodyIdx))
                     msg.putString("date", it.getString(dateIdx))
@@ -67,7 +110,7 @@ class SmsReaderModule(private val reactContext: ReactApplicationContext): ReactC
 
             val cursor: Cursor? = resolver.query(
                 smsUri,
-                arrayOf("address", "body", "date"),
+                arrayOf("_id", "address", "body", "date"),
                 "address LIKE ? AND date BETWEEN ? AND ?",
                 arrayOf("%$sender%", startTime.toString(), endTime.toString()),
                 "date DESC"
@@ -76,12 +119,14 @@ class SmsReaderModule(private val reactContext: ReactApplicationContext): ReactC
             val messages = WritableNativeArray()
 
             cursor?.use {
+                val idIdx = it.getColumnIndex("_id")
                 val addressIdx = it.getColumnIndex("address")
                 val bodyIdx = it.getColumnIndex("body")
                 val dateIdx = it.getColumnIndex("date")
 
                 while (it.moveToNext()) {
                     val msg = WritableNativeMap()
+                    msg.putString("id", it.getString(idIdx))
                     msg.putString("address", it.getString(addressIdx))
                     msg.putString("body", it.getString(bodyIdx))
                     msg.putString("date", it.getString(dateIdx))
@@ -125,7 +170,7 @@ class SmsReaderModule(private val reactContext: ReactApplicationContext): ReactC
 
             val cursor: Cursor? = resolver.query(
                 smsUri,
-                arrayOf("address", "body", "date"),
+                arrayOf("_id", "address", "body", "date"),
                 "address LIKE ? AND date BETWEEN ? AND ?",
                 arrayOf("%$sender%", startTime.toString(), endTime.toString()),
                 "date DESC"
@@ -134,12 +179,14 @@ class SmsReaderModule(private val reactContext: ReactApplicationContext): ReactC
             val messages = WritableNativeArray()
 
             cursor?.use {
+                val idIdx = it.getColumnIndex("_id")
                 val addressIdx = it.getColumnIndex("address")
                 val bodyIdx = it.getColumnIndex("body")
                 val dateIdx = it.getColumnIndex("date")
 
                 while(it.moveToNext()) {
                     val msg = WritableNativeMap()
+                    msg.putString("id", it.getString(idIdx))
                     msg.putString("address", it.getString(addressIdx))
                     msg.putString("body", it.getString(bodyIdx))
                     msg.putString("date", it.getString(dateIdx))

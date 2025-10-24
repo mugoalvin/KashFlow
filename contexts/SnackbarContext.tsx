@@ -20,7 +20,7 @@ export const SnackbarProvider = ({ children }: { children: ReactNode }) => {
 
 
 	const showSnackbar = ({ message, isError = false, isWarning = false }: SnackbarParams) => {
-		console.log("Snackbar called:", { message, isError, isWarning }) // Debug
+		// console.log("Snackbar called:", { message, isError, isWarning }) // Debug
 
 		setMessage(message!)
 		setIsVisible(true)

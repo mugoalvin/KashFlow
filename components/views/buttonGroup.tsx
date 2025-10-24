@@ -1,20 +1,23 @@
+import { transactionButtonType } from "@/app/(transactions)";
 import { useEffect, useState } from "react";
 import { Pressable, View } from "react-native";
 import { Text, useTheme } from "react-native-paper";
 import Animated, { interpolateColor, useAnimatedStyle, useSharedValue, withSpring, withTiming } from "react-native-reanimated";
 
-type buttonsType = 'all' | 'moneyOut' | 'moneyIn'
+export interface ButtonInGroupProps {
+	title: string
+	type: transactionButtonType
+}
 
-export default function ButtonGroup() {
+export interface ButtonGroupProps {
+	buttons: ButtonInGroupProps[]
+}
+
+export default function ButtonGroup({ buttons }: ButtonGroupProps) {
 	const theme = useTheme()
 	const AnimatedPressable = Animated.createAnimatedComponent(Pressable)
-	const [selectedButton, setSelectedButton] = useState<buttonsType>('all')
+	const [selectedButton, setSelectedButton] = useState<transactionButtonType>('all')
 
-	const buttons = [
-		{ title: "All", type: 'all' },
-		{ title: "Money Out", type: 'moneyOut' },
-		{ title: "Money In", type: 'moneyIn' },
-	];
 
 	function ButtonInGroup({ button, index, length }: any) {
 		// Shared values for each corner and background

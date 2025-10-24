@@ -3,13 +3,11 @@ import { MpesaParced } from "@/interface/mpesa";
 import { fetchMonthTransaction, groupDatesByWeek } from "@/utils/functions";
 import { useEffect, useMemo, useState } from "react";
 import { SectionList, View } from "react-native";
-import { useTheme } from "react-native-paper";
 import LightText from "../text/lightText";
 import DailyTransactionInfo from "./dailyTransactionInfo";
 
 
 export default function MonthlyTransactionInfo() {
-	const theme = useTheme()
 	const [monthlyData, setMonthlyData] = useState<MpesaParced[]>([])
 	const { showSnackbar } = useSnackbarContext()
 

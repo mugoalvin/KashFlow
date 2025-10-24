@@ -1,5 +1,4 @@
-import { Mpesa, MpesaParced } from '@/interface/mpesa'
-import { parseMpesaMessage } from '@/utils/functions'
+import { MpesaParced } from '@/interface/mpesa'
 import React from 'react'
 import { Pressable, View } from 'react-native'
 import { Divider, Icon, Text, useTheme } from 'react-native-paper'
@@ -12,7 +11,7 @@ import LightText from '../text/lightText'
 
 
 interface TransInfoProps {
-	item: MpesaParced 
+	item: MpesaParced
 	index: number
 	length: number
 }
