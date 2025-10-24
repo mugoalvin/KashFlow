@@ -1,6 +1,9 @@
+import { mpesaMessages } from "@/db/sqlite";
 import { Mpesa, MpesaParced, MpesaTransactionType, typeMap } from "@/interface/mpesa";
+import { desc } from "drizzle-orm";
+import { ExpoSQLiteDatabase } from "drizzle-orm/expo-sqlite";
 import moment from "moment";
-import { NativeModules, ToastAndroid } from 'react-native';
+import { NativeModules } from 'react-native';
 import { extractAmount, extractFulizaDetails, extractPartialFulizaPay, extractPayFulizaDetails, extractReceiveDetails, extractSendDetails, extractWithdrawDetails } from "./extractDetails";
 
 const { SmsReader } = NativeModules
@@ -10,17 +13,21 @@ const parseDate = (raw: string | undefined) => {
 	if (!raw) return;
 
 	const [d, m, yAndTime] = raw.split("/");
-	const [y] = yAndTime.split(" at ");
+	const [y, ...rest] = yAndTime.split(" at ");
 
 	const day = d.padStart(2, "0");
 	const month = m.padStart(2, "0");
 	const year = `20${y}`;
 
-	return `${year}-${month}-${day}`;
+	return {
+		date: `${year}-${month}-${day}`,
+		time: rest[0]
+	}
 }
 
 
-export function parseMpesaMessage(message: string): MpesaParced {
+export function parseMpesaMessage(messageID: string, message: string): MpesaParced {
+	const id = Number(messageID)
 	let
 		account: string | undefined,
 		balance: number | undefined,
@@ -32,6 +39,7 @@ export function parseMpesaMessage(message: string): MpesaParced {
 		outstanding: number | undefined,
 		paid: number | undefined,
 		rawTime: string | undefined,
+		parsedTime: string | undefined,
 		parsedDate: string | undefined,
 		transactionCost: number | undefined
 
@@ -44,8 +52,7 @@ export function parseMpesaMessage(message: string): MpesaParced {
 		}
 	}
 
-
-	const amount = extractAmount(message)
+	let amount = extractAmount(message)
 
 	const timeMatch = message.match(/on ([\d\/]+ at [\d:]+ [AP]M)/);
 	rawTime = timeMatch ? timeMatch[1] : undefined;
@@ -59,7 +66,8 @@ export function parseMpesaMessage(message: string): MpesaParced {
 
 	if (type === "fuliza") {
 		const { extractedAmount, extractedDueDate, extractedFee, extractedOutstanding } = extractFulizaDetails(message)
-		// amount = extractedAmount
+		counterparty = "Fuliza Borrowed"
+		amount = extractedAmount
 		dueDate = extractedDueDate
 		fee = extractedFee
 		outstanding = extractedOutstanding
@@ -67,6 +75,7 @@ export function parseMpesaMessage(message: string): MpesaParced {
 
 	if (type === "payFuliza") {
 		const { extractedBalance, extractedLimit, extractedPaid } = extractPayFulizaDetails(message)
+		counterparty = "Full Fuliza Payment"
 		balance = extractedBalance
 		limit = extractedLimit
 		paid = extractedPaid
@@ -97,10 +106,11 @@ export function parseMpesaMessage(message: string): MpesaParced {
 	}
 
 
-	parsedDate = parseDate(rawTime)
+	parsedDate = parseDate(rawTime)?.date
+	parsedTime = parseDate(rawTime)?.time
 
 	// @ts-ignore
-	return { type, amount, account, counterparty, dueDate, fee, limit, message, number, outstanding, paid, rawTime, balance, transactionCost, parsedDate };
+	return { id, type, amount, account, counterparty, dueDate, fee, limit, message, number, outstanding, paid, rawTime, balance, transactionCost, parsedDate, parsedTime };
 }
 
 
@@ -156,17 +166,34 @@ export function getListOfBalances(parsedMessages: any[]): number[] {
 }
 
 
+export async function fetchLastTransactionId(db: ExpoSQLiteDatabase): Promise<number> {
+	const val = await db
+		.select()
+		.from(mpesaMessages)
+		.orderBy(desc(mpesaMessages.id))
+		.limit(1)
+
+	return val[0]?.id || 2
+}
+
+export async function fetchLatestTransactions(lastMgsId: number) {
+	const latestTransactions = await SmsReader.getLatestMessages("Mpesa", lastMgsId) as Mpesa[]
+	return latestTransactions.map(transaction =>
+		parseMpesaMessage(transaction.id, transaction.body)
+	)
+}
+
 export async function fetchDailyTransaction(date: string) {
 	const transactions = await SmsReader.getInboxFilteredByDate("Mpesa", date) as Mpesa[]
-	return transactions.map(transaction => 
-		parseMpesaMessage(transaction.body)
+	return transactions.map(transaction =>
+		parseMpesaMessage(transaction.id, transaction.body)
 	)
 }
 
 export async function fetchMonthTransaction(month: string) {
 	const rawMessages = await SmsReader.getMonthlyTransactions("Mpesa", month) as Mpesa[]
 	return rawMessages.map(msg =>
-		parseMpesaMessage(msg.body)
+		parseMpesaMessage(msg.id, msg.body)
 	)
 }
 
@@ -210,4 +237,25 @@ export function generatePastDates(daysBack: number): string[] {
 	}
 
 	return dates;
+}
+
+
+export async function syncDatabase(db: ExpoSQLiteDatabase) {
+	try {
+		const lastId = await fetchLastTransactionId(db)
+		const transactions = await fetchLatestTransactions(lastId)
+
+		console.log("New Transactions: ", transactions)
+
+		await db.transaction(async (tx) => {
+			for (const transaction of transactions) { // @ts-ignore
+				await tx.insert(mpesaMessages).values(transaction);
+			}
+		})
+			.then(() => console.log(`Successful added ${transactions.length} rows`))
+			.catch((e: any) => console.error(e))
+	}
+	catch (e: any) {
+		console.error("Syncronization Failure: ", e.message)
+	}
 }

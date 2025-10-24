@@ -46,11 +46,19 @@ export function extractPartialFulizaPay(message: string) {
 
 
 export function extractReceiveDetails(message: string) {
-	const senderMatch = message.match(/from (.+?) (\d+) on/)!;
+	// const senderMatch = message.match(/from (.+?) (\d+) on/)!;
+	const senderMatch = message.match(/from (.+?) (\d+) on/)
+
+	if (!senderMatch) {
+		return {
+			extractedCounterParty: "",
+			extractedNumber: ""
+		}
+	}
 
 	return {
-		extractedCounterParty: senderMatch[1],
-		extractedNumber: senderMatch[2]
+		extractedCounterParty: senderMatch[1] || "",
+		extractedNumber: senderMatch[2] || ""
 	}
 }
 

@@ -8,16 +8,20 @@ import '../global.css';
 import { SnackbarProvider } from '@/contexts/SnackbarContext';
 import { darkCustomTheme, lightCustomTheme } from '@/utils/colors';
 import { requestSmsPermission } from '@/utils/permissions';
-import { useEffect } from 'react';
+import { Suspense, useEffect } from 'react';
 
+import FallBack from '@/components/views/suspenceFallback';
 import { DialogProvider } from '@/contexts/DialogContext';
 import { Icon, Label, NativeTabs } from 'expo-router/unstable-native-tabs';
 
+import { SQLiteProvider } from 'expo-sqlite';
+
+
+const DATABASE_NAME = 'kashflow.db'
 
 export default function RootLayout() {
 	const { theme, resetTheme, updateTheme } = useMaterial3Theme()
 	const colorScheme = useColorScheme() || 'light'
-
 
 	const paperTheme: MD3Theme = {
 		...(colorScheme === 'dark' ? MD3DarkTheme : MD3LightTheme),
@@ -32,13 +36,15 @@ export default function RootLayout() {
 	}, [])
 
 	return (
-		<ThemeContext.Provider value={{ resetTheme, updateTheme }}>
-			<PaperProvider theme={paperTheme}>
-				<DialogProvider>
-					<SnackbarProvider>
-						<GestureHandlerRootView>
+		<Suspense fallback={<FallBack />}>
+			<SQLiteProvider databaseName={DATABASE_NAME} options={{ enableChangeListener: true }} useSuspense>
+				<ThemeContext.Provider value={{ resetTheme, updateTheme }}>
+					<PaperProvider theme={paperTheme}>
+						<DialogProvider>
+							<SnackbarProvider>
+								<GestureHandlerRootView>
 
-							{/* <Tabs
+									{/* <Tabs
 							initialRouteName='(home)'
 							screenOptions={{
 								headerStyle: {
@@ -79,33 +85,35 @@ export default function RootLayout() {
 							/>
 						</Tabs> */}
 
-							<NativeTabs
-								tintColor={theme[colorScheme].tertiary}
-								backgroundColor={theme[colorScheme].elevation.level1}
-								labelVisibilityMode='selected'
-								indicatorColor={theme[colorScheme].surfaceVariant}
-							>
-								<NativeTabs.Trigger name='(home)'>
-									<Label>Home</Label>
-									<Icon drawable='home' />
-								</NativeTabs.Trigger>
+									<NativeTabs
+										tintColor={theme[colorScheme].tertiary}
+										backgroundColor={theme[colorScheme].elevation.level1}
+										labelVisibilityMode='selected'
+										indicatorColor={theme[colorScheme].surfaceVariant}
+									>
+										<NativeTabs.Trigger name='(home)'>
+											<Label>Home</Label>
+											<Icon drawable='home' />
+										</NativeTabs.Trigger>
 
-								<NativeTabs.Trigger name='(transactions)'>
-									<Label>Transactions</Label>
-									<Icon drawable='ic_menu_recent_history' />
-								</NativeTabs.Trigger>
+										<NativeTabs.Trigger name='(transactions)'>
+											<Label>Transactions</Label>
+											<Icon drawable='ic_menu_recent_history' />
+										</NativeTabs.Trigger>
 
-								<NativeTabs.Trigger name='settings'>
-									<Label>Settings</Label>
-									<Icon drawable='ic_menu_manage' />
-								</NativeTabs.Trigger>
+										<NativeTabs.Trigger name='settings'>
+											<Label>Settings</Label>
+											<Icon drawable='ic_menu_manage' />
+										</NativeTabs.Trigger>
 
-							</NativeTabs>
+									</NativeTabs>
 
-						</GestureHandlerRootView>
-					</SnackbarProvider>
-				</DialogProvider>
-			</PaperProvider>
-		</ThemeContext.Provider>
+								</GestureHandlerRootView>
+							</SnackbarProvider>
+						</DialogProvider>
+					</PaperProvider>
+				</ThemeContext.Provider>
+			</SQLiteProvider>
+		</Suspense>
 	)
 }

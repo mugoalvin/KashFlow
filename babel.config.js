@@ -6,7 +6,11 @@ module.exports = function (api) {
       "nativewind/babel",
     ],
     plugins: [
-      'react-native-worklets/plugin'
+      'react-native-worklets/plugin',
+      [
+        'inline-import',
+        { extensions: ['.sql'] }
+      ]
     ]
   };
 };

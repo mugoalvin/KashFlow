@@ -1,17 +1,35 @@
+import { sqliteDB } from "@/db/config";
+import { mpesaMessages } from "@/db/sqlite";
 import { MpesaParced } from "@/interface/mpesa";
 import { Ionicons, MaterialIcons } from "@expo/vector-icons";
+import { desc, eq } from "drizzle-orm";
+import { useEffect, useState } from "react";
 import { FlatList, View } from "react-native";
 import { IconButton, Text, useTheme } from "react-native-paper";
 import TransInfo from "../information/transInfo";
 import Title from "../text/title";
 
-interface TodaysTransactionProps {
-	messages: MpesaParced[]
-}
 
-
-export default function TodaysTransaction({ messages }: TodaysTransactionProps) {
+export default function TodaysTransaction() {
 	const theme = useTheme()
+	const [todaysTransactionParsedMessages, setTodaysTransactionParsedMessages] = useState<MpesaParced[]>([])
+
+	async function getMessages() {
+		const date = new Date()
+		const currentDate =
+			date.getFullYear().toString()
+				.concat("-")
+				.concat((date.getMonth() + 1).toString())
+				.concat("-")
+				.concat((date.getDate()).toString())
+
+		const todaysMessages = await sqliteDB.select().from(mpesaMessages).where(eq(mpesaMessages.parsedDate, currentDate)).orderBy(desc(mpesaMessages.id)) as MpesaParced[]
+		setTodaysTransactionParsedMessages(todaysMessages)
+	}
+
+	useEffect(() => {
+		getMessages()
+	}, [])
 
 	function EmptyComponent() {
 		return (
@@ -50,9 +68,9 @@ export default function TodaysTransaction({ messages }: TodaysTransactionProps) 
 				}}
 
 				className="flex-1"
-				data={messages}
+				data={todaysTransactionParsedMessages}
 				renderItem={({ item, index }) =>
-					<TransInfo key={index} item={item} index={index} length={messages.length} />
+					<TransInfo key={index} item={item} index={index} length={todaysTransactionParsedMessages.length} />
 				}
 				showsVerticalScrollIndicator={false}
 				ListEmptyComponent={() => <EmptyComponent />}

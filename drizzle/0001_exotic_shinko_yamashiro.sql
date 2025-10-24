@@ -1,0 +1,1 @@
+ALTER TABLE `mpesaMessages` ADD `type` text;
