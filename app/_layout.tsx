@@ -16,7 +16,6 @@ import { Icon, Label, NativeTabs } from 'expo-router/unstable-native-tabs';
 
 import { SQLiteProvider } from 'expo-sqlite';
 
-
 const DATABASE_NAME = 'kashflow.db'
 
 export default function RootLayout() {
