@@ -245,15 +245,13 @@ export async function syncDatabase(db: ExpoSQLiteDatabase) {
 		const lastId = await fetchLastTransactionId(db)
 		const transactions = await fetchLatestTransactions(lastId)
 
-		console.log("New Transactions: ", transactions)
+		// console.log("New Transactions: ", transactions)
 
 		await db.transaction(async (tx) => {
 			for (const transaction of transactions) { // @ts-ignore
 				await tx.insert(mpesaMessages).values(transaction);
 			}
 		})
-			.then(() => console.log(`Successful added ${transactions.length} rows`))
-			.catch((e: any) => console.error(e))
 	}
 	catch (e: any) {
 		console.error("Syncronization Failure: ", e.message)
