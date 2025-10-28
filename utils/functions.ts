@@ -1,6 +1,6 @@
 import { mpesaMessages } from "@/db/sqlite";
 import { Mpesa, MpesaParced, MpesaTransactionType, typeMap } from "@/interface/mpesa";
-import { desc } from "drizzle-orm";
+import { desc, sql } from "drizzle-orm";
 import { ExpoSQLiteDatabase } from "drizzle-orm/expo-sqlite";
 import moment from "moment";
 import { NativeModules } from 'react-native';
@@ -25,8 +25,22 @@ const parseDate = (raw: string | undefined) => {
 	}
 }
 
+function parseDate2(inputString: string) {
+  const dateObj = new Date(inputString);
 
-export function parseMpesaMessage(messageID: string, message: string): MpesaParced {
+  if (isNaN(dateObj.getTime())) {
+    throw new Error("Invalid date format");
+  }
+
+  const date = dateObj.toISOString().split("T")[0];
+  const time = dateObj.toLocaleTimeString([], { hour: "numeric", minute: "2-digit" });
+
+  return { date, time };
+}
+
+
+// export function parseMpesaMessage(messageID: string, message: string, date: string): MpesaParced {
+export function parseMpesaMessage(messageID: string, message: string, date: string) {
 	const id = Number(messageID)
 	let
 		account: string | undefined,
@@ -105,12 +119,10 @@ export function parseMpesaMessage(messageID: string, message: string): MpesaParc
 		extractWithdrawDetails(message)
 	}
 
+	parsedDate = parseDate2(date)?.date
+	parsedTime = parseDate2(date)?.time
 
-	parsedDate = parseDate(rawTime)?.date
-	parsedTime = parseDate(rawTime)?.time
-
-	// @ts-ignore
-	return { id, type, amount, account, counterparty, dueDate, fee, limit, message, number, outstanding, paid, rawTime, balance, transactionCost, parsedDate, parsedTime };
+	return { id, type, amount, account, counterparty, dueDate, fee, limit, message, number, outstanding, paid, balance, transactionCost, parsedDate, parsedTime }
 }
 
 
@@ -179,22 +191,23 @@ export async function fetchLastTransactionId(db: ExpoSQLiteDatabase): Promise<nu
 export async function fetchLatestTransactions(lastMgsId: number) {
 	const latestTransactions = await SmsReader.getLatestMessages("Mpesa", lastMgsId) as Mpesa[]
 	return latestTransactions.map(transaction =>
-		parseMpesaMessage(transaction.id, transaction.body)
+		parseMpesaMessage(transaction.id, transaction.body, transaction.date)
 	)
 }
 
 export async function fetchDailyTransaction(date: string) {
 	const transactions = await SmsReader.getInboxFilteredByDate("Mpesa", date) as Mpesa[]
 	return transactions.map(transaction =>
-		parseMpesaMessage(transaction.id, transaction.body)
+		parseMpesaMessage(transaction.id, transaction.body, transaction.date)
 	)
 }
 
-export async function fetchMonthTransaction(month: string) {
-	const rawMessages = await SmsReader.getMonthlyTransactions("Mpesa", month) as Mpesa[]
-	return rawMessages.map(msg =>
-		parseMpesaMessage(msg.id, msg.body)
-	)
+export async function fetchMonthTransaction(db: ExpoSQLiteDatabase,month: string) {
+	return await db
+		.select()
+		.from(mpesaMessages)
+		.orderBy(desc(mpesaMessages.id))
+		.where(sql`${mpesaMessages.parsedDate} LIKE ${month + '%'}`) as MpesaParced[]
 }
 
 export function groupDatesByWeek(dates: string[]) {
@@ -245,7 +258,7 @@ export async function syncDatabase(db: ExpoSQLiteDatabase) {
 		const lastId = await fetchLastTransactionId(db)
 		const transactions = await fetchLatestTransactions(lastId)
 
-		// console.log("New Transactions: ", transactions)
+		console.log("New Transactions: ", transactions.length)
 
 		await db.transaction(async (tx) => {
 			for (const transaction of transactions) { // @ts-ignore

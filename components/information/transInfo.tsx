@@ -1,12 +1,13 @@
+import useDialogContext from '@/contexts/DialogContext'
+import { useAnimations } from '@/contexts/useAnimations'
+import useReduceMotion from '@/hooks/useReduceMotion'
 import { MpesaParced } from '@/interface/mpesa'
+import FontAwesome6 from '@expo/vector-icons/FontAwesome6'
+import moment from 'moment'
 import React from 'react'
 import { Pressable, View } from 'react-native'
 import { Divider, Icon, Text, useTheme } from 'react-native-paper'
 import Animated, { FadeInLeft, FadeOutRight } from 'react-native-reanimated'
-
-import useDialogContext from '@/contexts/DialogContext'
-import FontAwesome6 from '@expo/vector-icons/FontAwesome6'
-import moment from 'moment'
 import LightText from '../text/lightText'
 
 
@@ -33,6 +34,13 @@ export default function TransInfo({ item, index, length }: TransInfoProps) {
 		return moment(timeString, "DD/MM/YY [at] h:mm A").fromNow();
 	}
 
+
+	// Animation Preferences
+	const reduceMotion = useReduceMotion()
+	const { enabled: userAnimationsEnabled } = useAnimations()
+	const animationEnabled = userAnimationsEnabled && !reduceMotion
+
+
 	return (
 		<>
 			{
@@ -53,8 +61,8 @@ export default function TransInfo({ item, index, length }: TransInfoProps) {
 							: 'rounded-md'
 					}`}
 
-				entering={FadeInLeft.duration(500).delay(index * 100)}
-				exiting={FadeOutRight.duration(500).delay(index * 80)}
+				// entering={animationEnabled ? FadeInLeft.duration(500).delay(index * 100) : undefined}
+				// exiting={animationEnabled ? FadeOutRight.duration(500).delay(index * 80) : undefined}
 				style={{
 					backgroundColor: theme.colors.elevation.level1
 				}}
@@ -62,7 +70,7 @@ export default function TransInfo({ item, index, length }: TransInfoProps) {
 					title: "Transaction Message",
 					message: item.message!,
 					actions: [{
-						dialogText: "OK",
+						dialogText: "Cancel",
 						action: () => { }
 					}]
 				})}
