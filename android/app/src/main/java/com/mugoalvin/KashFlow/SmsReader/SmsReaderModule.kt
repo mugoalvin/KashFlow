@@ -7,6 +7,7 @@ import com.facebook.react.bridge.ReactMethod
 import com.facebook.react.bridge.Promise
 import java.text.SimpleDateFormat
 import java.util.Locale
+import java.util.Date
 import androidx.core.net.toUri
 import java.util.Calendar
 
@@ -20,6 +21,7 @@ class SmsReaderModule(private val reactContext: ReactApplicationContext): ReactC
         try {
             val smsUri = "content://sms/inbox".toUri();
             val resolver: ContentResolver = reactContext.contentResolver
+            val readableFormat = SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault())
 
             val cursor: Cursor? = resolver.query(
                 smsUri,
@@ -39,11 +41,14 @@ class SmsReaderModule(private val reactContext: ReactApplicationContext): ReactC
                 val dateIdx = it.getColumnIndex("date")
 
                 while (it.moveToNext()) {
+                    val timestamp = it.getLong(dateIdx)
+                    val readableDate = readableFormat.format(Date(timestamp))
+
                     val msg = WritableNativeMap()
                     msg.putString("id", it.getString(idIdx))
                     msg.putString("address", it.getString(addressIdx))
                     msg.putString("body", it.getString(bodyIdx))
-                    msg.putString("date", it.getString(dateIdx))
+                    msg.putString("date", readableDate)
                     messages.pushMap(msg)
                     count++
                 }
@@ -61,6 +66,7 @@ class SmsReaderModule(private val reactContext: ReactApplicationContext): ReactC
         try {
             val smsUri = "content://sms/inbox".toUri()
             val resolver: ContentResolver = reactContext.contentResolver
+            val readableFormat = SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault())
 
             val cursor: Cursor? = resolver.query(
                 smsUri,
@@ -80,11 +86,14 @@ class SmsReaderModule(private val reactContext: ReactApplicationContext): ReactC
                 val dateIdx = it.getColumnIndex("date")
 
                 while (it.moveToNext() && count < limit) {
+                    val timestamp = it.getLong(dateIdx)
+                    val readableDate = readableFormat.format(Date(timestamp))
+
                     val msg = WritableNativeMap()
                     msg.putString("id", it.getString(idIdx))
                     msg.putString("address", it.getString(addressIdx))
                     msg.putString("body", it.getString(bodyIdx))
-                    msg.putString("date", it.getString(dateIdx))
+                    msg.putString("date", readableDate)
                     messages.pushMap(msg)
                     count++
                 }
@@ -107,6 +116,7 @@ class SmsReaderModule(private val reactContext: ReactApplicationContext): ReactC
             val targetDate = sdf.parse(date)
             val startTime = targetDate?.time ?: 0L
             val endTime = startTime + (24 * 60 * 60 * 1000) // one day later
+            val readableFormat = SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault())
 
             val cursor: Cursor? = resolver.query(
                 smsUri,
@@ -125,11 +135,14 @@ class SmsReaderModule(private val reactContext: ReactApplicationContext): ReactC
                 val dateIdx = it.getColumnIndex("date")
 
                 while (it.moveToNext()) {
+                    val timestamp = it.getLong(dateIdx)
+                    val readableDate = readableFormat.format(Date(timestamp))
+
                     val msg = WritableNativeMap()
                     msg.putString("id", it.getString(idIdx))
                     msg.putString("address", it.getString(addressIdx))
                     msg.putString("body", it.getString(bodyIdx))
-                    msg.putString("date", it.getString(dateIdx))
+                    msg.putString("date", readableDate)
                     messages.pushMap(msg)
                 }
             }
@@ -147,6 +160,7 @@ class SmsReaderModule(private val reactContext: ReactApplicationContext): ReactC
             val resolver: ContentResolver = reactContext.contentResolver
             val sdf = SimpleDateFormat("yyyy-MM", Locale.getDefault())
             val parsedMonth = sdf.parse(month)
+            val readableFormat = SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault())
 
             if (parsedMonth == null) {
                 promise.reject("INVALID_MONTH", "Invalid month format. Use yyyy-MM (e.g. 2025-10)")
@@ -185,11 +199,14 @@ class SmsReaderModule(private val reactContext: ReactApplicationContext): ReactC
                 val dateIdx = it.getColumnIndex("date")
 
                 while(it.moveToNext()) {
+                    val timestamp = it.getLong(dateIdx)
+                    val readableDate = readableFormat.format(Date(timestamp))
+
                     val msg = WritableNativeMap()
                     msg.putString("id", it.getString(idIdx))
                     msg.putString("address", it.getString(addressIdx))
                     msg.putString("body", it.getString(bodyIdx))
-                    msg.putString("date", it.getString(dateIdx))
+                    msg.putString("date", readableDate)
                     messages.pushMap(msg)
                 }
             }

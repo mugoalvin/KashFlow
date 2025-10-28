@@ -8,7 +8,6 @@ export const mpesaMessages = sqliteTable('mpesaMessages', {
 	number: integer('number'),
 	dueDate: text('dueDate'),
 	message: text('message'),
-	rawTime: text('rawTime'),
 	parsedDate: text('parsedDate'),
 	parsedTime: text('parsedTime'),
 	account: text('account'),
