@@ -1,5 +1,5 @@
 import Body from "@/components/views/body";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 
 import MonthlyTransactionInfo from "@/components/information/monthlyTransactionInfo";
 import { MpesaParced } from '@/interface/mpesa';
@@ -57,7 +57,7 @@ export default function Transactions() {
 				}
 			</Tab>
 
-			<TabView value={activeIndex} onChange={setActiveIndex} animationType="spring">
+			<TabView value={activeIndex} onChange={setActiveIndex} animationType="spring" disableSwipe={true}>
 				{
 					months.map((month, idx) => (
 						<TabView.Item

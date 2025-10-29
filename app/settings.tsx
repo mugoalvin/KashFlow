@@ -1,22 +1,26 @@
 import Body from "@/components/views/body";
-import { sqliteDB } from "@/db/config";
-import { mpesaMessages } from "@/db/sqlite";
-import { Button as RN_Button, StatusBar } from "react-native";
+import useThemeContext from "@/contexts/ThemeContext";
+import { StatusBar } from "react-native";
+import { Button } from "react-native-paper";
 
 export default function Settings() {
+	const { resetTheme, updateTheme } = useThemeContext()
 	const statusBarHeight = StatusBar.currentHeight
 
+
 	return ( // @ts-ignore
-		<Body style={{ paddingTop: statusBarHeight }}>
+		<Body style={{ paddingTop: statusBarHeight }} className="items-center justify-center">
+			<Button
+				onPress={resetTheme}
+			>
+				Reset
+			</Button>
 
-			<RN_Button title="react-native" onPress={() =>
-				sqliteDB.delete(mpesaMessages)
-					// fetchDailyTransaction("2025-10-10")
-					.then((data) => { console.log(data); console.log("Done") })
-					.catch(console.error)
-					.finally(console.log)
-			} />
-
+			<Button
+				onPress={() => updateTheme("#bada55")}
+			>
+				Update
+			</Button>
 		</Body>
 	)
 }

@@ -1,42 +1,63 @@
-import TransInfo from "@/components/information/transInfo";
 import Body from "@/components/views/body";
+import { getNavData, removeNavData } from '@/utils/navigationCache';
 import { useLocalSearchParams, useNavigation } from "expo-router";
-import moment from "moment";
-import { useLayoutEffect } from "react";
-import { FlatList, View } from "react-native";
-import { Text, useTheme } from "react-native-paper";
+import { useEffect, useLayoutEffect, useState } from "react";
+import { ActivityIndicator, Text, useTheme } from "react-native-paper";
 
 export default function AnalysisMore() {
 	const theme = useTheme()
 	const navigation = useNavigation()
-	const { date, transactions } = useLocalSearchParams()
-	const daysTransactions = JSON.parse(transactions as string)
+	const { id, title } = useLocalSearchParams()
+	const [loading, setLoading] = useState(true)
+	const [data, setData] = useState<any>(null)
 
 	useLayoutEffect(() => {
-		navigation.setOptions({
-			title: moment(date).format('ddd')
-		})
-	}, [])
+		navigation.setOptions({ title: "Weekly Transactions" })
+	}, [navigation])
+
+	useEffect(() => {
+		let mounted = true
+			; (async () => {
+				try {
+					if (id) {
+						const maybe = getNavData(id as string)
+						if (maybe) {
+							if (!mounted) return
+							setData(maybe)
+							removeNavData(id as string)
+						}
+					} else if (title) {
+						// fallback: older navigation may have passed the whole payload as `title`
+						try {
+							const parsed = JSON.parse(title as string)
+							if (mounted) setData(parsed)
+						} catch {
+							// ignore parse error
+						}
+					}
+				} finally {
+					if (mounted) setLoading(false)
+				}
+			})()
+		return () => {
+			mounted = false
+		}
+	}, [id, title])
+
+	useEffect(() => {
+		console.log(data)
+	}, [data])
+
+	if (loading) {
+		return (
+			<ActivityIndicator animating size={48} color={theme.colors.primary} />
+		)
+	}
+
 
 	return (
-		<Body >
-
-			<FlatList
-				data={daysTransactions}
-				renderItem={({ item, index }) => (
-					<TransInfo
-						item={item}
-						index={index }
-						length={daysTransactions.length }
-					/>
-				)}
-				ListEmptyComponent={
-					<View className="h-24 items-center justify-center">
-						<Text style={{ color: theme.colors.onPrimaryContainer }}>No Transactions Made This Day</Text>
-					</View>
-				}
-			/>
-
+		<Body>
+			<Text>{Array.isArray(data) ? `Loaded ${data.length} day(s)` : 'Data loaded'}</Text>
 		</Body>
 	)
 }
