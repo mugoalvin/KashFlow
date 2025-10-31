@@ -122,6 +122,7 @@ export function parseMpesaMessage(messageID: string, message: string, date: stri
 	parsedDate = parseDate2(date)?.date
 	parsedTime = parseDate2(date)?.time
 
+	console.log({ id, type, amount, account, counterparty, dueDate, fee, limit, message, number, outstanding, paid, balance, transactionCost, parsedDate, parsedTime })
 	return { id, type, amount, account, counterparty, dueDate, fee, limit, message, number, outstanding, paid, balance, transactionCost, parsedDate, parsedTime }
 }
 
@@ -168,14 +169,22 @@ export function calculateMpesaBalance(parsedMessages: any[]): { balance: number;
 
 
 
-export function getListOfBalances(parsedMessages: any[]): number[] {
-	return parsedMessages.map(msg =>
-		msg.balance && msg.balance !== 0 ?
+export function getListOfBalances(parsedMessages: any[]): { day: string, balance: number }[] {
+	return parsedMessages.map(msg => {
+		const balance = msg.balance && msg.balance !== 0 ?
 			msg.balance :
 			msg.outstanding && msg.outstanding * -1
+		
+		const day = moment(msg.parsedDate).format('ddd')
 
-	).filter(value => value)
-}
+		return {
+			day,
+			balance
+		}
+	}
+
+	).filter(value => value.balance)
+ }
 
 
 export async function fetchLastTransactionId(db: ExpoSQLiteDatabase): Promise<number> {

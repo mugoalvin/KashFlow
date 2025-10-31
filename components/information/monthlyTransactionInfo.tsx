@@ -89,21 +89,6 @@ export default function MonthlyTransactionInfo({ month, initialData = null, onDa
 	}
 
 	return (
-		// <SectionList
-		// 	className="flex-1 my-4 w-[100%]"
-		// 	sections={sections}
-		// 	keyExtractor={(item) => item.date}
-		// 	renderSectionHeader={renderSectionHeader}
-		// 	renderItem={renderItem}
-		// 	// initialNumToRender={10}
-		// 	// maxToRenderPerBatch={12}
-		// 	// windowSize={11}
-		// 	// removeClippedSubviews={true}
-		// 	showsVerticalScrollIndicator={false}
-		// 	ListEmptyComponent={renderEmptyComponent}
-		// />
-
-
 		<FlatList
 			className="flex-1 my-4 w-[100%]"
 			data={sections}
@@ -112,7 +97,7 @@ export default function MonthlyTransactionInfo({ month, initialData = null, onDa
 					<WeeklyTransactionInfo item={item} />
 				)
 			}}
-			initialNumToRender={1}
+			initialNumToRender={2}
 		/>
 	)
 }
