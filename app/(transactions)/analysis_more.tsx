@@ -1,39 +1,32 @@
+import DailyTransactionInfo from "@/components/information/dailyTransactionInfo";
 import Body from "@/components/views/body";
 import { getNavData, removeNavData } from '@/utils/navigationCache';
 import { useLocalSearchParams, useNavigation } from "expo-router";
 import { useEffect, useLayoutEffect, useState } from "react";
-import { ActivityIndicator, Text, useTheme } from "react-native-paper";
+import { FlatList } from "react-native";
+import { ActivityIndicator, useTheme } from "react-native-paper";
 
 export default function AnalysisMore() {
 	const theme = useTheme()
 	const navigation = useNavigation()
-	const { id, title } = useLocalSearchParams()
+	const { id, dateRange } = useLocalSearchParams()
 	const [loading, setLoading] = useState(true)
 	const [data, setData] = useState<any>(null)
 
+
 	useLayoutEffect(() => {
-		navigation.setOptions({ title: "Weekly Transactions" })
-	}, [navigation])
+		navigation.setOptions({ title: dateRange })
+	}, [navigation, dateRange])
 
 	useEffect(() => {
 		let mounted = true
 			; (async () => {
 				try {
-					if (id) {
-						const maybe = getNavData(id as string)
-						if (maybe) {
-							if (!mounted) return
-							setData(maybe)
-							removeNavData(id as string)
-						}
-					} else if (title) {
-						// fallback: older navigation may have passed the whole payload as `title`
-						try {
-							const parsed = JSON.parse(title as string)
-							if (mounted) setData(parsed)
-						} catch {
-							// ignore parse error
-						}
+					const maybe = getNavData(id as string)
+					if (maybe) {
+						if (!mounted) return
+						setData(maybe)
+						removeNavData(id as string)
 					}
 				} finally {
 					if (mounted) setLoading(false)
@@ -42,22 +35,26 @@ export default function AnalysisMore() {
 		return () => {
 			mounted = false
 		}
-	}, [id, title])
+	}, [id])
 
-	useEffect(() => {
-		console.log(data)
-	}, [data])
 
 	if (loading) {
 		return (
-			<ActivityIndicator animating size={48} color={theme.colors.primary} />
+			<Body className="flex-1 items-center justify-center">
+				<ActivityIndicator animating />
+			</Body>
 		)
 	}
 
 
 	return (
 		<Body>
-			<Text>{Array.isArray(data) ? `Loaded ${data.length} day(s)` : 'Data loaded'}</Text>
+			<FlatList
+				data={data}
+				renderItem={({ item }) =>
+					<DailyTransactionInfo date={item.date} transactions={item.transactions} length={item.transactions.length} />
+				}
+			/>
 		</Body>
 	)
 }

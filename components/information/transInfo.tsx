@@ -61,7 +61,7 @@ export default function TransInfo({ item, index, length }: TransInfoProps) {
 							: 'rounded-md'
 					}`}
 
-				// entering={animationEnabled ? FadeInLeft.duration(500).delay(index * 100) : undefined}
+				entering={animationEnabled ? FadeInLeft.duration(500).delay(index * 100) : undefined}
 				// exiting={animationEnabled ? FadeOutRight.duration(500).delay(index * 80) : undefined}
 				style={{
 					backgroundColor: theme.colors.elevation.level1
@@ -77,7 +77,8 @@ export default function TransInfo({ item, index, length }: TransInfoProps) {
 			>
 				<View>
 					<Text>{index + 1}. {counterParty}</Text>
-					<LightText className="ms-4 text-sm" text={`${transactionType} : ${getTimeFromTransaction(item.rawTime!)}`} />
+					{/* <LightText className="ms-4 text-sm" text={`${transactionType} : ${getTimeFromTransaction(item.rawTime!)}`} /> */}
+					<LightText className="ms-4 text-sm" text={`${transactionType} : ${item.parsedTime}`} />
 				</View>
 				<View className='flex-row justify-between min-w-24'>
 					<Icon source={() =>

@@ -21,7 +21,7 @@ export default function DailyTransactionInfo({ date, transactions, length }: Dai
 			<View className="flex-row items-baseline justify-between">
 				<LightText
 					className="mb-2"
-					text={`${moment(date).format("dddd")} - ${date}`}
+					text={moment(date).format("ddd - Do MMM YY")}
 				/>
 				<IconButton
 					icon={() => <Ionicons name="chevron-forward" size={16} color={theme.colors.inversePrimary} />}
