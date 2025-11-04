@@ -1,6 +1,6 @@
 import { Dimensions, View } from "react-native";
 import { LineChartBicolor } from "react-native-gifted-charts";
-import { useTheme } from "react-native-paper";
+import { Text, useTheme } from "react-native-paper";
 
 interface LineGraphProps {
 	data: {
@@ -14,56 +14,93 @@ export default function LineGraph({ data }: LineGraphProps) {
 	const theme = useTheme()
 	// const chartWidth = Dimensions.get('window').width - 65
 	const chartWidth = Dimensions.get('window').width - 40
-	const dataPointSpacing = chartWidth / (data.length) - 1
+	const dataPointSpacing = chartWidth / (data.length) - .5
+
+
+	if (data.every(d => d.value < 0)) {
+		return (
+			<Text>Render Too expensive</Text>
+		)
+	}
+
+	if (data.length <= 1 || data === null || data === undefined) {
+		return (
+			<View className="flex items-center justify-center py-5 w-full rounded-2xl" style={{ backgroundColor: theme.colors.elevation.level1 }}>
+				<Text>No Data Trends</Text>
+			</View>
+		)
+	}
 
 	return (
-		<View className="flex items-center justify-center py-5 w-full rounded-2xl" style={{ backgroundColor: theme.colors.elevation.level1 }}>
-			<LineChartBicolor
-				areaChart
+		<>
+			<Text>
+				Transactions: {data.length}
+			</Text>
+			<View className="flex items-center justify-center py-5 w-full rounded-2xl" style={{ backgroundColor: theme.colors.elevation.level1 }}>
+				<LineChartBicolor
+					areaChart
+					data={data}
 
-				// isAnimated
-				width={chartWidth}
-				spacing={dataPointSpacing}
-				// spacing={20}
-
-				initialSpacing={10}
-
-				hideRules
-
-				data={data}
-				dataPointsColor={theme.colors.primaryContainer}
-				yAxisTextStyle={{
-					color: theme.colors.onSecondaryContainer,
-					fontSize: 10,
-				}}
-				xAxisLabelTextStyle={{
-					color: theme.colors.onSecondaryContainer,
-					fontSize: 10,
-				}}
-				yAxisColor={theme.colors.tertiary}
-				xAxisColor={theme.colors.tertiary}
-
-				thickness={2}
-				hideDataPoints
-
-				textColor="yellow"
-				textShiftY={-8}
-				textShiftX={-10}
-				textFontSize={8}
-
-				// @ts-ignore
-				color={theme.colors.success}
-				colorNegative={theme.colors.error}
+					// Basic Chart Styling
+					width={chartWidth}
+					initialSpacing={5}
+					spacing={dataPointSpacing}
 
 
-				// @ts-ignore
-				startFillColor={theme.colors.successContainer}
-				endFillColor={theme.colors.elevation.level1}
+					// Rules
+					dashWidth={10}
+					dashGap={15}
+					rulesColor={theme.colors.secondaryContainer}
 
-				startFillColorNegative={theme.colors.errorContainer}
-				endFillColorNegative={theme.colors.elevation.level1}
+					// Animations
+					isAnimated
+					animationDuration={1000}
+					onDataChangeAnimationDuration={300}
 
-			/>
-		</View>
+
+					// Line Colors
+					dataPointsColor={theme.colors.primaryContainer}
+					thickness={2}
+
+
+					// Data Points
+					hideDataPoints
+					textColor="yellow"
+					textShiftY={-8}
+					textShiftX={-10}
+					textFontSize={8}
+
+
+					// Area Colors
+					// @ts-ignore
+					color={theme.colors.success}
+					colorNegative={theme.colors.error}
+					// @ts-ignore
+					startFillColor={theme.colors.successContainer}
+					endFillColor={theme.colors.elevation.level1}
+
+					startFillColorNegative={theme.colors.errorContainer}
+					endFillColorNegative={theme.colors.elevation.level1}
+
+					// Axis's Configurations
+					yAxisTextStyle={{
+						color: theme.colors.onSecondaryContainer,
+						fontSize: 10,
+					}}
+					yAxisColor={theme.colors.tertiary}
+					noOfSections={5}
+
+					maxValue={
+						Math.ceil(Math.max(...data.map(d => d.value)) / 500) * 500
+					}
+
+					xAxisLabelTextStyle={{
+						color: theme.colors.onSecondaryContainer,
+						fontSize: 10,
+					}}
+					xAxisColor={theme.colors.tertiary}
+				/>
+			</View>
+		</>
 	)
 }

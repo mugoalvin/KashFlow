@@ -8,6 +8,7 @@ import { FlatList, View } from "react-native";
 import { IconButton, Text, useTheme } from "react-native-paper";
 import TransInfo from "../information/transInfo";
 import Title from "../text/title";
+import { getTodaysDate } from "@/utils/functions";
 
 
 export default function TodaysTransaction() {
@@ -15,15 +16,7 @@ export default function TodaysTransaction() {
 	const [todaysTransactionParsedMessages, setTodaysTransactionParsedMessages] = useState<MpesaParced[]>([])
 
 	async function getMessages() {
-		const date = new Date()
-		const currentDate =
-			date.getFullYear().toString()
-				.concat("-")
-				.concat((date.getMonth() + 1).toString())
-				.concat("-")
-				.concat((date.getDate()).toString())
-
-		const todaysMessages = await sqliteDB.select().from(mpesaMessages).where(eq(mpesaMessages.parsedDate, currentDate)).orderBy(desc(mpesaMessages.id)) as MpesaParced[]
+		const todaysMessages = await sqliteDB.select().from(mpesaMessages).where(eq(mpesaMessages.parsedDate, getTodaysDate())).orderBy(desc(mpesaMessages.id)) as MpesaParced[]
 		setTodaysTransactionParsedMessages(todaysMessages)
 	}
 

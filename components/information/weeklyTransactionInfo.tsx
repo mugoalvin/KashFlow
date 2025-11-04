@@ -1,5 +1,5 @@
 import { MpesaParced } from "@/interface/mpesa";
-import { getListOfBalances } from "@/utils/functions";
+import { getListOfBalances, getTodaysDate } from "@/utils/functions";
 import { storeNavData } from '@/utils/navigationCache';
 import { Ionicons } from "@expo/vector-icons";
 import { router } from "expo-router";
@@ -20,7 +20,10 @@ interface WeeklyTransactionInfoProps {
 
 export default function WeeklyTransactionInfo({ item }: WeeklyTransactionInfoProps) {
 	const theme = useTheme()
-	const dateRange = `${formatDate(item.data.at(-1)?.date as string)} - ${formatDate(item.data.at(0)?.date as string)}`
+	const firstItemDataDate = item.data[0]?.date
+	const lastItemDataDate = item.data[item.data.length - 1]?.date
+
+	const dateRange = `${formatDate(lastItemDataDate as string)} - ${ getTodaysDate() === firstItemDataDate ? "Today" : formatDate(firstItemDataDate as string)}`
 
 	function formatDate(date: string): string {
 		return moment(date).format("ddd, Do")
@@ -39,9 +42,7 @@ export default function WeeklyTransactionInfo({ item }: WeeklyTransactionInfoPro
 					// label: balanceObj.day
 				}
 			})
-	
-		console.log(balances)
-	
+
 
 	return (
 		<>
@@ -49,7 +50,7 @@ export default function WeeklyTransactionInfo({ item }: WeeklyTransactionInfoPro
 				<View className="flex-row items-center justify-between">
 					<View className="flex-row items-center gap-5">
 						<Text className="p-2 rounded-lg" style={{ backgroundColor: theme.colors.elevation.level1 }}>
-							{ dateRange }
+							{dateRange}
 						</Text>
 						<Text>{item.data.length} day(s)</Text>
 					</View>
@@ -64,9 +65,7 @@ export default function WeeklyTransactionInfo({ item }: WeeklyTransactionInfoPro
 						}}
 					/>
 				</View>
-				<LineGraph
-					data={balances}
-				/>
+				<LineGraph data={balances} />
 			</View>
 			<Divider />
 		</>

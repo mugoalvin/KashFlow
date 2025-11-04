@@ -26,16 +26,16 @@ const parseDate = (raw: string | undefined) => {
 }
 
 function parseDate2(inputString: string) {
-  const dateObj = new Date(inputString);
+	const dateObj = new Date(inputString);
 
-  if (isNaN(dateObj.getTime())) {
-    throw new Error("Invalid date format");
-  }
+	if (isNaN(dateObj.getTime())) {
+		throw new Error("Invalid date format");
+	}
 
-  const date = dateObj.toISOString().split("T")[0];
-  const time = dateObj.toLocaleTimeString([], { hour: "numeric", minute: "2-digit" });
+	const date = dateObj.toISOString().split("T")[0];
+	const time = dateObj.toLocaleTimeString([], { hour: "numeric", minute: "2-digit" });
 
-  return { date, time };
+	return { date, time };
 }
 
 
@@ -122,7 +122,6 @@ export function parseMpesaMessage(messageID: string, message: string, date: stri
 	parsedDate = parseDate2(date)?.date
 	parsedTime = parseDate2(date)?.time
 
-	console.log({ id, type, amount, account, counterparty, dueDate, fee, limit, message, number, outstanding, paid, balance, transactionCost, parsedDate, parsedTime })
 	return { id, type, amount, account, counterparty, dueDate, fee, limit, message, number, outstanding, paid, balance, transactionCost, parsedDate, parsedTime }
 }
 
@@ -174,7 +173,7 @@ export function getListOfBalances(parsedMessages: any[]): { day: string, balance
 		const balance = msg.balance && msg.balance !== 0 ?
 			msg.balance :
 			msg.outstanding && msg.outstanding * -1
-		
+
 		const day = moment(msg.parsedDate).format('ddd')
 
 		return {
@@ -184,7 +183,7 @@ export function getListOfBalances(parsedMessages: any[]): { day: string, balance
 	}
 
 	).filter(value => value.balance)
- }
+}
 
 
 export async function fetchLastTransactionId(db: ExpoSQLiteDatabase): Promise<number> {
@@ -211,7 +210,7 @@ export async function fetchDailyTransaction(date: string) {
 	)
 }
 
-export async function fetchMonthTransaction(db: ExpoSQLiteDatabase,month: string) {
+export async function fetchMonthTransaction(db: ExpoSQLiteDatabase, month: string) {
 	return await db
 		.select()
 		.from(mpesaMessages)
@@ -278,4 +277,24 @@ export async function syncDatabase(db: ExpoSQLiteDatabase) {
 	catch (e: any) {
 		console.error("Syncronization Failure: ", e.message)
 	}
+}
+
+
+export function getYearsFrom(year: number): number[] {
+	const currentYear = new Date().getFullYear()
+	const years = []
+	for (let y = year; y <= currentYear; y++) {
+		years.push(y)
+	}
+	return years
+}
+
+
+export function getTodaysDate(): string {
+	const date = new Date()
+	return date.getFullYear().toString()
+			.concat("-")
+			.concat((date.getMonth() + 1).toString().padStart(2, '0'))
+			.concat("-")
+			.concat((date.getDate()).toString().padStart(2, '0'))
 }

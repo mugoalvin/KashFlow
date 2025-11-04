@@ -1,8 +1,13 @@
 import Body from "@/components/views/body";
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 
 import MonthlyTransactionInfo from "@/components/information/monthlyTransactionInfo";
+import ChipCustom from "@/components/ui/chip";
+import ChipView from "@/components/views/chipView";
+import { sqliteDB } from "@/db/config";
+import { mpesaMessages } from "@/db/sqlite";
 import { MpesaParced } from '@/interface/mpesa';
+import { getYearsFrom } from "@/utils/functions";
 import { months } from "@/utils/variable";
 import { Tab, TabView } from '@rneui/themed';
 import { useTheme } from "react-native-paper";
@@ -19,15 +24,49 @@ const buttons = [
 
 export default function Transactions() {
 	const theme = useTheme()
-	const currentMonthIndex = new Date().getMonth()
+	const currentTime = new Date()
+	const currentMonthIndex = currentTime.getMonth()
+	const currentYear = currentTime.getFullYear()
 	const [activeIndex, setActiveIndex] = useState(currentMonthIndex)
 
-	// simple in-memory cache for fetched months so switching tabs doesn't refetch
 	const [monthCache, setMonthCache] = useState<Record<string, MpesaParced[]>>({})
+	const [year, setYear] = useState<number>(currentYear)
 
+	// const [chipYears, setChipYears] = useState<number[]>([])
+	const chipYears = useRef<number[]>([])
+	const [firstMonth, setFirstMonth] = useState<number>(1)
+	const [firstYear, setFirstYear] = useState<number>(1)
+
+
+	async function getFirstTransactionInfo() {
+		const val = await sqliteDB
+			.select({ date: mpesaMessages.parsedDate })
+			.from(mpesaMessages)
+			.limit(1)
+
+		const [year, month] = (val[0].date as string)?.split('-')
+
+		setFirstYear(Number(year))
+		// setChipYears(getYearsFrom(Number(year)))
+		chipYears.current = getYearsFrom(Number(year))
+		setFirstMonth(Number(month))
+	}
+
+
+	useEffect(() => {
+		getFirstTransactionInfo()
+	}, [])
 
 	return (
 		<Body>
+			<ChipView>
+				{
+					chipYears.current.map(chipYear =>
+						<ChipCustom key={chipYear} selected={year === chipYear} chipText={chipYear.toString()} onPress={() => setYear(chipYear)} />
+					)
+				}
+			</ChipView>
+
 			<Tab
 				value={activeIndex}
 				onChange={setActiveIndex}
@@ -40,7 +79,7 @@ export default function Transactions() {
 					months.map((month, index) => (
 						<Tab.Item
 							key={month.identifier}
-							disabled={index > currentMonthIndex}
+							disabled={index > currentMonthIndex || (year === firstYear && index + 1 < firstMonth)}
 							title={month.title}
 							titleStyle={{
 								fontSize: theme.fonts.bodySmall.fontSize,
@@ -57,7 +96,7 @@ export default function Transactions() {
 				}
 			</Tab>
 
-			<TabView value={activeIndex} onChange={setActiveIndex} animationType="spring" disableSwipe={true}>
+			<TabView value={activeIndex} onChange={setActiveIndex} animationType="spring" disableSwipe={false}>
 				{
 					months.map((month, idx) => (
 						<TabView.Item
@@ -66,11 +105,12 @@ export default function Transactions() {
 						>
 							{activeIndex === idx ? (
 								<MonthlyTransactionInfo
-									month={`2025-${(idx + 1).toString().padStart(2, '0')}`}
-									initialData={monthCache[`2025-${(idx + 1).toString().padStart(2, '0')}`] ?? null}
-									onDataLoaded={(data) => setMonthCache(prev => ({ ...prev, [`2025-${(idx + 1).toString().padStart(2, '0')}`]: data }))}
+									month={`${year}-${(idx + 1).toString().padStart(2, '0')}`}
+									initialData={monthCache[`${year}-${(idx + 1).toString().padStart(2, '0')}`] ?? null}
+									onDataLoaded={(data) => setMonthCache(prev => ({ ...prev, [`${year}-${(idx + 1).toString().padStart(2, '0')}`]: data }))}
 								/>
-							) : null}
+							) : null
+							}
 						</TabView.Item>
 					))
 				}

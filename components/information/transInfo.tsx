@@ -7,7 +7,7 @@ import moment from 'moment'
 import React from 'react'
 import { Pressable, View } from 'react-native'
 import { Divider, Icon, Text, useTheme } from 'react-native-paper'
-import Animated, { FadeInLeft, FadeOutRight } from 'react-native-reanimated'
+import Animated, { FadeInLeft } from 'react-native-reanimated'
 import LightText from '../text/lightText'
 
 

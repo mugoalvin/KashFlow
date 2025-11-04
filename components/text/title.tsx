@@ -8,11 +8,11 @@ export default function Title({ color, text, leadingIcon, trailingIcon }: MyText
 
 	return (
 		<View className='flex-row items-center justify-between'>
-			<View className='flex-row gap-3 items-center'>
+			<View className='flex-row gap-3 items-baseline'>
 				{leadingIcon}
 				<Text
 					style={{
-						fontSize: theme.fonts.headlineSmall.fontSize,
+						fontSize: theme.fonts.labelLarge.fontSize,
 						color: color || theme.colors.onSurfaceDisabled
 					}}>
 					{text || "Title Here"}
