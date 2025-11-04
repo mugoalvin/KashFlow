@@ -20,11 +20,17 @@ export default function Index() {
 
 	const { success, error } = useMigrations(sqliteDB, migrations)
 
+	function syncDB_getBalance() {
+			syncDatabase(sqliteDB)
+				.then(() => {
+					getBalance(sqliteDB)
+						.then(setBalance)
+				})
+	}
+	
 	useEffect(() => {
 		if (success) {
-			syncDatabase(sqliteDB)
-			getBalance(sqliteDB)
-				.then(setBalance)
+			syncDB_getBalance()
 		}
 	}, [success, error])
 
@@ -35,19 +41,12 @@ export default function Index() {
 				<>
 					<IconButton
 						icon={({ color, size }) => <Ionicons name="refresh-outline" color={color} size={size - 5} />}
-						onPress={() => syncDatabase(sqliteDB)}
+						onPress={() => syncDB_getBalance()}
 					/>
 					<IconButton
 						icon={({ color, size }) => <Ionicons name="arrow-redo-outline" color={color} size={size - 5} />}
 						onPress={() => router.push('/(home)/page')}
 					/>
-					{/* <IconButton
-						icon={({ color, size }) => <Ionicons name="search" color={color} size={size - 5} />}
-						onPress={async () => {
-							const bal = await getBalance(sqliteDB)
-							setBalance(bal)
-						}}
-					/> */}
 				</>
 			)
 		})

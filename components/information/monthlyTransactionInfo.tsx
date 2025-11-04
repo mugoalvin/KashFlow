@@ -6,6 +6,7 @@ import { useEffect, useMemo, useState } from "react";
 import { FlatList, View } from "react-native";
 import { ActivityIndicator } from "react-native-paper";
 import WeeklyTransactionInfo from "./weeklyTransactionInfo";
+import Animated, { FadeInDown } from "react-native-reanimated";
 
 interface MonthlyTransactionInfoProps {
 	month: string
@@ -17,15 +18,15 @@ interface MonthlyTransactionInfoProps {
 
 export default function MonthlyTransactionInfo({ month, initialData = null, onDataLoaded }: MonthlyTransactionInfoProps) {
 	const [monthlyData, setMonthlyData] = useState<MpesaParced[]>(initialData ?? [])
-	const [isLoading, setIsLoading] = useState(false)
+	const [isLoading, setIsLoading] = useState(true)
 	const { showSnackbar } = useSnackbarContext()
+
 
 	useEffect(() => {
 		// If parent passed cached data (even empty array), don't fetch again
 		if (initialData !== null) return
 
 		let mounted = true
-		setIsLoading(true)
 		fetchMonthTransaction(sqliteDB, month)
 			.then((data) => {
 				if (!mounted) return
@@ -61,6 +62,7 @@ export default function MonthlyTransactionInfo({ month, initialData = null, onDa
 
 		const weeks = groupDatesByWeek(allDates as string[])
 
+
 		return weeks
 			.reverse()
 			.map((weekDates, weekIndex) => {
@@ -92,9 +94,11 @@ export default function MonthlyTransactionInfo({ month, initialData = null, onDa
 		<FlatList
 			className="flex-1 my-4 w-[100%]"
 			data={sections}
-			renderItem={({ item }) => {
+			renderItem={({ item, index }) => {
 				return (
-					<WeeklyTransactionInfo item={item} />
+					<Animated.View entering={FadeInDown.duration(500).delay( (index+1) * 200 )}>
+						<WeeklyTransactionInfo item={item} />
+					</Animated.View>
 				)
 			}}
 			initialNumToRender={2}
