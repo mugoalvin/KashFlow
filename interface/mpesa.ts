@@ -14,10 +14,9 @@ export const typeMap: { [key: string]: MpesaTransactionType } = {
 
 
 export interface MpesaParced {
-	// id: string
 	id: number
-	type?: MpesaTransactionType
-	amount?: number
+	type: MpesaTransactionType
+	amount: number
 	account?: string
 	balance?: number
 	counterparty?: string
@@ -28,9 +27,10 @@ export interface MpesaParced {
 	number?: number
 	outstanding?: number
 	paid?: number
-	rawTime: string
 	parsedDate?: string
 	parsedTime?: string
+	purpose?: string
+	rawTime: string
 	transactionCost?: number
 }
 

@@ -1,5 +1,8 @@
 import { DropdownMenu, DropdownMenuContent, DropdownMenuGroup, DropdownMenuItem, DropdownMenuLabel, DropdownMenuSeparator, DropdownMenuShortcut, DropdownMenuSub, DropdownMenuSubContent, DropdownMenuSubTrigger, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
 import Body from "@/components/views/body";
+import { sqliteDB } from "@/db/config";
+import { mpesaMessages } from "@/db/sqlite";
+import { sql } from "drizzle-orm";
 import { StatusBar } from "react-native";
 import { Button, Text } from "react-native-paper";
 
@@ -27,7 +30,9 @@ export default function Settings() {
 				</DropdownMenuTrigger>
 				<DropdownMenuContent insets={contentInsets} sideOffset={2} className="w-56" align="start">
 					<DropdownMenuLabel>My Account</DropdownMenuLabel>
+
 					<DropdownMenuSeparator />
+
 					<DropdownMenuGroup>
 						<DropdownMenuItem>
 							<Text>Profile</Text>
@@ -46,7 +51,9 @@ export default function Settings() {
 							<DropdownMenuShortcut>⌘K</DropdownMenuShortcut>
 						</DropdownMenuItem>
 					</DropdownMenuGroup>
+
 					<DropdownMenuSeparator />
+
 					<DropdownMenuGroup>
 						<DropdownMenuItem>
 							<Text>Team</Text>
@@ -62,7 +69,9 @@ export default function Settings() {
 								<DropdownMenuItem>
 									<Text>Message</Text>
 								</DropdownMenuItem>
+
 								<DropdownMenuSeparator />
+
 								<DropdownMenuItem>
 									<Text>More...</Text>
 								</DropdownMenuItem>
@@ -73,7 +82,9 @@ export default function Settings() {
 							<DropdownMenuShortcut>⌘+T</DropdownMenuShortcut>
 						</DropdownMenuItem>
 					</DropdownMenuGroup>
+
 					<DropdownMenuSeparator />
+
 					<DropdownMenuItem>
 						<Text>GitHub</Text>
 					</DropdownMenuItem>
@@ -83,13 +94,32 @@ export default function Settings() {
 					<DropdownMenuItem disabled>
 						<Text>API</Text>
 					</DropdownMenuItem>
+
 					<DropdownMenuSeparator />
+
 					<DropdownMenuItem>
 						<Text>Log out</Text>
 						<DropdownMenuShortcut>⇧⌘Q</DropdownMenuShortcut>
 					</DropdownMenuItem>
 				</DropdownMenuContent>
 			</DropdownMenu>
+
+
+			{/* <Button
+				onPress={async () => {
+					const data = await sqliteDB
+						.selectDistinct({ name: mpesaMessages.counterparty })
+						.from(mpesaMessages)
+						.where(sql`${mpesaMessages.parsedDate} LIKE "2025-11%"`)
+
+					console.log(
+						data
+					)
+				}}
+			>
+				<Text>Get Data</Text>
+			</Button> */}
+
 		</Body>
 	)
 }

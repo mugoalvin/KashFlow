@@ -54,7 +54,8 @@ export default function ButtonGroup({ buttons }: ButtonGroupProps) {
 			const backgroundColor = interpolateColor(
 				bg.value,
 				[0, 1],
-				[theme.colors.elevation.level2, theme.colors.secondaryContainer]
+				// [theme.colors.elevation.level2, theme.colors.secondaryContainer]
+				[theme.colors.elevation.level5, theme.colors.secondaryContainer]
 			);
 			return {
 				backgroundColor,
