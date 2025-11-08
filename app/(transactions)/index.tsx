@@ -32,7 +32,6 @@ export default function Transactions() {
 	const [monthCache, setMonthCache] = useState<Record<string, MpesaParced[]>>({})
 	const [year, setYear] = useState<number>(currentYear)
 
-	// const [chipYears, setChipYears] = useState<number[]>([])
 	const chipYears = useRef<number[]>([])
 	const [firstMonth, setFirstMonth] = useState<number>(1)
 	const [firstYear, setFirstYear] = useState<number>(1)
@@ -47,7 +46,6 @@ export default function Transactions() {
 		const [year, month] = (val[0].date as string)?.split('-')
 
 		setFirstYear(Number(year))
-		// setChipYears(getYearsFrom(Number(year)))
 		chipYears.current = getYearsFrom(Number(year))
 		setFirstMonth(Number(month))
 	}

@@ -5,27 +5,12 @@ import { ExpoSQLiteDatabase } from "drizzle-orm/expo-sqlite";
 import moment from "moment";
 import { NativeModules } from 'react-native';
 import { extractAmount, extractFulizaDetails, extractPartialFulizaPay, extractPayFulizaDetails, extractReceiveDetails, extractSendDetails, extractWithdrawDetails } from "./extractDetails";
+import { TransactionSortMode } from "@/components/text/interface";
 
 const { SmsReader } = NativeModules
 
 
-const parseDate = (raw: string | undefined) => {
-	if (!raw) return;
-
-	const [d, m, yAndTime] = raw.split("/");
-	const [y, ...rest] = yAndTime.split(" at ");
-
-	const day = d.padStart(2, "0");
-	const month = m.padStart(2, "0");
-	const year = `20${y}`;
-
-	return {
-		date: `${year}-${month}-${day}`,
-		time: rest[0]
-	}
-}
-
-function parseDate2(inputString: string) {
+function parseDate(inputString: string) {
 	const dateObj = new Date(inputString);
 
 	if (isNaN(dateObj.getTime())) {
@@ -119,8 +104,8 @@ export function parseMpesaMessage(messageID: string, message: string, date: stri
 		extractWithdrawDetails(message)
 	}
 
-	parsedDate = parseDate2(date)?.date
-	parsedTime = parseDate2(date)?.time
+	parsedDate = parseDate(date)?.date
+	parsedTime = parseDate(date)?.time
 
 	return { id, type, amount, account, counterparty, dueDate, fee, limit, message, number, outstanding, paid, balance, transactionCost, parsedDate, parsedTime }
 }
@@ -293,8 +278,94 @@ export function getYearsFrom(year: number): number[] {
 export function getTodaysDate(): string {
 	const date = new Date()
 	return date.getFullYear().toString()
-			.concat("-")
-			.concat((date.getMonth() + 1).toString().padStart(2, '0'))
-			.concat("-")
-			.concat((date.getDate()).toString().padStart(2, '0'))
+		.concat("-")
+		.concat((date.getMonth() + 1).toString().padStart(2, '0'))
+		.concat("-")
+		.concat((date.getDate()).toString().padStart(2, '0'))
+}
+
+
+export function getMoneyInAndOut(transactions: MpesaParced[]): { receive: number, send: number } {
+	if (transactions.length === 0) return { receive: 0, send: 0 }
+
+	let receive: number = 0
+	let send: number = 0
+
+	for (const { type, amount } of transactions) {
+		if (type === 'receive') receive += amount
+		else if (type === 'send') send += amount
+	}
+
+	return {
+		receive,
+		send
+	}
+}
+
+export function getDatesInMonth(year: number, month: number): string[] {
+	// month is 1-based (e.g. 11 for November)
+	const dates: string[] = []
+	const lastDay = new Date(year, month, 0).getDate() // 0 gives you last day of previous month
+
+	for (let day = 1; day <= lastDay; day++) {
+		const formatted = `${year}-${String(month).padStart(2, '0')}-${String(day).padStart(2, '0')}`
+		dates.push(formatted)
+	}
+
+	return dates
+}
+
+
+export function getHighestAndLowestTransaction(transactions: MpesaParced[]) {
+	if (transactions.length === 0) return { heighest: null, lowest: null }
+
+	let heighest = transactions[0]
+	let lowest = transactions[0]
+
+	for (const transaction of transactions) {
+		if (transaction.amount > heighest.amount) heighest = transaction
+		if (transaction.amount < lowest.amount) lowest = transaction
+	}
+
+	return {
+		heighest,
+		lowest
+	}
+}
+
+
+export function getTopCounterparties(transactions: MpesaParced[], sortBy: TransactionSortMode) {
+	const totals = new Map<string, { totalSent: number; totalReceived: number; count: number }>();
+
+	for (const tx of transactions) {
+		const entry = totals.get(tx.counterparty || '') || {
+			totalSent: 0,
+			totalReceived: 0,
+			count: 0,
+		};
+
+		if (tx.type === "send") {
+			entry.totalSent += tx.amount;
+			entry.count += 1;
+		} else if (tx.type === "receive") {
+			entry.totalReceived += tx.amount;
+		}
+
+		totals.set(tx.counterparty || '', entry);
+	}
+
+	const sorted = Array.from(totals.entries())
+		.map(([counterparty, data]) => ({
+			counterparty,
+			totalSent: data.totalSent,
+			transactionCount: data.count,
+		}))
+		.sort((a, b) =>
+			sortBy === "count"
+				? b.transactionCount - a.transactionCount
+				: b.totalSent - a.totalSent
+		)
+		.slice(0, 3);
+
+	return sorted;
 }

@@ -30,9 +30,9 @@ export default function TransInfo({ item, index, length }: TransInfoProps) {
 
 	const AnimatedPressable = Animated.createAnimatedComponent(Pressable)
 
-	function getTimeFromTransaction(timeString: string): string {
-		return moment(timeString, "DD/MM/YY [at] h:mm A").fromNow();
-	}
+	// function getTimeFromTransaction(timeString: string): string {
+	// 	return moment(timeString, "DD/MM/YY [at] h:mm A").fromNow();
+	// }
 
 
 	// Animation Preferences
@@ -75,8 +75,8 @@ export default function TransInfo({ item, index, length }: TransInfoProps) {
 					}]
 				})}
 			>
-				<View>
-					<Text>{index + 1}. {counterParty}</Text>
+				<View className='flex-1 pe-2'>
+					<Text numberOfLines={1} ellipsizeMode='tail'>{index + 1}. {counterParty}</Text>
 					{/* <LightText className="ms-4 text-sm" text={`${transactionType} : ${getTimeFromTransaction(item.rawTime!)}`} /> */}
 					<LightText className="ms-4 text-sm" text={`${transactionType} : ${item.parsedTime}`} />
 				</View>

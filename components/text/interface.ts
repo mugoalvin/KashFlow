@@ -7,3 +7,11 @@ export interface MyTextProps {
 	className?: string
 	text?: string
 }
+
+export type TransactionSortMode = "amount" | "count"
+
+export interface SortedTransaction {
+	counterparty: string
+	totalSent: number
+	transactionCount: number
+}

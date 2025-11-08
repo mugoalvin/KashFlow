@@ -1,6 +1,7 @@
 import { sqliteDB } from "@/db/config";
 import { mpesaMessages } from "@/db/sqlite";
 import { MpesaParced } from "@/interface/mpesa";
+import { getHighestAndLowestTransaction, getMoneyInAndOut, getTodaysDate } from "@/utils/functions";
 import { Ionicons, MaterialIcons } from "@expo/vector-icons";
 import { desc, eq } from "drizzle-orm";
 import { useEffect, useState } from "react";
@@ -8,17 +9,34 @@ import { FlatList, View } from "react-native";
 import { IconButton, Text, useTheme } from "react-native-paper";
 import TransInfo from "../information/transInfo";
 import Title from "../text/title";
-import { getTodaysDate } from "@/utils/functions";
+import TransactionSummary from "../ui/summary/transaction";
 
 
 export default function TodaysTransaction() {
 	const theme = useTheme()
 	const [todaysTransactionParsedMessages, setTodaysTransactionParsedMessages] = useState<MpesaParced[]>([])
+	const [moneySend, setMoneySend] = useState<number>(0)
+	const [moneyReceived, setMoneyReceived] = useState<number>(0)
+	
 
+	
 	async function getMessages() {
-		const todaysMessages = await sqliteDB.select().from(mpesaMessages).where(eq(mpesaMessages.parsedDate, getTodaysDate())).orderBy(desc(mpesaMessages.id)) as MpesaParced[]
+		const todaysMessages = await sqliteDB
+			.select()
+			.from(mpesaMessages)
+			.where(eq(mpesaMessages.parsedDate, getTodaysDate()))
+			.orderBy(desc(mpesaMessages.id)) as MpesaParced[]
+
 		setTodaysTransactionParsedMessages(todaysMessages)
 	}
+
+	useEffect(() => {
+		const { receive, send } = getMoneyInAndOut(todaysTransactionParsedMessages)
+		
+		setMoneySend(send)
+		setMoneyReceived(receive)
+		
+	}, [todaysTransactionParsedMessages])
 
 	useEffect(() => {
 		getMessages()
@@ -35,7 +53,7 @@ export default function TodaysTransaction() {
 
 	return (
 		<>
-			<Title
+			{/* <Title
 				leadingIcon={<Ionicons name='calendar-number-sharp' size={16} color={theme.colors.primary} />}
 				text="Todays Transactions"
 				trailingIcon={
@@ -50,23 +68,30 @@ export default function TodaysTransaction() {
 						onPress={() => { }}
 					/>
 				}
-			/>
+			/> */}
 
-			<FlatList
+			{/* <FlatList
 				style={{
+					// minHeight: 300,
 					maxHeight: 310,
 				}}
 				contentContainerStyle={{
 					justifyContent: 'center',
 				}}
 
-				className="flex-1"
+				// className="flex-1"
 				data={todaysTransactionParsedMessages}
 				renderItem={({ item, index }) =>
 					<TransInfo key={index} item={item} index={index} length={todaysTransactionParsedMessages.length} />
 				}
 				showsVerticalScrollIndicator={false}
 				ListEmptyComponent={() => <EmptyComponent />}
+			/> */}
+
+			<TransactionSummary
+				title="Todays Summary"
+				moneyIn={moneyReceived}
+				moneyOut={moneySend}
 			/>
 		</>
 	)

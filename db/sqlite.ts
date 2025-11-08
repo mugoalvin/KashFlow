@@ -5,6 +5,7 @@ export const mpesaMessages = sqliteTable('mpesaMessages', {
 	counterparty: text('counterparty'),
 	amount: integer('amount'),
 	balance: integer('balance'),
+	purpose: text('purpose'),
 	number: integer('number'),
 	dueDate: text('dueDate'),
 	message: text('message'),

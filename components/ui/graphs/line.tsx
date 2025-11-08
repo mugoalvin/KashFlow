@@ -1,5 +1,5 @@
 import { Dimensions, View } from "react-native";
-import { LineChartBicolor } from "react-native-gifted-charts";
+import { BarChart, LineChartBicolor } from "react-native-gifted-charts";
 import { Text, useTheme } from "react-native-paper";
 
 interface LineGraphProps {
