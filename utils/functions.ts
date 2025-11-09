@@ -1,3 +1,4 @@
+import { TransactionSortMode } from "@/components/text/interface";
 import { mpesaMessages } from "@/db/sqlite";
 import { Mpesa, MpesaParced, MpesaTransactionType, typeMap } from "@/interface/mpesa";
 import { desc, sql } from "drizzle-orm";
@@ -5,7 +6,6 @@ import { ExpoSQLiteDatabase } from "drizzle-orm/expo-sqlite";
 import moment from "moment";
 import { NativeModules } from 'react-native';
 import { extractAmount, extractFulizaDetails, extractPartialFulizaPay, extractPayFulizaDetails, extractReceiveDetails, extractSendDetails, extractWithdrawDetails } from "./extractDetails";
-import { TransactionSortMode } from "@/components/text/interface";
 
 const { SmsReader } = NativeModules
 
@@ -204,7 +204,7 @@ export async function fetchMonthTransaction(db: ExpoSQLiteDatabase, month: strin
 }
 
 export function groupDatesByWeek(dates: string[]) {
-	if (!dates.length) return []
+	if (dates.length <= 1) return []
 
 	// Filter empty strings, remove duplicates, and sort chronologically
 	const uniqueDates = Array.from(new Set(dates.filter(Boolean))).sort(
@@ -303,9 +303,8 @@ export function getMoneyInAndOut(transactions: MpesaParced[]): { receive: number
 }
 
 export function getDatesInMonth(year: number, month: number): string[] {
-	// month is 1-based (e.g. 11 for November)
 	const dates: string[] = []
-	const lastDay = new Date(year, month, 0).getDate() // 0 gives you last day of previous month
+	const lastDay = new Date(year, month, 0).getDate()
 
 	for (let day = 1; day <= lastDay; day++) {
 		const formatted = `${year}-${String(month).padStart(2, '0')}-${String(day).padStart(2, '0')}`
@@ -368,4 +367,13 @@ export function getTopCounterparties(transactions: MpesaParced[], sortBy: Transa
 		.slice(0, 3);
 
 	return sorted;
+}
+
+
+export function chunkArray<T>(arr: T[], size: number) {
+	const result = [];
+	for (let i = 0; i < arr.length; i += size) {
+		result.push(arr.slice(i, i + size));
+	}
+	return result;
 }

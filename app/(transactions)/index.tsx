@@ -2,14 +2,14 @@ import Body from "@/components/views/body";
 import { useEffect, useRef, useState } from "react";
 
 import MonthlyTransactionInfo from "@/components/information/monthlyTransactionInfo";
-import ChipCustom from "@/components/ui/chip";
-import ChipView from "@/components/views/chipView";
+import SelectYearDropDown from "@/components/userInput/selectYearDropDown";
 import { sqliteDB } from "@/db/config";
 import { mpesaMessages } from "@/db/sqlite";
 import { MpesaParced } from '@/interface/mpesa';
 import { getYearsFrom } from "@/utils/functions";
 import { months } from "@/utils/variable";
 import { Tab, TabView } from '@rneui/themed';
+import { View } from "react-native";
 import { useTheme } from "react-native-paper";
 
 export type transactionButtonType = 'all' | 'moneyOut' | 'moneyIn'
@@ -57,42 +57,40 @@ export default function Transactions() {
 
 	return (
 		<Body>
-			<ChipView>
-				{
-					chipYears.current.map(chipYear =>
-						<ChipCustom key={chipYear} selected={year === chipYear} chipText={chipYear.toString()} onPress={() => setYear(chipYear)} />
-					)
-				}
-			</ChipView>
-
-			<Tab
-				value={activeIndex}
-				onChange={setActiveIndex}
-				scrollable
-				indicatorStyle={{
-					backgroundColor: theme.colors.onSecondaryContainer,
-				}}
-			>
-				{
-					months.map((month, index) => (
-						<Tab.Item
-							key={month.identifier}
-							disabled={index > currentMonthIndex || (year === firstYear && index + 1 < firstMonth)}
-							title={month.title}
-							titleStyle={{
-								fontSize: theme.fonts.bodySmall.fontSize,
-								color: theme.colors.onBackground
-							}}
-							containerStyle={(active: boolean) => ({
-								backgroundColor: active ? theme.colors.elevation.level1 : theme.colors.elevation.level0
-							})}
-							disabledStyle={{
-								backgroundColor: theme.colors.background,
-							}}
-						/>
-					))
-				}
-			</Tab>
+			<View className="flex-row">
+				<Tab
+					className="w-9/12"
+					value={activeIndex}
+					onChange={setActiveIndex}
+					scrollable
+					indicatorStyle={{
+						backgroundColor: theme.colors.onSecondaryContainer,
+					}}
+				>
+					{
+						months.map((month, index) => (
+							<Tab.Item
+								key={month.identifier}
+								disabled={index > currentMonthIndex || (year === firstYear && index + 1 < firstMonth)}
+								title={month.title}
+								titleStyle={{
+									fontSize: theme.fonts.bodySmall.fontSize,
+									color: theme.colors.onBackground
+								}}
+								containerStyle={(active: boolean) => ({
+									backgroundColor: active ? theme.colors.elevation.level1 : theme.colors.elevation.level0
+								})}
+								disabledStyle={{
+									backgroundColor: theme.colors.background,
+								}}
+							/>
+						))
+					}
+				</Tab>
+				<View className="w-4/12 h-full">
+					<SelectYearDropDown chipYears={chipYears.current} selectedYear={year} setYear={setYear} />
+				</View>
+			</View>
 
 			<TabView value={activeIndex} onChange={setActiveIndex} animationType="spring" disableSwipe={false}>
 				{
@@ -103,7 +101,7 @@ export default function Transactions() {
 						>
 							{activeIndex === idx ? (
 								<MonthlyTransactionInfo
-									month={`${year}-${(idx + 1).toString().padStart(2, '0')}`}
+									monthDateString={`${year}-${(idx + 1).toString().padStart(2, '0')}`}
 									initialData={monthCache[`${year}-${(idx + 1).toString().padStart(2, '0')}`] ?? null}
 									onDataLoaded={(data) => setMonthCache(prev => ({ ...prev, [`${year}-${(idx + 1).toString().padStart(2, '0')}`]: data }))}
 								/>

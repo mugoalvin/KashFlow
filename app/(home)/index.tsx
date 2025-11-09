@@ -1,5 +1,5 @@
 import Body from "@/components/views/body";
-import { syncDatabase } from "@/utils/functions";
+import { getTodaysDate, syncDatabase } from "@/utils/functions";
 import { Ionicons } from "@expo/vector-icons";
 import { router, useNavigation } from "expo-router";
 import { useEffect, useLayoutEffect, useState } from "react";
@@ -20,7 +20,7 @@ export default function Index() {
 	const navigation = useNavigation()
 	const [balance, setBalance] = useState<number>(0)
 
-
+	const dateObj = new Date
 	const { success, error } = useMigrations(sqliteDB, migrations)
 
 	function syncDB_getBalance() {
@@ -62,8 +62,8 @@ export default function Index() {
 				<View className="gap-3">
 					<BalanceInfo balance={balance} />
 					<TodaysTransaction />
-					<WeeklyTransactionSummary />
-					<MonthyTransactionSummary />
+					<WeeklyTransactionSummary year={dateObj.getFullYear()} month={dateObj.getMonth() + 1} dateInWeek={ getTodaysDate() } />
+					<MonthyTransactionSummary  year={dateObj.getFullYear()} month={dateObj.getMonth() + 1}/>
 				</View>
 			</ScrollView>
 		</Body>

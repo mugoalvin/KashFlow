@@ -18,7 +18,7 @@ export default function Body({ children, className, style }: BodyProps) {
 				className={`flex-1 p-2 ${className}`}
 				style={{
 					backgroundColor: theme.colors.background,
-					// marginBottom: 80,
+					marginBottom: 80,
 					...(typeof style === "object" && !Array.isArray(style) ? style : {})
 				}}
 			>

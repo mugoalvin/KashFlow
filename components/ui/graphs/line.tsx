@@ -1,5 +1,5 @@
 import { Dimensions, View } from "react-native";
-import { BarChart, LineChartBicolor } from "react-native-gifted-charts";
+import { LineChartBicolor } from "react-native-gifted-charts";
 import { Text, useTheme } from "react-native-paper";
 
 interface LineGraphProps {
@@ -12,7 +12,6 @@ interface LineGraphProps {
 
 export default function LineGraph({ data }: LineGraphProps) {
 	const theme = useTheme()
-	// const chartWidth = Dimensions.get('window').width - 65
 	const chartWidth = Dimensions.get('window').width - 40
 	const dataPointSpacing = chartWidth / (data.length) - .5
 
@@ -26,7 +25,8 @@ export default function LineGraph({ data }: LineGraphProps) {
 	if (data.length <= 1 || data === null || data === undefined) {
 		return (
 			<View className="flex items-center justify-center py-5 w-full rounded-2xl" style={{ backgroundColor: theme.colors.elevation.level1 }}>
-				<Text>No Data Trends</Text>
+				<Text>{data.length} Transaction found</Text>
+				<Text>{"Can't plot a chart with 1 data point"}</Text>
 			</View>
 		)
 	}
@@ -55,7 +55,7 @@ export default function LineGraph({ data }: LineGraphProps) {
 					// Animations
 					isAnimated
 					animationDuration={1000}
-					onDataChangeAnimationDuration={300}
+					onDataChangeAnimationDuration={1000}
 
 
 					// Line Colors

@@ -1,9 +1,6 @@
 import { MpesaParced } from "@/interface/mpesa"
-import { Ionicons } from "@expo/vector-icons"
-import { router } from "expo-router"
 import moment from "moment"
 import { View } from "react-native"
-import { IconButton, useTheme } from "react-native-paper"
 import LightText from "../text/lightText"
 import TransInfo from "./transInfo"
 
@@ -14,7 +11,6 @@ interface DailyTransactionInfoProps {
 }
 
 export default function DailyTransactionInfo({ date, transactions, length }: DailyTransactionInfoProps) {
-	const theme = useTheme()
 
 	return (
 		<View className="mb-4">
@@ -22,16 +18,6 @@ export default function DailyTransactionInfo({ date, transactions, length }: Dai
 				<LightText
 					className="mb-2"
 					text={moment(date).format("ddd - Do MMM YY")}
-				/>
-				<IconButton
-					icon={() => <Ionicons name="chevron-forward" size={16} color={theme.colors.inversePrimary} />}
-					onPress={() => router.push({
-						pathname: '/(transactions)/analysis_more',
-						params: {
-							transactions: JSON.stringify(transactions),
-							date,
-						}
-					})}
 				/>
 			</View>
 			{length ? (
