@@ -5,8 +5,10 @@ import { Ionicons } from "@expo/vector-icons";
 import { router } from "expo-router";
 import moment from "moment";
 import { View } from "react-native";
-import { Divider, IconButton, Text, useTheme } from "react-native-paper";
+import { IconButton, Text, useTheme } from "react-native-paper";
 import LineGraph from "../ui/graphs/line";
+import WeeklyTransactionSummary from "../ui/summary/weekly";
+import TransactionSummary from "../ui/summary/transaction";
 
 interface WeeklyTransactionInfoProps {
 	item: {
@@ -23,7 +25,7 @@ export default function WeeklyTransactionInfo({ item }: WeeklyTransactionInfoPro
 	const firstItemDataDate = item.data[0]?.date
 	const lastItemDataDate = item.data[item.data.length - 1]?.date
 
-	const dateRange = `${formatDate(lastItemDataDate as string)} - ${ getTodaysDate() === firstItemDataDate ? "Today" : formatDate(firstItemDataDate as string)}`
+	const dateRange = `${formatDate(lastItemDataDate as string)} - ${getTodaysDate() === firstItemDataDate ? "Today" : formatDate(firstItemDataDate as string)}`
 
 	function formatDate(date: string): string {
 		return moment(date).format("ddd, Do")
@@ -45,29 +47,26 @@ export default function WeeklyTransactionInfo({ item }: WeeklyTransactionInfoPro
 
 
 	return (
-		<>
-			<View className="flex-1 justify-between my-4">
-				<View className="flex-row items-center justify-between">
-					<View className="flex-row items-center gap-5">
-						<Text className="p-2 rounded-lg" style={{ backgroundColor: theme.colors.elevation.level1 }}>
-							{dateRange}
-						</Text>
-						<Text>{item.data.length} day(s)</Text>
-					</View>
-
-					<IconButton
-						icon={() => <Ionicons name="chevron-forward" size={16} color={theme.colors.primary} />}
-						onPress={() => {
-							// store the heavy payload in a short-lived in-memory cache
-							const id = `${Date.now()}-${Math.random().toString(36).slice(2, 9)}`
-							storeNavData(id, item.data)
-							router.push({ pathname: '/(transactions)/analysis_more', params: { id, dateRange } })
-						}}
-					/>
+		<View className="flex-1 justify-between my-4">
+			<View className="flex-row items-center justify-between">
+				<View className="flex-row items-center gap-5">
+					<Text className="p-2 rounded-lg" style={{ backgroundColor: theme.colors.elevation.level1 }}>
+						{dateRange}
+					</Text>
+					<Text>{item.data.length} day(s)</Text>
 				</View>
-				<LineGraph data={balances} />
+
+				<IconButton
+					icon={() => <Ionicons name="chevron-forward" size={16} color={theme.colors.primary} />}
+					onPress={() => {
+						// store the heavy payload in a short-lived in-memory cache
+						const id = `${Date.now()}-${Math.random().toString(36).slice(2, 9)}`
+						storeNavData(id, item.data)
+						router.push({ pathname: '/(transactions)/analysis_more', params: { id, dateRange } })
+					}}
+				/>
 			</View>
-			<Divider />
-		</>
+			<LineGraph data={balances} />
+		</View>
 	)
 }

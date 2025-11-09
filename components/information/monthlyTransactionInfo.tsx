@@ -3,31 +3,33 @@ import { sqliteDB } from "@/db/config";
 import { MpesaParced } from "@/interface/mpesa";
 import { fetchMonthTransaction, groupDatesByWeek } from "@/utils/functions";
 import { useEffect, useMemo, useState } from "react";
-import { FlatList, View } from "react-native";
+import { ScrollView, View } from "react-native";
 import { ActivityIndicator } from "react-native-paper";
+import WeeklyTransactionSummary from "../ui/summary/weekly";
+import SelectWeekDropDown from "../userInput/selectWeekDropDown";
 import WeeklyTransactionInfo from "./weeklyTransactionInfo";
-import Animated, { FadeInDown } from "react-native-reanimated";
+import MonthyTransactionSummary from "../ui/summary/monthly";
 
 interface MonthlyTransactionInfoProps {
-	month: string
-	/** parent-provided cached data; if provided (even empty array) the component will skip initial fetch */
+	monthDateString: string
 	initialData?: MpesaParced[] | null
-	/** optional callback to send fetched data back to parent for caching */
 	onDataLoaded?: (data: MpesaParced[]) => void
 }
 
-export default function MonthlyTransactionInfo({ month, initialData = null, onDataLoaded }: MonthlyTransactionInfoProps) {
+export default function MonthlyTransactionInfo({ monthDateString, initialData = null, onDataLoaded }: MonthlyTransactionInfoProps) {
 	const [monthlyData, setMonthlyData] = useState<MpesaParced[]>(initialData ?? [])
 	const [isLoading, setIsLoading] = useState(true)
 	const { showSnackbar } = useSnackbarContext()
 
+	const [selectedWeekIndex, setSelectedWeekIndex] = useState<number>(0)
+	const [year, month] = monthDateString.split('-')
 
 	useEffect(() => {
 		// If parent passed cached data (even empty array), don't fetch again
 		if (initialData !== null) return
 
 		let mounted = true
-		fetchMonthTransaction(sqliteDB, month)
+		fetchMonthTransaction(sqliteDB, monthDateString)
 			.then((data) => {
 				if (!mounted) return
 				setMonthlyData(data)
@@ -45,7 +47,7 @@ export default function MonthlyTransactionInfo({ month, initialData = null, onDa
 		return () => {
 			mounted = false
 		}
-	}, [month, showSnackbar, initialData, onDataLoaded])
+	}, [monthDateString, showSnackbar, initialData, onDataLoaded])
 
 	const sections = useMemo(() => {
 		if (!monthlyData.length) return []
@@ -61,7 +63,6 @@ export default function MonthlyTransactionInfo({ month, initialData = null, onDa
 		const allDates = Array.from(dateMap.keys())
 
 		const weeks = groupDatesByWeek(allDates as string[])
-
 
 		return weeks
 			.reverse()
@@ -81,7 +82,7 @@ export default function MonthlyTransactionInfo({ month, initialData = null, onDa
 			})
 	}, [monthlyData])
 
-	// If loading and we have no data yet, render a full-screen loader so it's always visible
+
 	if (isLoading && monthlyData.length === 0) {
 		return (
 			<View className="flex-1 items-center justify-center">
@@ -91,17 +92,13 @@ export default function MonthlyTransactionInfo({ month, initialData = null, onDa
 	}
 
 	return (
-		<FlatList
+		<ScrollView
 			className="flex-1 my-4 w-[100%]"
-			data={sections}
-			renderItem={({ item, index }) => {
-				return (
-					<Animated.View entering={FadeInDown.duration(500).delay( (index+1) * 200 )}>
-						<WeeklyTransactionInfo item={item} />
-					</Animated.View>
-				)
-			}}
-			initialNumToRender={2}
-		/>
+		>
+			<SelectWeekDropDown items={sections} setSelectedWeekIndex={setSelectedWeekIndex} selectedWeekIndex={selectedWeekIndex} />
+			<WeeklyTransactionInfo item={sections[selectedWeekIndex]} />
+			<WeeklyTransactionSummary year={Number(year)} month={Number(month)} dateInWeek={sections[selectedWeekIndex].data.reverse()[0].date} />
+			<MonthyTransactionSummary year={Number(year)} month={Number(month)} />
+		</ScrollView>
 	)
 }

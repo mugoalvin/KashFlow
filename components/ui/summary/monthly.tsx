@@ -11,7 +11,12 @@ import { useSafeAreaInsets } from "react-native-safe-area-context"
 import { DropdownMenu, DropdownMenuContent, DropdownMenuGroup, DropdownMenuItem, DropdownMenuLabel, DropdownMenuSeparator, DropdownMenuTrigger } from "../dropdown-menu"
 import TransactionSummary from "./transaction"
 
-export default function MonthyTransactionSummary() {
+interface MonthyTransactionSummaryProps {
+	year: number
+	month: number
+}
+
+export default function MonthyTransactionSummary({ year, month } : MonthyTransactionSummaryProps) {
 	const theme = useTheme()
 	const [monthTransactions, setMonthTransactions] = useState<MpesaParced[]>([])
 	const [moneySend, setMoneySend] = useState<number>(0)
@@ -22,9 +27,7 @@ export default function MonthyTransactionSummary() {
 	const [lowestTrasaction, setLowestTrasaction] = useState<MpesaParced>()
 	const [topTransactions, setTopTransactions] = useState<SortedTransaction[]>([])
 
-
 	const datesInMonth = useRef<string[]>([])
-	const dateObj = new Date()
 	const insets = useSafeAreaInsets();
 	const contentInsets = {
 		top: insets.top,
@@ -34,7 +37,7 @@ export default function MonthyTransactionSummary() {
 	};
 
 	datesInMonth.current =
-		getDatesInMonth(dateObj.getFullYear(), dateObj.getMonth() + 1)
+		getDatesInMonth(year, month)
 
 	async function fetchThisMonthTransactions() {
 		const transactions = await sqliteDB
@@ -80,17 +83,18 @@ export default function MonthyTransactionSummary() {
 							<IconButton icon={() => <MaterialIcons name="sort" color={theme.colors.primary} size={16} />} />
 						</DropdownMenuTrigger>
 
-						<DropdownMenuContent insets={contentInsets} sideOffset={2} className="w-56" align="start">
+						<DropdownMenuContent insets={contentInsets} sideOffset={2} className="w-56" align="start"  style={{ backgroundColor: theme.colors.secondaryContainer }}>
 							<DropdownMenuLabel>Sort By</DropdownMenuLabel>
+
 							<DropdownMenuSeparator />
 
 							<DropdownMenuGroup>
 
-								<DropdownMenuItem onPress={() => setSortType('amount')}>
-									<Text>Cummulative Amount</Text>
+								<DropdownMenuItem onPress={() => setSortType('amount')} android_ripple={{ color: 'red', borderless: false }}>
+									<Text style={{ color: theme.colors.onSecondaryContainer }}>Cummulative Amount</Text>
 								</DropdownMenuItem>
 								<DropdownMenuItem onPress={() => setSortType('count')}>
-									<Text>Number Of Counts</Text>
+									<Text  style={{ color: theme.colors.onSecondaryContainer }}>Number Of Counts</Text>
 								</DropdownMenuItem>
 
 							</DropdownMenuGroup>

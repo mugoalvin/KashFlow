@@ -12,7 +12,7 @@ export default function TopTransactions({ transactions }: TopTransactionsProps) 
 	return (
 		<View className="gap-7">
 			<View className="flex-row justify-between">
-				<Text style={{ color: theme.colors.onSurfaceDisabled }}>CounterParty</Text>
+				<Text style={{ color: theme.colors.onSurfaceDisabled }}>Counter Party</Text>
 				<Text style={{ color: theme.colors.onSurfaceDisabled }}>No. Of Transactions</Text>
 				<Text style={{ color: theme.colors.onSurfaceDisabled }}>Total Amount</Text>
 			</View>

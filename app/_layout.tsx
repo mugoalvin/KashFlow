@@ -12,12 +12,12 @@ import { Suspense, useEffect } from 'react';
 
 import FallBack from '@/components/views/suspenceFallback';
 import { DialogProvider } from '@/contexts/DialogContext';
-// import { Icon, Label, NativeTabs } from 'expo-router/unstable-native-tabs';
-import { PortalHost } from '@rn-primitives/portal'
+import { Icon, Label, NativeTabs } from 'expo-router/unstable-native-tabs';
+import { PortalHost } from '@rn-primitives/portal';
 
+// import { Ionicons } from '@expo/vector-icons';
+// import { Tabs } from 'expo-router';
 import { SQLiteProvider } from 'expo-sqlite';
-import { Tabs } from 'expo-router';
-import { Ionicons } from '@expo/vector-icons';
 
 const DATABASE_NAME = 'kashflow.db'
 
@@ -46,7 +46,7 @@ export default function RootLayout() {
 							<SnackbarProvider>
 								<GestureHandlerRootView>
 
-									<Tabs
+									{/* <Tabs
 										initialRouteName='(home)'
 										screenOptions={{
 											headerStyle: {
@@ -71,25 +71,25 @@ export default function RootLayout() {
 											options={{
 												title: "Dashboard",
 												tabBarLabel: "Home",
-												tabBarIcon: ({ color, size, focused }) => <Ionicons name={focused ? 'home' : 'home-outline'} color={color} size={size - 5} />
+												tabBarIcon: ({ color, size, focused }) => <Ionicons name={focused ? 'home' : 'home-outline'} color={color} size={size - 10} />
 											}}
 										/>
 										<Tabs.Screen
 											name='(transactions)'
 											options={{
 												title: "Analysis",
-												tabBarIcon: ({ color, size, focused }) => <Ionicons name={focused ? 'notifications' : 'notifications-outline'} color={color} size={size - 5} />
+												tabBarIcon: ({ color, size, focused }) => <Ionicons name={focused ? 'notifications' : 'notifications-outline'} color={color} size={size - 10} />
 											}} />
 										<Tabs.Screen
 											name='settings'
 											options={{
 												title: "Settings",
-												tabBarIcon: ({ color, size, focused }) => <Ionicons name={focused ? 'settings' : 'settings-outline'} color={color} size={size - 5} />
+												tabBarIcon: ({ color, size, focused }) => <Ionicons name={focused ? 'settings' : 'settings-outline'} color={color} size={size - 10} />
 											}}
 										/>
-									</Tabs>
+									</Tabs> */}
 
-									{/* <NativeTabs
+									<NativeTabs
 										tintColor={theme[colorScheme].tertiary}
 										backgroundColor={theme[colorScheme].elevation.level1}
 										labelVisibilityMode='selected'
@@ -110,7 +110,7 @@ export default function RootLayout() {
 											<Icon drawable='ic_menu_manage' />
 										</NativeTabs.Trigger>
 
-									</NativeTabs> */}
+									</NativeTabs>
 
 								</GestureHandlerRootView>
 							</SnackbarProvider>
