@@ -1,7 +1,8 @@
-export type MpesaTransactionType = "receive" | "send" | "fuliza" | "payFuliza" | "partialFulizaPay" | "withdraw"
+export type MpesaTransactionType = "airtime" | "receive" | "send" | "fuliza" | "payFuliza" | "partialFulizaPay" | "withdraw"
 
 
 export const typeMap: { [key: string]: MpesaTransactionType } = {
+	"of airtime on": "airtime",
 	"You have received": "receive",
 	"paid to": "send",
 	"sent to": "send",

@@ -11,13 +11,17 @@ export interface ButtonInGroupProps {
 
 export interface ButtonGroupProps {
 	buttons: ButtonInGroupProps[]
+	setButtonSelected?: (type: transactionButtonType) => void
 }
 
-export default function ButtonGroup({ buttons }: ButtonGroupProps) {
+export default function ButtonGroup({ buttons, setButtonSelected }: ButtonGroupProps) {
 	const theme = useTheme()
 	const AnimatedPressable = Animated.createAnimatedComponent(Pressable)
 	const [selectedButton, setSelectedButton] = useState<transactionButtonType>('all')
 
+	useEffect(() => {
+		setButtonSelected && setButtonSelected(selectedButton)
+	}, [selectedButton, setButtonSelected])
 
 	function ButtonInGroup({ button, index, length }: any) {
 		// Shared values for each corner and background

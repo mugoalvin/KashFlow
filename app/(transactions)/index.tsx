@@ -14,14 +14,6 @@ import { useTheme } from "react-native-paper";
 
 export type transactionButtonType = 'all' | 'moneyOut' | 'moneyIn'
 
-const buttons = [
-	{ title: "All", type: 'all' },
-	{ title: "Money Out", type: 'moneyOut' },
-	{ title: "Money In", type: 'moneyIn' },
-];
-
-
-
 export default function Transactions() {
 	const theme = useTheme()
 	const currentTime = new Date()

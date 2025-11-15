@@ -16,7 +16,7 @@ interface MonthyTransactionSummaryProps {
 	month: number
 }
 
-export default function MonthyTransactionSummary({ year, month } : MonthyTransactionSummaryProps) {
+export default function MonthyTransactionSummary({ year, month }: MonthyTransactionSummaryProps) {
 	const theme = useTheme()
 	const [monthTransactions, setMonthTransactions] = useState<MpesaParced[]>([])
 	const [moneySend, setMoneySend] = useState<number>(0)
@@ -44,6 +44,7 @@ export default function MonthyTransactionSummary({ year, month } : MonthyTransac
 			.select()
 			.from(mpesaMessages)
 			.where(inArray(mpesaMessages.parsedDate, datesInMonth.current)) as MpesaParced[]
+	
 
 		setMonthTransactions(transactions)
 	}
@@ -58,12 +59,10 @@ export default function MonthyTransactionSummary({ year, month } : MonthyTransac
 		setMoneySend(send)
 		setMoneyReceived(receive)
 
-		const { heighest, lowest } = getHighestAndLowestTransaction(monthTransactions)
+		const { highest, lowest } = getHighestAndLowestTransaction(monthTransactions)
 
-		setHighestTrasaction(heighest as MpesaParced)
+		setHighestTrasaction(highest as MpesaParced)
 		setLowestTrasaction(lowest as MpesaParced)
-
-
 
 	}, [monthTransactions])
 
@@ -83,7 +82,7 @@ export default function MonthyTransactionSummary({ year, month } : MonthyTransac
 							<IconButton icon={() => <MaterialIcons name="sort" color={theme.colors.primary} size={16} />} />
 						</DropdownMenuTrigger>
 
-						<DropdownMenuContent insets={contentInsets} sideOffset={2} className="w-56" align="start"  style={{ backgroundColor: theme.colors.secondaryContainer }}>
+						<DropdownMenuContent insets={contentInsets} sideOffset={2} className="w-56" align="start" style={{ backgroundColor: theme.colors.secondaryContainer }}>
 							<DropdownMenuLabel>Sort By</DropdownMenuLabel>
 
 							<DropdownMenuSeparator />
@@ -94,7 +93,7 @@ export default function MonthyTransactionSummary({ year, month } : MonthyTransac
 									<Text style={{ color: theme.colors.onSecondaryContainer }}>Cummulative Amount</Text>
 								</DropdownMenuItem>
 								<DropdownMenuItem onPress={() => setSortType('count')}>
-									<Text  style={{ color: theme.colors.onSecondaryContainer }}>Number Of Counts</Text>
+									<Text style={{ color: theme.colors.onSecondaryContainer }}>Number Of Counts</Text>
 								</DropdownMenuItem>
 
 							</DropdownMenuGroup>

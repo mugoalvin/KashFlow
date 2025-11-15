@@ -51,7 +51,6 @@ export const SnackbarProvider = ({ children }: { children: ReactNode }) => {
 				}}
 			>
 				<Text
-					className="text-xl"
 					style={{
 						color:
 							isError ? theme.colors.onErrorContainer : // @ts-expect-error

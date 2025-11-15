@@ -5,7 +5,7 @@ import { desc, sql } from "drizzle-orm";
 import { ExpoSQLiteDatabase } from "drizzle-orm/expo-sqlite";
 import moment from "moment";
 import { NativeModules } from 'react-native';
-import { extractAmount, extractFulizaDetails, extractPartialFulizaPay, extractPayFulizaDetails, extractReceiveDetails, extractSendDetails, extractWithdrawDetails } from "./extractDetails";
+import { extractAirtimeDetails, extractAmount, extractFulizaDetails, extractPartialFulizaPay, extractPayFulizaDetails, extractReceiveDetails, extractSendDetails, extractWithdrawDetails } from "./extractDetails";
 
 const { SmsReader } = NativeModules
 
@@ -37,7 +37,6 @@ export function parseMpesaMessage(messageID: string, message: string, date: stri
 		number: string | undefined,
 		outstanding: number | undefined,
 		paid: number | undefined,
-		rawTime: string | undefined,
 		parsedTime: string | undefined,
 		parsedDate: string | undefined,
 		transactionCost: number | undefined
@@ -53,15 +52,19 @@ export function parseMpesaMessage(messageID: string, message: string, date: stri
 
 	let amount = extractAmount(message)
 
-	const timeMatch = message.match(/on ([\d\/]+ at [\d:]+ [AP]M)/);
-	rawTime = timeMatch ? timeMatch[1] : undefined;
-
 	const balanceMatch = message.match(/New M-PESA balance is Ksh([\d,]+\.\d{2})/);
 	balance = balanceMatch ? parseFloat(balanceMatch[1].replace(/,/g, '')) : undefined;
 
 	const transactionCostMatch = message.match(/Transaction cost, Ksh([\d]+\.\d{2})/);
 	transactionCost = transactionCostMatch ? parseFloat(transactionCostMatch[1]) : undefined;
 
+	if (type === 'airtime') {
+		const { extractedAmount, extractedBalance, extractedTransactionCost } = extractAirtimeDetails(message)
+		counterparty = "Airtime Purchase"
+		amount = extractedAmount
+		balance =  extractedBalance
+		transactionCost = extractedTransactionCost
+	}
 
 	if (type === "fuliza") {
 		const { extractedAmount, extractedDueDate, extractedFee, extractedOutstanding } = extractFulizaDetails(message)
@@ -81,8 +84,8 @@ export function parseMpesaMessage(messageID: string, message: string, date: stri
 	}
 
 	if (type === "partialFulizaPay") {
-		const { extractedAmount, extractedBalance, extractedLimit } = extractPartialFulizaPay(message)
-		// amount = extractedAmount
+		const { extractedBalance, extractedLimit } = extractPartialFulizaPay(message)
+		counterparty = "Fartial Fuliza Payment"
 		balance = extractedBalance
 		limit = extractedLimit
 	}
@@ -94,14 +97,14 @@ export function parseMpesaMessage(messageID: string, message: string, date: stri
 	}
 
 	if (type === 'send') {
-		const { extractedAmount, extractedCounterParty, extractedNumber } = extractSendDetails(message)
-		account = extractedAmount
+		const { extractedAccount, extractedCounterParty, extractedNumber } = extractSendDetails(message)
+		account = extractedAccount
 		counterparty = extractedCounterParty
 		number = extractedNumber
 	}
 
 	if (type === 'withdraw') {
-		extractWithdrawDetails(message)
+		counterparty = extractWithdrawDetails(message)
 	}
 
 	parsedDate = parseDate(date)?.date
@@ -251,7 +254,6 @@ export async function syncDatabase(db: ExpoSQLiteDatabase) {
 		const lastId = await fetchLastTransactionId(db)
 		const transactions = await fetchLatestTransactions(lastId)
 
-		console.log("New Transactions: ", transactions.length)
 
 		await db.transaction(async (tx) => {
 			for (const transaction of transactions) { // @ts-ignore
@@ -286,6 +288,13 @@ export function getTodaysDate(): string {
 
 
 export function getMoneyInAndOut(transactions: MpesaParced[]): { receive: number, send: number } {
+
+	// console.log(
+	// 	transactions
+	// 		.filter(t => t.type === "withdraw")
+	// 		.reduce((sum, t) => sum + t.amount, 0)
+	// )
+
 	if (transactions.length === 0) return { receive: 0, send: 0 }
 
 	let receive: number = 0
@@ -316,18 +325,20 @@ export function getDatesInMonth(year: number, month: number): string[] {
 
 
 export function getHighestAndLowestTransaction(transactions: MpesaParced[]) {
-	if (transactions.length === 0) return { heighest: null, lowest: null }
+	const valid = transactions.filter(t => t.amount != null)
 
-	let heighest = transactions[0]
-	let lowest = transactions[0]
+	if (valid.length === 0) return { highest: null, lowest: null };
 
-	for (const transaction of transactions) {
-		if (transaction.amount > heighest.amount) heighest = transaction
+	let highest = valid[0]
+	let lowest = valid[0]
+
+	for (const transaction of valid) {
+		if (transaction.amount > highest.amount) highest = transaction
 		if (transaction.amount < lowest.amount) lowest = transaction
 	}
 
 	return {
-		heighest,
+		highest,
 		lowest
 	}
 }

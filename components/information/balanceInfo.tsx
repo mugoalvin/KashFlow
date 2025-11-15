@@ -4,13 +4,18 @@ import { View } from "react-native";
 import AnimatedNumbers from 'react-native-animated-numbers';
 import { IconButton, Text, useTheme } from "react-native-paper";
 import Title from "../text/title";
+import { useEffect, useState } from 'react';
+import { getBalance } from '@/db/db_functions';
+import { sqliteDB } from '@/db/config';
 
-interface BalanceInfoProps {
-	balance: number
-}
-
-export default function BalanceInfo({ balance }: BalanceInfoProps) {
+export default function BalanceInfo() {
 	const theme = useTheme()
+	const [balance, setBalance] = useState<number>(0)
+
+	useEffect(() => {
+		getBalance(sqliteDB)
+			.then(setBalance)
+	}, [])
 
 	return (
 		<View className="gap-3 mb-5">

@@ -1,7 +1,7 @@
 import { PermissionsAndroid, Platform } from "react-native";
 
-export async function requestSmsPermission() {
-	if (Platform.OS !== 'android') return
+export async function requestSmsPermission(): Promise<boolean> {
+	if (Platform.OS !== 'android') return false
 
 	try {
 		const hasPermission = await PermissionsAndroid.check(
@@ -9,8 +9,8 @@ export async function requestSmsPermission() {
 		)
 
 		if (hasPermission) {
-			console.log("Already Have SMS Permission")
-			return
+			// console.log("Already Have SMS Permission")
+			return true
 		}
 
 		const granted = await PermissionsAndroid.request(
@@ -24,13 +24,16 @@ export async function requestSmsPermission() {
 		)
 
 		if (granted === PermissionsAndroid.RESULTS.GRANTED) {
-			console.log("SMS Permissions Granted")
+			// console.log("SMS Permissions Granted")
+			return true
 		}
 		else {
-			console.log("SMS Permission Denied")
+			// console.log("SMS Permission Denied")
+			return false
 		}
 
 	} catch (error) {
-		console.warn(error)
+		// console.warn(error)
+		return false
 	}
 }

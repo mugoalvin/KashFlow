@@ -38,18 +38,17 @@ export default function WeeklyTransactionSummary({ year, month, dateInWeek }: We
 
 
 	useEffect(() => {
-		setDatesInThisWeek(
-			groupDatesByWeek(
-				getDatesInMonth(year, month)
-			)
-				.find(week =>
-					week.includes(dateInWeek)
-				) as string[]
+		const week = groupDatesByWeek(getDatesInMonth(year, month)).find(week =>
+			week.includes(dateInWeek)
 		)
+
+		// If .find() doesn't match anything it returns undefined — default to []
+		setDatesInThisWeek(week ?? [])
 	}, [year, month, dateInWeek])
 
 	useEffect(() => {
-		if (datesInThisWeek.length === 0) return;
+		// datesInThisWeek may be undefined if the finder returned nothing earlier — guard against that
+		if (!datesInThisWeek || datesInThisWeek.length === 0) return;
 		(async () => {
 			const transactions = await sqliteDB
 				.select()
