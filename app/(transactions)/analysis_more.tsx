@@ -1,17 +1,19 @@
 import DailyTransactionInfo from "@/components/information/dailyTransactionInfo";
 import Body from "@/components/views/body";
+import ButtonGroup from "@/components/views/buttonGroup";
 import { getNavData, removeNavData } from '@/utils/navigationCache';
 import { useLocalSearchParams, useNavigation } from "expo-router";
 import { useEffect, useLayoutEffect, useState } from "react";
 import { FlatList } from "react-native";
-import { ActivityIndicator, useTheme } from "react-native-paper";
+import { ActivityIndicator, Text } from "react-native-paper";
+import { transactionButtonType } from ".";
 
 export default function AnalysisMore() {
-	const theme = useTheme()
 	const navigation = useNavigation()
 	const { id, dateRange } = useLocalSearchParams()
 	const [loading, setLoading] = useState(true)
 	const [data, setData] = useState<any>(null)
+	const [selectedButton, setSelectedButton] = useState<transactionButtonType>('all')
 
 
 	useLayoutEffect(() => {
@@ -49,10 +51,29 @@ export default function AnalysisMore() {
 
 	return (
 		<Body>
+			<ButtonGroup
+				buttons={[
+					{
+						title: "All",
+						type: "all"
+					},
+					{
+						title: "Money In",
+						type: "moneyIn"
+					},
+					{
+						title: "Money Out",
+						type: "moneyOut"
+					}
+				]}
+
+				setButtonSelected={setSelectedButton}
+			/>
+
 			<FlatList
 				data={data}
 				renderItem={({ item }) =>
-					<DailyTransactionInfo date={item.date} transactions={item.transactions} length={item.transactions.length} />
+					<DailyTransactionInfo date={item.date} transactions={item.transactions} length={item.transactions.length} transactionType={selectedButton} />
 				}
 			/>
 		</Body>

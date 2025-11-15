@@ -1,8 +1,20 @@
-
 export function extractAmount(message: string) {
 	const amountMatch = message.match(/Ksh([\d,]+\.\d{2})/);
 	return amountMatch ? parseFloat(amountMatch[1].replace(/,/g, '')) : undefined;
 }
+
+export function extractAirtimeDetails(message: string) {
+	const amountMatch = message.match(/You bought Ksh\s*([\d,]+\.\d{2})/);
+	const balanceMatch = message.match(/balance is Ksh\s*([\d,]+\.\d{2})/);
+	const costMatch = message.match(/Transaction cost, Ksh\s*([\d,]+\.\d{2})/);
+
+	return {
+		extractedAmount: amountMatch ? parseFloat(amountMatch[1].replace(/,/g, "")) : undefined,
+		extractedBalance: balanceMatch ? parseFloat(balanceMatch[1].replace(/,/g, "")) : undefined,
+		extractedTransactionCost: costMatch ? parseFloat(costMatch[1].replace(/,/g, "")) : undefined
+	};
+}
+
 
 
 export function extractFulizaDetails(message: string) {
@@ -65,8 +77,8 @@ export function extractReceiveDetails(message: string) {
 export function extractSendDetails(message: string) {
 	const patterns = [
 		{ regex: /paid to (.+?)\./, fields: ['counterparty'] },
-		{ regex: /sent to (.+?) for account (.+?) on/, fields: ['counterparty', 'number'] },
-		{ regex: /sent to (.+?) (\d+) on/, fields: ['counterparty', 'account'] },
+		{ regex: /sent to (.+?) for account (.+?) on/, fields: ['counterparty', 'account'] },
+		{ regex: /sent to (.+?) (\d+) on/, fields: ['counterparty', 'number'] },
 		{ regex: /sent to (.+?) on/, fields: ['counterparty'] }
 	];
 
@@ -84,7 +96,7 @@ export function extractSendDetails(message: string) {
 	}
 
 	return {
-		extractedAmount: result.account,
+		extractedAccount: result.account,
 		extractedCounterParty: result.counterparty,
 		extractedNumber: result.number
 	};
@@ -92,5 +104,5 @@ export function extractSendDetails(message: string) {
 
 export function extractWithdrawDetails(message: string) {
 	const withdrawMatch = message.match(/-\s*(.+?)\s*New M-PESA balance/);
-	return withdrawMatch ? withdrawMatch[1].trim() : null;
+	return withdrawMatch ? withdrawMatch[1].trim() : "Cash Withdrawal";
 }

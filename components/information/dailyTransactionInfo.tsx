@@ -1,5 +1,8 @@
-import { MpesaParced } from "@/interface/mpesa"
+import { transactionButtonType } from "@/app/(transactions)"
+import useSnackbarContext from "@/contexts/SnackbarContext"
+import { MpesaParced, MpesaTransactionType } from "@/interface/mpesa"
 import moment from "moment"
+import { useEffect, useState } from "react"
 import { View } from "react-native"
 import LightText from "../text/lightText"
 import TransInfo from "./transInfo"
@@ -8,9 +11,44 @@ interface DailyTransactionInfoProps {
 	date: string
 	transactions: MpesaParced[]
 	length: number
+	transactionType?: transactionButtonType
 }
 
-export default function DailyTransactionInfo({ date, transactions, length }: DailyTransactionInfoProps) {
+export default function DailyTransactionInfo({ date, transactions, length, transactionType }: DailyTransactionInfoProps) {
+
+	const { showSnackbar } = useSnackbarContext()
+	const moneyInTransactions: MpesaTransactionType[] = ["receive"]
+	const moneyOutTransactions: MpesaTransactionType[] = ["send", "fuliza", "payFuliza", "partialFulizaPay", "withdraw"]
+
+	const [transToDisplay, setTransToDisplay] = useState<MpesaParced[]>([])
+
+	useEffect(() => {
+		switch (transactionType) {
+			case "all":
+				setTransToDisplay(transactions)
+				break;
+
+			case "moneyIn":
+				setTransToDisplay(
+					transactions.filter(t => moneyInTransactions.includes(t.type))
+				)
+				break;
+
+			case "moneyOut":
+				setTransToDisplay(
+					transactions.filter(t => moneyOutTransactions.includes(t.type))
+				)
+				break;
+
+			default:
+				showSnackbar({
+					message: transactionType === undefined ? "No Transaction Type" : `Invalid Transaction Type: ${transactionType}`,
+					isError: true
+				})
+				break;
+		}
+	}, [transactions, transactionType])
+
 
 	return (
 		<View className="mb-4">
@@ -21,14 +59,15 @@ export default function DailyTransactionInfo({ date, transactions, length }: Dai
 				/>
 			</View>
 			{length ? (
-				transactions.map((tx, i) => (
-					<TransInfo
-						key={`${date}-${i}`}
-						item={tx}
-						index={i}
-						length={length}
-					/>
-				))
+				transToDisplay
+					.map((tx, i) => (
+						<TransInfo
+							key={`${date}-${i}`}
+							item={tx}
+							index={i}
+							length={length}
+						/>
+					))
 			) : (
 				<View className="h-20 justify-center items-center">
 					<LightText text="No Transactions Made This Day" />

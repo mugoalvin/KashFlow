@@ -4,11 +4,11 @@ import { MpesaParced } from "@/interface/mpesa";
 import { fetchMonthTransaction, groupDatesByWeek } from "@/utils/functions";
 import { useEffect, useMemo, useState } from "react";
 import { ScrollView, View } from "react-native";
-import { ActivityIndicator } from "react-native-paper";
+import { ActivityIndicator, Text } from "react-native-paper";
+import MonthyTransactionSummary from "../ui/summary/monthly";
 import WeeklyTransactionSummary from "../ui/summary/weekly";
 import SelectWeekDropDown from "../userInput/selectWeekDropDown";
 import WeeklyTransactionInfo from "./weeklyTransactionInfo";
-import MonthyTransactionSummary from "../ui/summary/monthly";
 
 interface MonthlyTransactionInfoProps {
 	monthDateString: string
@@ -91,14 +91,35 @@ export default function MonthlyTransactionInfo({ monthDateString, initialData = 
 		)
 	}
 
+	const currentWeek = sections[selectedWeekIndex]
+
 	return (
 		<ScrollView
 			className="flex-1 my-4 w-[100%]"
 		>
 			<SelectWeekDropDown items={sections} setSelectedWeekIndex={setSelectedWeekIndex} selectedWeekIndex={selectedWeekIndex} />
-			<WeeklyTransactionInfo item={sections[selectedWeekIndex]} />
-			<WeeklyTransactionSummary year={Number(year)} month={Number(month)} dateInWeek={sections[selectedWeekIndex].data.reverse()[0].date} />
-			<MonthyTransactionSummary year={Number(year)} month={Number(month)} />
+
+			{currentWeek ? (
+				<>
+					<WeeklyTransactionInfo item={currentWeek} />
+
+					{currentWeek.data && currentWeek.data.length > 0 && (
+						<WeeklyTransactionSummary
+							year={Number(year)}
+							month={Number(month)}
+							// use non-destructive access to the last date
+							dateInWeek={currentWeek.data[currentWeek.data.length - 1].date}
+						/>
+					)}
+
+					<MonthyTransactionSummary year={Number(year)} month={Number(month)} />
+				</>
+			) : (
+				<View className="flex-1 items-center justify-center p-4">
+					<Text>No transactions for this month.</Text>
+				</View>
+			)}
+
 		</ScrollView>
 	)
 }

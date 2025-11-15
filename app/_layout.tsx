@@ -1,23 +1,17 @@
+import FallBack from '@/components/views/suspenceFallback';
+import { DialogProvider } from '@/contexts/DialogContext';
+import { SnackbarProvider } from '@/contexts/SnackbarContext';
+import { darkCustomTheme, lightCustomTheme } from '@/utils/colors';
 import { useMaterial3Theme } from '@pchmn/expo-material3-theme';
+import { PortalHost } from '@rn-primitives/portal';
+import { Icon, Label, NativeTabs } from 'expo-router/unstable-native-tabs';
+import { SQLiteProvider } from 'expo-sqlite';
+import { Suspense } from 'react';
 import { useColorScheme } from 'react-native';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import { MD3DarkTheme, MD3LightTheme, PaperProvider } from 'react-native-paper';
 import { ThemeContext } from '../contexts/ThemeContext';
 import '../global.css';
-
-import { SnackbarProvider } from '@/contexts/SnackbarContext';
-import { darkCustomTheme, lightCustomTheme } from '@/utils/colors';
-import { requestSmsPermission } from '@/utils/permissions';
-import { Suspense, useEffect } from 'react';
-
-import FallBack from '@/components/views/suspenceFallback';
-import { DialogProvider } from '@/contexts/DialogContext';
-import { Icon, Label, NativeTabs } from 'expo-router/unstable-native-tabs';
-import { PortalHost } from '@rn-primitives/portal';
-
-// import { Ionicons } from '@expo/vector-icons';
-// import { Tabs } from 'expo-router';
-import { SQLiteProvider } from 'expo-sqlite';
 
 const DATABASE_NAME = 'kashflow.db'
 
@@ -33,10 +27,6 @@ export default function RootLayout() {
 		}
 	}
 
-	useEffect(() => {
-		requestSmsPermission()
-	}, [])
-
 	return (
 		<Suspense fallback={<FallBack />}>
 			<SQLiteProvider databaseName={DATABASE_NAME} options={{ enableChangeListener: true }} useSuspense>
@@ -45,49 +35,6 @@ export default function RootLayout() {
 						<DialogProvider>
 							<SnackbarProvider>
 								<GestureHandlerRootView>
-
-									{/* <Tabs
-										initialRouteName='(home)'
-										screenOptions={{
-											headerStyle: {
-												backgroundColor: theme[colorScheme].elevation.level1
-											},
-											headerTintColor: theme[colorScheme].onBackground,
-											headerShadowVisible: false,
-											headerShown: false,
-
-											tabBarStyle: {
-												height: 60,
-												alignItems: 'center',
-												backgroundColor: theme[colorScheme].elevation.level1,
-												borderTopColor: theme[colorScheme].elevation.level1,
-											},
-											tabBarActiveTintColor: theme[colorScheme].tertiary,
-											tabBarInactiveTintColor: theme[colorScheme].onBackground
-										}}
-									>
-										<Tabs.Screen
-											name='(home)'
-											options={{
-												title: "Dashboard",
-												tabBarLabel: "Home",
-												tabBarIcon: ({ color, size, focused }) => <Ionicons name={focused ? 'home' : 'home-outline'} color={color} size={size - 10} />
-											}}
-										/>
-										<Tabs.Screen
-											name='(transactions)'
-											options={{
-												title: "Analysis",
-												tabBarIcon: ({ color, size, focused }) => <Ionicons name={focused ? 'notifications' : 'notifications-outline'} color={color} size={size - 10} />
-											}} />
-										<Tabs.Screen
-											name='settings'
-											options={{
-												title: "Settings",
-												tabBarIcon: ({ color, size, focused }) => <Ionicons name={focused ? 'settings' : 'settings-outline'} color={color} size={size - 10} />
-											}}
-										/>
-									</Tabs> */}
 
 									<NativeTabs
 										tintColor={theme[colorScheme].tertiary}
@@ -122,3 +69,48 @@ export default function RootLayout() {
 		</Suspense>
 	)
 }
+
+
+
+{/* <Tabs
+	initialRouteName='(home)'
+	screenOptions={{
+		headerStyle: {
+			backgroundColor: theme[colorScheme].elevation.level1
+		},
+		headerTintColor: theme[colorScheme].onBackground,
+		headerShadowVisible: false,
+		headerShown: false,
+
+		tabBarStyle: {
+			height: 60,
+			alignItems: 'center',
+			backgroundColor: theme[colorScheme].elevation.level1,
+			borderTopColor: theme[colorScheme].elevation.level1,
+		},
+		tabBarActiveTintColor: theme[colorScheme].tertiary,
+		tabBarInactiveTintColor: theme[colorScheme].onBackground
+	}}
+>
+	<Tabs.Screen
+		name='(home)'
+		options={{
+			title: "Dashboard",
+			tabBarLabel: "Home",
+			tabBarIcon: ({ color, size, focused }) => <Ionicons name={focused ? 'home' : 'home-outline'} color={color} size={size - 10} />
+		}}
+	/>
+	<Tabs.Screen
+		name='(transactions)'
+		options={{
+			title: "Analysis",
+			tabBarIcon: ({ color, size, focused }) => <Ionicons name={focused ? 'notifications' : 'notifications-outline'} color={color} size={size - 10} />
+		}} />
+	<Tabs.Screen
+		name='settings'
+		options={{
+			title: "Settings",
+			tabBarIcon: ({ color, size, focused }) => <Ionicons name={focused ? 'settings' : 'settings-outline'} color={color} size={size - 10} />
+		}}
+	/>
+</Tabs> */}
