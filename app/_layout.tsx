@@ -4,34 +4,37 @@ import { SnackbarProvider } from '@/contexts/SnackbarContext';
 import { darkCustomTheme, lightCustomTheme } from '@/utils/colors';
 import { useMaterial3Theme } from '@pchmn/expo-material3-theme';
 import { PortalHost } from '@rn-primitives/portal';
-import { Icon, Label, NativeTabs } from 'expo-router/unstable-native-tabs';
+import { Icon, Label, NativeTabs } from "expo-router/unstable-native-tabs";
 import { SQLiteProvider } from 'expo-sqlite';
-import { Suspense } from 'react';
+import { Suspense, useEffect, useMemo } from 'react';
 import { useColorScheme } from 'react-native';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import { MD3DarkTheme, MD3LightTheme, PaperProvider } from 'react-native-paper';
 import { ThemeContext } from '../contexts/ThemeContext';
 import '../global.css';
 
-const DATABASE_NAME = 'kashflow.db'
-
 export default function RootLayout() {
 	const { theme, resetTheme, updateTheme } = useMaterial3Theme()
 	const colorScheme = useColorScheme() || 'light'
 
-	const paperTheme = {
+	const paperTheme = useMemo(() => ({
 		...(colorScheme === 'dark' ? MD3DarkTheme : MD3LightTheme),
 		colors: {
 			...(colorScheme === 'dark' ? theme.dark : theme.light),
 			...(colorScheme === 'dark' ? darkCustomTheme : lightCustomTheme)
 		}
-	}
+	}), [colorScheme, theme.dark, theme.light])
+
+	useEffect(() => {
+		console.log(
+			`PaperTheme Changed. Dark Mode: ${paperTheme.dark}`)
+	}, [paperTheme])
 
 	return (
-		<Suspense fallback={<FallBack />}>
-			<SQLiteProvider databaseName={DATABASE_NAME} options={{ enableChangeListener: true }} useSuspense>
-				<ThemeContext.Provider value={{ resetTheme, updateTheme }}>
-					<PaperProvider theme={paperTheme}>
+		<ThemeContext.Provider value={{ resetTheme, updateTheme }}>
+			<PaperProvider theme={paperTheme}>
+				<Suspense fallback={<FallBack />}>
+					<SQLiteProvider databaseName={process.env.EXPO_PUBLIC_DB_FILE_NAME as string} options={{ enableChangeListener: true }} useSuspense>
 						<DialogProvider>
 							<SnackbarProvider>
 								<GestureHandlerRootView>
@@ -63,10 +66,10 @@ export default function RootLayout() {
 							</SnackbarProvider>
 						</DialogProvider>
 						<PortalHost />
-					</PaperProvider>
-				</ThemeContext.Provider>
-			</SQLiteProvider>
-		</Suspense>
+					</SQLiteProvider>
+				</Suspense>
+			</PaperProvider>
+		</ThemeContext.Provider>
 	)
 }
 

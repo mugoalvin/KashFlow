@@ -18,7 +18,7 @@ export default function DailyTransactionInfo({ date, transactions, length, trans
 
 	const { showSnackbar } = useSnackbarContext()
 	const moneyInTransactions: MpesaTransactionType[] = ["receive"]
-	const moneyOutTransactions: MpesaTransactionType[] = ["send", "fuliza", "payFuliza", "partialFulizaPay", "withdraw"]
+	const moneyOutTransactions: MpesaTransactionType[] = ["airtime", "send", "fuliza", "payFuliza", "partialFulizaPay", "withdraw"]
 
 	const [transToDisplay, setTransToDisplay] = useState<MpesaParced[]>([])
 
