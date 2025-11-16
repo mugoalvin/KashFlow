@@ -5,7 +5,7 @@ import { getNavData, removeNavData } from '@/utils/navigationCache';
 import { useLocalSearchParams, useNavigation } from "expo-router";
 import { useEffect, useLayoutEffect, useState } from "react";
 import { FlatList } from "react-native";
-import { ActivityIndicator, Text } from "react-native-paper";
+import { ActivityIndicator } from "react-native-paper";
 import { transactionButtonType } from ".";
 
 export default function AnalysisMore() {

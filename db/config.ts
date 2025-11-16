@@ -1,7 +1,5 @@
 import { drizzle } from 'drizzle-orm/expo-sqlite';
 import { openDatabaseSync } from 'expo-sqlite';
 
-const DATABASE_NAME = 'kashflow.db'
-
-const expoDb = openDatabaseSync(DATABASE_NAME)
+const expoDb = openDatabaseSync(process.env.EXPO_PUBLIC_DB_FILE_NAME as string)
 export const sqliteDB = drizzle(expoDb)
