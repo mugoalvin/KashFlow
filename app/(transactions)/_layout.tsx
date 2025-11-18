@@ -19,7 +19,6 @@ export default function AnalysisLayout() {
 				}
 			}}
 		>
-			{/* <Stack.Screen name="(transactions_tabs)" options={{ title: "Transactions" }} /> */}
 			<Stack.Screen name="index" options={{ title: "Transactions" }} />
 			<Stack.Screen name="analysis_more" options={{ title: "Analysis 2" }} />
 		</Stack >
