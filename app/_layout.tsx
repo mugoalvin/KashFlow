@@ -1,10 +1,10 @@
+import NativeBottomTab from '@/components/nav/bottom_nav';
 import FallBack from '@/components/views/suspenceFallback';
 import { DialogProvider } from '@/contexts/DialogContext';
 import { SnackbarProvider } from '@/contexts/SnackbarContext';
 import { darkCustomTheme, lightCustomTheme } from '@/utils/colors';
 import { useMaterial3Theme } from '@pchmn/expo-material3-theme';
 import { PortalHost } from '@rn-primitives/portal';
-import { Icon, Label, NativeTabs } from "expo-router/unstable-native-tabs";
 import { SQLiteProvider } from 'expo-sqlite';
 import { Suspense, useMemo } from 'react';
 import { useColorScheme } from 'react-native';
@@ -33,33 +33,7 @@ export default function RootLayout() {
 						<DialogProvider>
 							<SnackbarProvider>
 								<GestureHandlerRootView>
-
-									{/* <PaperBottomNavigation /> */}
-
-									<NativeTabs
-										key={colorScheme}
-										tintColor={paperTheme.colors.tertiary}
-										backgroundColor={theme[colorScheme].elevation.level1}
-										labelVisibilityMode='selected'
-										indicatorColor={paperTheme.colors.surfaceVariant}
-									>
-										<NativeTabs.Trigger name='(home)'>
-											<Label>Home</Label>
-											<Icon drawable='home' />
-										</NativeTabs.Trigger>
-
-										<NativeTabs.Trigger name='(transactions)'>
-											<Label>Transactions</Label>
-											<Icon drawable='ic_menu_recent_history' />
-										</NativeTabs.Trigger>
-
-										<NativeTabs.Trigger name='settings'>
-											<Label>Settings</Label>
-											<Icon drawable='ic_menu_manage' />
-										</NativeTabs.Trigger>
-
-									</NativeTabs>
-
+									<NativeBottomTab />
 								</GestureHandlerRootView>
 							</SnackbarProvider>
 						</DialogProvider>
