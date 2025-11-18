@@ -6,7 +6,7 @@ import { darkCustomTheme, lightCustomTheme } from '@/utils/colors';
 import { useMaterial3Theme } from '@pchmn/expo-material3-theme';
 import { PortalHost } from '@rn-primitives/portal';
 import { SQLiteProvider } from 'expo-sqlite';
-import { Suspense, useEffect, useMemo } from 'react';
+import { Suspense, useMemo } from 'react';
 import { useColorScheme } from 'react-native';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import { MD3DarkTheme, MD3LightTheme, PaperProvider } from 'react-native-paper';
@@ -24,11 +24,6 @@ export default function RootLayout() {
 			...(colorScheme === 'dark' ? darkCustomTheme : lightCustomTheme)
 		}
 	}), [colorScheme, theme.dark, theme.light])
-
-	useEffect(() => {
-		console.log(
-			`PaperTheme Changed. Dark Mode: ${paperTheme.dark}`)
-	}, [paperTheme])
 
 	return (
 		<ThemeContext.Provider value={{ resetTheme, updateTheme }}>
@@ -50,6 +45,29 @@ export default function RootLayout() {
 	)
 }
 
+
+{/* <NativeTabs
+	tintColor={theme[colorScheme].tertiary}
+	backgroundColor={theme[colorScheme].elevation.level1}
+	labelVisibilityMode='selected'
+	indicatorColor={theme[colorScheme].surfaceVariant}
+>
+	<NativeTabs.Trigger name='(home)'>
+		<Label>Home</Label>
+		<Icon drawable='home' />
+	</NativeTabs.Trigger>
+
+	<NativeTabs.Trigger name='(transactions)'>
+		<Label>Transactions</Label>
+		<Icon drawable='ic_menu_recent_history' />
+	</NativeTabs.Trigger>
+
+	<NativeTabs.Trigger name='settings'>
+		<Label>Settings</Label>
+		<Icon drawable='ic_menu_manage' />
+	</NativeTabs.Trigger>
+
+</NativeTabs> */}
 
 
 {/* <Tabs
