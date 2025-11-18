@@ -1,7 +1,7 @@
 import { TransactionSortMode } from "@/components/text/interface";
 import { mpesaMessages } from "@/db/sqlite";
 import { Mpesa, MpesaParced, MpesaTransactionType, typeMap } from "@/interface/mpesa";
-import { desc, sql } from "drizzle-orm";
+import { desc, eq, isNull, or, sql } from "drizzle-orm";
 import { ExpoSQLiteDatabase } from "drizzle-orm/expo-sqlite";
 import moment from "moment";
 import { NativeModules } from 'react-native';
@@ -62,7 +62,7 @@ export function parseMpesaMessage(messageID: string, message: string, date: stri
 		const { extractedAmount, extractedBalance, extractedTransactionCost } = extractAirtimeDetails(message)
 		counterparty = "Airtime Purchase"
 		amount = extractedAmount
-		balance =  extractedBalance
+		balance = extractedBalance
 		transactionCost = extractedTransactionCost
 	}
 
@@ -254,12 +254,18 @@ export async function syncDatabase(db: ExpoSQLiteDatabase) {
 		const lastId = await fetchLastTransactionId(db)
 		const transactions = await fetchLatestTransactions(lastId)
 
-
 		await db.transaction(async (tx) => {
 			for (const transaction of transactions) { // @ts-ignore
 				await tx.insert(mpesaMessages).values(transaction);
 			}
 		})
+
+		await db.delete(mpesaMessages).where(
+			or(
+				eq(mpesaMessages.counterparty, ""),
+				isNull(mpesaMessages.counterparty)
+			)
+		)
 	}
 	catch (e: any) {
 		console.error("Syncronization Failure: ", e.message)
