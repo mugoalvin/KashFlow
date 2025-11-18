@@ -19,3 +19,10 @@ export const mpesaMessages = sqliteTable('mpesaMessages', {
 	transactionCost: integer('transactionCost'),
 	type: text('type')
 })
+
+export const categories = sqliteTable('categories', {
+	id: integer('id').primaryKey({ autoIncrement: true }),
+	title: text('title'),
+	icons: text('icons'),
+	name: text('name')
+})
