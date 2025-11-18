@@ -1,6 +1,5 @@
 import IndexLayout from '@/app/(home)/_layout';
 import AnalysisLayout from '@/app/(transactions)/_layout';
-import Transactions from '@/app/(transactions)/_layout';
 
 import Settings from '@/app/settings';
 

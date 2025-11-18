@@ -20,5 +20,5 @@ export default function Settings() {
 	-Horizontal Scrollability
 	-Animation Type
 5. Home Screens Balance Visibility Preference
-
+6. Bottom Tab Navigation label visibility mode
 */}
