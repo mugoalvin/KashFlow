@@ -1,4 +1,4 @@
-import NativeBottomTab from '@/components/nav/bottom_nav';
+import NativeBottomTab from '@/components/navigation/native_bottom_tab';
 import FallBack from '@/components/views/suspenceFallback';
 import { DialogProvider } from '@/contexts/DialogContext';
 import { SnackbarProvider } from '@/contexts/SnackbarContext';
@@ -44,71 +44,3 @@ export default function RootLayout() {
 		</ThemeContext.Provider>
 	)
 }
-
-
-{/* <NativeTabs
-	tintColor={theme[colorScheme].tertiary}
-	backgroundColor={theme[colorScheme].elevation.level1}
-	labelVisibilityMode='selected'
-	indicatorColor={theme[colorScheme].surfaceVariant}
->
-	<NativeTabs.Trigger name='(home)'>
-		<Label>Home</Label>
-		<Icon drawable='home' />
-	</NativeTabs.Trigger>
-
-	<NativeTabs.Trigger name='(transactions)'>
-		<Label>Transactions</Label>
-		<Icon drawable='ic_menu_recent_history' />
-	</NativeTabs.Trigger>
-
-	<NativeTabs.Trigger name='settings'>
-		<Label>Settings</Label>
-		<Icon drawable='ic_menu_manage' />
-	</NativeTabs.Trigger>
-
-</NativeTabs> */}
-
-
-{/* <Tabs
-	initialRouteName='(home)'
-	screenOptions={{
-		headerStyle: {
-			backgroundColor: theme[colorScheme].elevation.level1
-		},
-		headerTintColor: theme[colorScheme].onBackground,
-		headerShadowVisible: false,
-		headerShown: false,
-
-		tabBarStyle: {
-			height: 60,
-			alignItems: 'center',
-			backgroundColor: theme[colorScheme].elevation.level1,
-			borderTopColor: theme[colorScheme].elevation.level1,
-		},
-		tabBarActiveTintColor: theme[colorScheme].tertiary,
-		tabBarInactiveTintColor: theme[colorScheme].onBackground
-	}}
->
-	<Tabs.Screen
-		name='(home)'
-		options={{
-			title: "Dashboard",
-			tabBarLabel: "Home",
-			tabBarIcon: ({ color, size, focused }) => <Ionicons name={focused ? 'home' : 'home-outline'} color={color} size={size - 10} />
-		}}
-	/>
-	<Tabs.Screen
-		name='(transactions)'
-		options={{
-			title: "Analysis",
-			tabBarIcon: ({ color, size, focused }) => <Ionicons name={focused ? 'notifications' : 'notifications-outline'} color={color} size={size - 10} />
-		}} />
-	<Tabs.Screen
-		name='settings'
-		options={{
-			title: "Settings",
-			tabBarIcon: ({ color, size, focused }) => <Ionicons name={focused ? 'settings' : 'settings-outline'} color={color} size={size - 10} />
-		}}
-	/>
-</Tabs> */}
