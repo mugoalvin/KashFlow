@@ -6,7 +6,7 @@ import { useMaterial3Theme } from '@pchmn/expo-material3-theme';
 import { PortalHost } from '@rn-primitives/portal';
 import { Icon, Label, NativeTabs } from "expo-router/unstable-native-tabs";
 import { SQLiteProvider } from 'expo-sqlite';
-import { Suspense, useEffect, useMemo } from 'react';
+import { Suspense, useMemo } from 'react';
 import { useColorScheme } from 'react-native';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import { MD3DarkTheme, MD3LightTheme, PaperProvider } from 'react-native-paper';
@@ -24,11 +24,6 @@ export default function RootLayout() {
 			...(colorScheme === 'dark' ? darkCustomTheme : lightCustomTheme)
 		}
 	}), [colorScheme, theme.dark, theme.light])
-
-	useEffect(() => {
-		console.log(
-			`PaperTheme Changed. Dark Mode: ${paperTheme.dark}`)
-	}, [paperTheme])
 
 	return (
 		<ThemeContext.Provider value={{ resetTheme, updateTheme }}>

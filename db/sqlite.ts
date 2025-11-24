@@ -20,9 +20,10 @@ export const mpesaMessages = sqliteTable('mpesaMessages', {
 	type: text('type')
 })
 
-export const categories = sqliteTable('categories', {
+export const categoriesTable = sqliteTable('categories', {
 	id: integer('id').primaryKey({ autoIncrement: true }),
-	title: text('title'),
+	title: text('title').unique(),
+	enumId: integer("enumId"),
 	icons: text('icons'),
 	name: text('name')
 })

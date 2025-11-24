@@ -1,10 +1,12 @@
-import { TransactionSortMode } from "@/components/text/interface";
-import { mpesaMessages } from "@/db/sqlite";
+import { Category, TransactionSortMode } from "@/components/text/interface";
+import { sqliteDB } from "@/db/config";
+import { categoriesTable, mpesaMessages } from "@/db/sqlite";
 import { Mpesa, MpesaParced, MpesaTransactionType, typeMap } from "@/interface/mpesa";
 import { desc, sql } from "drizzle-orm";
 import { ExpoSQLiteDatabase } from "drizzle-orm/expo-sqlite";
 import moment from "moment";
 import { NativeModules } from 'react-native';
+import { categories } from "./constants";
 import { extractAirtimeDetails, extractAmount, extractFulizaDetails, extractPartialFulizaPay, extractPayFulizaDetails, extractReceiveDetails, extractSendDetails, extractWithdrawDetails } from "./extractDetails";
 
 const { SmsReader } = NativeModules
@@ -62,7 +64,7 @@ export function parseMpesaMessage(messageID: string, message: string, date: stri
 		const { extractedAmount, extractedBalance, extractedTransactionCost } = extractAirtimeDetails(message)
 		counterparty = "Airtime Purchase"
 		amount = extractedAmount
-		balance =  extractedBalance
+		balance = extractedBalance
 		transactionCost = extractedTransactionCost
 	}
 
@@ -260,6 +262,12 @@ export async function syncDatabase(db: ExpoSQLiteDatabase) {
 				await tx.insert(mpesaMessages).values(transaction);
 			}
 		})
+
+		await db.transaction(async tx => {
+			for (const category of categories) {
+				await tx.insert(categoriesTable).values(category)
+			}
+		})
 	}
 	catch (e: any) {
 		console.error("Syncronization Failure: ", e.message)
@@ -387,4 +395,19 @@ export function chunkArray<T>(arr: T[], size: number) {
 		result.push(arr.slice(i, i + size));
 	}
 	return result;
+}
+
+
+export async function addCategoryToDatabase(category: Category) {
+	try {
+		await sqliteDB
+			.insert(categoriesTable)
+			.values({
+				title: category.name,
+				name: category.name,
+				icons: category.icon
+			})
+	} catch (err) {
+		console.error(err)
+	}
 }

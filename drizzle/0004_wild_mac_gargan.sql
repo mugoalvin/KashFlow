@@ -1,0 +1,1 @@
+CREATE UNIQUE INDEX `categories_title_unique` ON `categories` (`title`);

@@ -22,6 +22,27 @@
       "when": 1762416040422,
       "tag": "0002_organic_network",
       "breakpoints": true
+    },
+    {
+      "idx": 3,
+      "version": "6",
+      "when": 1763553603231,
+      "tag": "0003_loving_sersi",
+      "breakpoints": true
+    },
+    {
+      "idx": 4,
+      "version": "6",
+      "when": 1763555842954,
+      "tag": "0004_wild_mac_gargan",
+      "breakpoints": true
+    },
+    {
+      "idx": 5,
+      "version": "6",
+      "when": 1763556141715,
+      "tag": "0005_rare_wallow",
+      "breakpoints": true
     }
   ]
 }
