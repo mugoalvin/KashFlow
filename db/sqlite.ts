@@ -1,7 +1,7 @@
 import { integer, sqliteTable, text } from 'drizzle-orm/sqlite-core'
 
 export const mpesaMessages = sqliteTable('mpesaMessages', {
-	id: integer('id').primaryKey({ autoIncrement: true }),
+	id: integer('id').primaryKey({ autoIncrement: false }),
 	counterparty: text('counterparty'),
 	amount: integer('amount'),
 	balance: integer('balance'),

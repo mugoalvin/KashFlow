@@ -9,7 +9,6 @@ import { Button } from "react-native-paper";
 
 
 export default function Settings() {
-	const { resetTheme, updateTheme } = useThemeContext()
 	const statusBarHeight = StatusBar.currentHeight
 	return (
 		<Body style={{ paddingTop: statusBarHeight } as any} className="items-center justify-center gap-3">
@@ -28,5 +27,5 @@ export default function Settings() {
 	-Horizontal Scrollability
 	-Animation Type
 5. Home Screens Balance Visibility Preference
-
+6. Bottom Tab Navigation label visibility mode
 */}
