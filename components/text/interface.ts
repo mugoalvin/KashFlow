@@ -15,3 +15,9 @@ export interface SortedTransaction {
 	totalSent: number
 	transactionCount: number
 }
+
+export interface Category {
+	title: string
+	name: string
+	icon?: string
+}
