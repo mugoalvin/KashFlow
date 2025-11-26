@@ -12,6 +12,7 @@ import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import { MD3DarkTheme, MD3LightTheme, PaperProvider } from 'react-native-paper';
 import { ThemeContext } from '../contexts/ThemeContext';
 import '../global.css';
+import { ModalProvider } from '@/contexts/ModalContext.';
 
 export default function RootLayout() {
 	const { theme, resetTheme, updateTheme } = useMaterial3Theme()
@@ -30,13 +31,15 @@ export default function RootLayout() {
 			<PaperProvider theme={paperTheme}>
 				<Suspense fallback={<FallBack />}>
 					<SQLiteProvider databaseName={process.env.EXPO_PUBLIC_DB_FILE_NAME as string} options={{ enableChangeListener: true }} useSuspense>
-						<DialogProvider>
-							<SnackbarProvider>
-								<GestureHandlerRootView>
-									<NativeBottomTab />
-								</GestureHandlerRootView>
-							</SnackbarProvider>
-						</DialogProvider>
+						<ModalProvider>
+							<DialogProvider>
+								<SnackbarProvider>
+									<GestureHandlerRootView>
+										<NativeBottomTab />
+									</GestureHandlerRootView>
+								</SnackbarProvider>
+							</DialogProvider>
+						</ModalProvider>
 						<PortalHost />
 					</SQLiteProvider>
 				</Suspense>
