@@ -53,6 +53,7 @@ export default function AppCarousel({ data }: AppCarouselProps) {
 						))}
 					</View>
 				)}
+				loop={false}	
 			/>
 
 			<Pagination.Custom

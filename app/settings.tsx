@@ -1,5 +1,12 @@
 import Body from "@/components/views/body";
-import { StatusBar } from "react-native";
+import useSnackbarContext from "@/contexts/SnackbarContext";
+import useThemeContext from "@/contexts/ThemeContext";
+import { sqliteDB } from "@/db/config";
+import { categoriesTable } from "@/db/sqlite";
+import { StatusBar, Vibration } from "react-native";
+import { Button } from "react-native-paper";
+
+
 
 export default function Settings() {
 	const statusBarHeight = StatusBar.currentHeight

@@ -1,12 +1,13 @@
 import useDialogContext from '@/contexts/DialogContext'
+import useModalContext from '@/contexts/ModalContext.'
 import { useAnimations } from '@/contexts/useAnimations'
 import useReduceMotion from '@/hooks/useReduceMotion'
 import { MpesaParced } from '@/interface/mpesa'
 import FontAwesome6 from '@expo/vector-icons/FontAwesome6'
 import React from 'react'
-import { Pressable, View } from 'react-native'
+import { Pressable, Vibration, View } from 'react-native'
 import { Divider, Icon, Text, useTheme } from 'react-native-paper'
-import Animated, { FadeInLeft } from 'react-native-reanimated'
+import Animated, { FadeInLeft, FadeOutRight } from 'react-native-reanimated'
 import LightText from '../text/lightText'
 
 
@@ -19,6 +20,8 @@ interface TransInfoProps {
 export default function TransInfo({ item, index, length }: TransInfoProps) {
 	const theme = useTheme()
 	const { showDialog } = useDialogContext()
+	const { showModal } = useModalContext()
+
 
 	const counterParty = (item.counterparty)?.toLowerCase().split(' ').map(word =>
 		word.slice(0, 1).toUpperCase().concat(word.slice(1)).concat(' ')
@@ -28,11 +31,6 @@ export default function TransInfo({ item, index, length }: TransInfoProps) {
 		: ''
 
 	const AnimatedPressable = Animated.createAnimatedComponent(Pressable)
-
-	// function getTimeFromTransaction(timeString: string): string {
-	// 	return moment(timeString, "DD/MM/YY [at] h:mm A").fromNow();
-	// }
-
 
 	// Animation Preferences
 	const reduceMotion = useReduceMotion()
@@ -51,17 +49,21 @@ export default function TransInfo({ item, index, length }: TransInfoProps) {
 					color: theme.colors.secondaryContainer,
 					foreground: true
 				}}
-				className={`flex-row justify-between p-4 ${length === 1
-					? 'rounded-3xl'
-					: index === 0
-						? 'rounded-s-3xl rounded-e-md'
-						: index + 1 === length
-							? 'rounded-e-3xl'
-							: 'rounded-md'
-					}`}
+
+				className={
+					`flex-row justify-between p-4
+						${length === 1
+						? 'rounded-3xl'
+						: index === 0
+							? 'rounded-s-3xl rounded-e-md'
+							: index + 1 === length
+								? 'rounded-e-3xl rounded-t-md'
+								: 'rounded-md'
+					}`
+				}
 
 				entering={animationEnabled ? FadeInLeft.duration(500).delay(index * 100) : undefined}
-				// exiting={animationEnabled ? FadeOutRight.duration(500).delay(index * 80) : undefined}
+				exiting={animationEnabled ? FadeOutRight.duration(500).delay(index * 80) : undefined}
 				style={{
 					backgroundColor: theme.colors.elevation.level1
 				}}
@@ -73,10 +75,16 @@ export default function TransInfo({ item, index, length }: TransInfoProps) {
 						action: () => { }
 					}]
 				})}
+				onLongPress={() => {
+					Vibration.vibrate(75)
+					showModal({
+						visibility: true,
+						transaction: item
+					})
+				}}
 			>
 				<View className='flex-1 pe-2'>
-					<Text numberOfLines={1} ellipsizeMode='tail'>{index + 1}. {counterParty}</Text>
-					{/* <LightText className="ms-4 text-sm" text={`${transactionType} : ${getTimeFromTransaction(item.rawTime!)}`} /> */}
+					<Text numberOfLines={1} ellipsizeMode='tail'>{counterParty}</Text>
 					<LightText className="ms-4 text-sm" text={`${transactionType} : ${item.parsedTime}`} />
 				</View>
 				<View className='flex-row justify-between min-w-24'>
@@ -87,7 +95,8 @@ export default function TransInfo({ item, index, length }: TransInfoProps) {
 							color={item.type === 'receive' ? "green" : "red"}
 						/>
 					}
-						size={16} />
+						size={16}
+					/>
 					<Text>Ksh.{item.amount}</Text>
 				</View>
 			</AnimatedPressable>

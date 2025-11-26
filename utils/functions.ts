@@ -1,10 +1,12 @@
-import { TransactionSortMode } from "@/components/text/interface";
-import { mpesaMessages } from "@/db/sqlite";
+import { Category, TransactionSortMode } from "@/components/text/interface";
+import { sqliteDB } from "@/db/config";
+import { categoriesTable, mpesaMessages } from "@/db/sqlite";
 import { Mpesa, MpesaParced, MpesaTransactionType, typeMap } from "@/interface/mpesa";
 import { desc, eq, isNull, or, sql } from "drizzle-orm";
 import { ExpoSQLiteDatabase } from "drizzle-orm/expo-sqlite";
 import moment from "moment";
 import { NativeModules } from 'react-native';
+import { categories } from "./constants";
 import { extractAirtimeDetails, extractAmount, extractFulizaDetails, extractPartialFulizaPay, extractPayFulizaDetails, extractReceiveDetails, extractSendDetails, extractWithdrawDetails } from "./extractDetails";
 
 const { SmsReader } = NativeModules
@@ -393,4 +395,19 @@ export function chunkArray<T>(arr: T[], size: number) {
 		result.push(arr.slice(i, i + size));
 	}
 	return result;
+}
+
+
+export async function addCategoryToDatabase(category: Category) {
+	try {
+		await sqliteDB
+			.insert(categoriesTable)
+			.values({
+				title: category.name,
+				name: category.name,
+				icons: category.icon
+			})
+	} catch (err) {
+		console.error(err)
+	}
 }
