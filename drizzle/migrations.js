@@ -7,6 +7,9 @@ import m0002 from './0002_organic_network.sql';
 import m0003 from './0003_loving_sersi.sql';
 import m0004 from './0004_wild_mac_gargan.sql';
 import m0005 from './0005_rare_wallow.sql';
+import m0006 from './0006_soft_miek.sql';
+import m0007 from './0007_sloppy_roland_deschain.sql';
+import m0008 from './0008_lethal_network.sql';
 
   export default {
     journal,
@@ -16,7 +19,10 @@ m0001,
 m0002,
 m0003,
 m0004,
-m0005
+m0005,
+m0006,
+m0007,
+m0008
     }
   }
   

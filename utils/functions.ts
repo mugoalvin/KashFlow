@@ -6,7 +6,6 @@ import { desc, eq, isNull, or, sql } from "drizzle-orm";
 import { ExpoSQLiteDatabase } from "drizzle-orm/expo-sqlite";
 import moment from "moment";
 import { NativeModules } from 'react-native';
-import { categories } from "./constants";
 import { extractAirtimeDetails, extractAmount, extractFulizaDetails, extractPartialFulizaPay, extractPayFulizaDetails, extractReceiveDetails, extractSendDetails, extractWithdrawDetails } from "./extractDetails";
 
 const { SmsReader } = NativeModules
@@ -254,10 +253,23 @@ export function generatePastDates(daysBack: number): string[] {
 export async function syncDatabase(db: ExpoSQLiteDatabase) {
 	try {
 		const lastId = await fetchLastTransactionId(db)
-		const transactions = await fetchLatestTransactions(lastId)
+		const transactions = await fetchLatestTransactions(lastId) as MpesaParced[]
 
 		await db.transaction(async (tx) => {
-			for (const transaction of transactions) { // @ts-ignore
+			for (const transaction of transactions) {
+				const previous = await tx.select({
+					categoryId: mpesaMessages.categoryId
+				})
+					.from(mpesaMessages)
+					.where(eq(mpesaMessages.counterparty, transaction.counterparty!))
+					.orderBy(desc(mpesaMessages.id))
+					.limit(1)
+
+				if (previous.length && typeof previous[0].categoryId === 'number') {
+					transaction.categoryId = previous[0].categoryId
+				}
+
+				// @ts-ignore
 				await tx.insert(mpesaMessages).values(transaction);
 			}
 		})
@@ -398,16 +410,22 @@ export function chunkArray<T>(arr: T[], size: number) {
 }
 
 
-export async function addCategoryToDatabase(category: Category) {
+export async function addCategoryToDatabase(category: Omit<Category, "id" | "name">) {
+
+	function generateName(title: string) {
+		return title.replaceAll(" ", "_").toLowerCase()
+	}
+
 	try {
-		await sqliteDB
+		return await sqliteDB
 			.insert(categoriesTable)
 			.values({
-				title: category.name,
-				name: category.name,
-				icons: category.icon
+				title: category.title,
+				name: generateName(category.title),
+				icon: category.icon
 			})
-	} catch (err) {
+	} catch (err: any) {
 		console.error(err)
+		throw new Error(err.message)
 	}
 }
