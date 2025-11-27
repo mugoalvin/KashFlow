@@ -5,7 +5,7 @@ export const mpesaMessages = sqliteTable('mpesaMessages', {
 	counterparty: text('counterparty'),
 	amount: integer('amount'),
 	balance: integer('balance'),
-	purpose: text('purpose'),
+	categoryId: integer('categoryId'),
 	number: integer('number'),
 	dueDate: text('dueDate'),
 	message: text('message'),
@@ -23,7 +23,6 @@ export const mpesaMessages = sqliteTable('mpesaMessages', {
 export const categoriesTable = sqliteTable('categories', {
 	id: integer('id').primaryKey({ autoIncrement: true }),
 	title: text('title').unique(),
-	enumId: integer("enumId"),
-	icons: text('icons'),
+	icon: text('icons'),
 	name: text('name')
 })

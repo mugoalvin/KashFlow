@@ -17,6 +17,7 @@ export interface SortedTransaction {
 }
 
 export interface Category {
+	id?: number
 	title: string
 	name: string
 	icon?: string

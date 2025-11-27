@@ -85,7 +85,7 @@ export default function TransInfo({ item, index, length }: TransInfoProps) {
 			>
 				<View className='flex-1 pe-2'>
 					<Text numberOfLines={1} ellipsizeMode='tail'>{counterParty}</Text>
-					<LightText className="ms-4 text-sm" text={`${transactionType} : ${item.parsedTime}`} />
+					<LightText className="text-sm" text={`${transactionType} : ${item.parsedTime}`} />
 				</View>
 				<View className='flex-row justify-between min-w-24'>
 					<Icon source={() =>

@@ -4,10 +4,12 @@ import WeeklyTransactionSummary from "@/components/ui/summary/weekly";
 import Body from "@/components/views/body";
 import TodaysTransaction from "@/components/views/todaysTransactions";
 import { sqliteDB } from "@/db/config";
+import { categoriesTable } from "@/db/sqlite";
 import migrations from '@/drizzle/migrations';
-import { getTodaysDate, syncDatabase } from "@/utils/functions";
+import { addCategoryToDatabase, getTodaysDate, syncDatabase } from "@/utils/functions";
 import { requestSmsPermission } from "@/utils/permissions";
 import { Ionicons } from "@expo/vector-icons";
+import { eq } from "drizzle-orm";
 import { useMigrations } from 'drizzle-orm/expo-sqlite/migrator';
 import { router, useNavigation } from "expo-router";
 import { useEffect, useLayoutEffect, useState } from "react";
@@ -33,6 +35,13 @@ export default function Index() {
 
 			if (hasPermission) {
 				await syncDatabase(sqliteDB)
+				const res = await sqliteDB.select().from(categoriesTable).where(eq(categoriesTable.title, "Bills & Fees"))
+				if (res.length === 0) {
+					await addCategoryToDatabase({
+						title: "Bills & Fees",
+						icon: "💰"
+					})
+				}
 				if (isMounted) setIsLoading(false)
 			} else {
 				console.log("Permission not granted. Skipping sync.")
