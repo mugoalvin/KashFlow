@@ -31,16 +31,16 @@ export default function RootLayout() {
 			<PaperProvider theme={paperTheme}>
 				<Suspense fallback={<FallBack />}>
 					<SQLiteProvider databaseName={process.env.EXPO_PUBLIC_DB_FILE_NAME as string} options={{ enableChangeListener: true }} useSuspense>
-						<ModalProvider>
-							<DialogProvider>
-								<SnackbarProvider>
+						<SnackbarProvider>
+							<ModalProvider>
+								<DialogProvider>
 									<GestureHandlerRootView>
 										<NativeBottomTab />
 									</GestureHandlerRootView>
-								</SnackbarProvider>
-							</DialogProvider>
-						</ModalProvider>
-						<PortalHost />
+								</DialogProvider>
+							</ModalProvider>
+							<PortalHost />
+						</SnackbarProvider>
 					</SQLiteProvider>
 				</Suspense>
 			</PaperProvider>

@@ -5,14 +5,17 @@ import { getMoneyInAndOut, getTodaysDate } from "@/utils/functions";
 import { Ionicons, MaterialIcons } from "@expo/vector-icons";
 import { desc, eq } from "drizzle-orm";
 import { useEffect, useState } from "react";
-import { IconButton, Text,  useTheme } from "react-native-paper";
+import { View } from "react-native";
+import { IconButton, Text, useTheme } from "react-native-paper";
 import Title from "../text/title";
 import TransactionSummary from "../ui/summary/transaction";
 import AppCarousel from "./carousel";
-import { View } from "react-native";
 
+interface TodaysTransactionProps {
+	refreshKey: number
+}
 
-export default function TodaysTransaction() {
+export default function TodaysTransaction({ refreshKey }: TodaysTransactionProps) {
 	const theme = useTheme()
 	const [todaysTransactionParsedMessages, setTodaysTransactionParsedMessages] = useState<MpesaParced[]>([])
 	const [moneySend, setMoneySend] = useState<number>(0)
@@ -39,13 +42,13 @@ export default function TodaysTransaction() {
 
 	useEffect(() => {
 		getMessages()
-	}, [])
+	}, [refreshKey])
 
 	return (
 		<>
 			<Title
 				leadingIcon={<Ionicons name='calendar-number-sharp' size={16} color={theme.colors.primary} />}
-				text="Todays Transactions"
+				text="Today's Transactions"
 				trailingIcon={
 					<IconButton
 						icon={() =>
@@ -73,7 +76,7 @@ export default function TodaysTransaction() {
 			}
 
 			<TransactionSummary
-				title="Todays Summary"
+				title="Today's Summary"
 				moneyIn={moneyReceived}
 				moneyOut={moneySend}
 			/>

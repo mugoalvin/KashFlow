@@ -34,7 +34,7 @@ export const ModalProvider = ({ children }: { children: ReactNode }) => {
 		<ModalContext.Provider value={{ showModal, closeModal }}>
 			{children}
 			<Modal visible={visibility} onDismiss={closeModal}>
-				<SelectCategory closeModal={closeModal} transaction={transaction!}/>
+				<SelectCategory closeModal={closeModal} transaction={transaction!} />
 			</Modal>
 		</ModalContext.Provider>
 	)

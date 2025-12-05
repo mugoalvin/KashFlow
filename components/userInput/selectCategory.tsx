@@ -8,8 +8,8 @@ import { View } from "react-native";
 import { Text, useTheme } from "react-native-paper";
 import { Category } from "../text/interface";
 import LightText from "../text/lightText";
+import CreateCategory from "./createCategory";
 import SelectCategoryDropDown from "./selectCategoryDropDown";
-import useSnackbarContext from "@/contexts/SnackbarContext";
 
 interface SelectCategoryProps {
 	transaction: MpesaParced
@@ -19,6 +19,7 @@ interface SelectCategoryProps {
 export default function SelectCategory({ closeModal, transaction }: SelectCategoryProps) {
 	const theme = useTheme()
 	const [selectedCategory, setSelectedCategory] = useState<Category>()
+	const [isCreatingNewCategory, setIsCreatingNewCategory] = useState<boolean>(false)
 
 
 	const didSetInitialCategory = useRef(false)
@@ -55,8 +56,7 @@ export default function SelectCategory({ closeModal, transaction }: SelectCatego
 	}, [selectedCategory, transaction.counterparty])
 
 
-
-	function Foo({ title, value }: { title: string, value: string }) {
+	function ValueDisplay({ title, value }: { title: string, value: string }) {
 		return (
 			<View className="flex-1">
 				<LightText text={title} color={theme.colors.tertiary} />
@@ -67,34 +67,40 @@ export default function SelectCategory({ closeModal, transaction }: SelectCatego
 
 	return (
 		<View
-			className="items-center p-5 mx-7 rounded-2xl gap-3"
+			className="items-center p-5 mx-7 rounded-2xl gap-3 justify-between"
 			style={{
 				backgroundColor: theme.colors.secondaryContainer,
 				aspectRatio: 1
 			}}
 		>
-			<LightText text="Send To" />
-			<Text
-				className="uppercase"
-				variant="headlineSmall"
-				numberOfLines={2}
-				ellipsizeMode="tail"
-				style={{
-					// @ts-expect-error
-					color: transaction.type === 'receive' ? theme.colors.onSuccessContainer : theme.colors.onSecondaryContainer
-				}}>
-				{transaction.counterparty}
-			</Text>
+			{
+				isCreatingNewCategory
+					? <CreateCategory transaction={transaction} setIsCreatingNewCategory={setIsCreatingNewCategory} />
+					:
+					<>
+						<Text
+							className="uppercase"
+							variant="headlineSmall"
+							numberOfLines={2}
+							ellipsizeMode="tail"
+							style={{
+								// @ts-expect-error
+								color: transaction.type === 'receive' ? theme.colors.onSuccessContainer : theme.colors.onSecondaryContainer
+							}}>
+							{transaction.counterparty}
+						</Text>
 
-			<SelectCategoryDropDown transaction={transaction} selectedCategory={selectedCategory!} setSelectedCategory={setSelectedCategory} />
+						<SelectCategoryDropDown selectedCategory={selectedCategory!} setSelectedCategory={setSelectedCategory} setIsCreatingNewCategory={setIsCreatingNewCategory} />
 
-			<LightText text={`${transaction.parsedTime} on ${moment(transaction.parsedDate).format("ddd, Do MMM YY")}`} />
+						<LightText text={`${transaction.parsedTime} on ${moment(transaction.parsedDate).format("ddd, Do MMM YY")}`} />
 
-			<View className="flex-1 w-full">
-				<Foo title="Amount" value={`Ksh ${transaction.amount}`} />
-				<Foo title="Fee" value={`Ksh ${transaction.fee || 0}`} />
-				<Foo title="Balance" value={`Ksh ${transaction.balance}`} />
-			</View>
+						<View className="flex-1 w-full">
+							<ValueDisplay title="Amount" value={`Ksh ${transaction.amount}`} />
+							<ValueDisplay title="Transaction Fee" value={`Ksh ${transaction.fee || 0}`} />
+							<ValueDisplay title="Balance" value={`Ksh ${transaction.balance}`} />
+						</View>
+					</>
+			}
 		</View>
 	)
 }
