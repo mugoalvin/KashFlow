@@ -1,6 +1,7 @@
 import NativeBottomTab from '@/components/navigation/native_bottom_tab';
 import FallBack from '@/components/views/suspenceFallback';
 import { DialogProvider } from '@/contexts/DialogContext';
+import { ModalProvider } from '@/contexts/ModalContext.';
 import { SnackbarProvider } from '@/contexts/SnackbarContext';
 import { darkCustomTheme, lightCustomTheme } from '@/utils/colors';
 import { useMaterial3Theme } from '@pchmn/expo-material3-theme';
@@ -12,7 +13,6 @@ import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import { MD3DarkTheme, MD3LightTheme, PaperProvider } from 'react-native-paper';
 import { ThemeContext } from '../contexts/ThemeContext';
 import '../global.css';
-import { ModalProvider } from '@/contexts/ModalContext.';
 
 export default function RootLayout() {
 	const { theme, resetTheme, updateTheme } = useMaterial3Theme()
