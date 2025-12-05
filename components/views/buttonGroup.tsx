@@ -82,7 +82,7 @@ export default function ButtonGroup({ buttons, setButtonSelected }: ButtonGroupP
 	}
 
 	return (
-		<View className="flex-row h-14 justify-between gap-[2]">
+		<View className="flex-row my-5 h-14 justify-between gap-[2]">
 			{
 				buttons.map((button, index) => (
 					<ButtonInGroup key={index} button={button} index={index} length={buttons.length} />
