@@ -23,6 +23,7 @@ export default function Index() {
 	const { success, error } = useMigrations(sqliteDB, migrations)
 	const [isLoading, setIsLoading] = useState<boolean>(true)
 	const [isRefreshing, setIsRefreshing] = useState<boolean>(false)
+	const [refreshKey, setRefreshKey] = useState<number>(0)
 
 	useEffect(() => {
 		let isMounted = true
@@ -94,6 +95,7 @@ export default function Index() {
 						onRefresh={async () => {
 							setIsRefreshing(true)
 							await syncDatabase(sqliteDB)
+							setRefreshKey(prev => prev + 1)
 							setIsRefreshing(false)
 						}}
 					/>
@@ -101,7 +103,7 @@ export default function Index() {
 			>
 				<View className="gap-3">
 					<BalanceInfo />
-					<TodaysTransaction />
+					<TodaysTransaction refreshKey={refreshKey} />
 					<WeeklyTransactionSummary year={dateObj.getFullYear()} month={dateObj.getMonth() + 1} dateInWeek={getTodaysDate()} />
 					<MonthyTransactionSummary year={dateObj.getFullYear()} month={dateObj.getMonth() + 1} />
 				</View>
