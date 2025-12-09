@@ -44,18 +44,28 @@ export const SnackbarProvider = ({ children }: { children: ReactNode }) => {
 					marginHorizontal: 10,
 					marginBlockEnd: 100,
 					padding: 0,
+					// backgroundColor:
+					// 	isError ? theme.colors.errorContainer : // @ts-expect-error
+					// 		isWarning ? theme.colors.warningContainer :  // @ts-expect-error
+					// 			theme.colors.successContainer
+
 					backgroundColor:
-						isError ? theme.colors.errorContainer : // @ts-expect-error
-							isWarning ? theme.colors.warningContainer :  // @ts-expect-error
-								theme.colors.successContainer
+						isError ? theme.colors.errorContainer :
+							isWarning ? theme.colors.tertiaryContainer :
+								theme.colors.primaryContainer
 				}}
 			>
 				<Text
 					style={{
+						// color:
+						// 	isError ? theme.colors.onErrorContainer : // @ts-expect-error
+						// 		isWarning ? theme.colors.onWarningContainer :  // @ts-expect-error
+						// 			theme.colors.onSuccessContainer
+
 						color:
-							isError ? theme.colors.onErrorContainer : // @ts-expect-error
-								isWarning ? theme.colors.onWarningContainer :  // @ts-expect-error
-									theme.colors.onSuccessContainer
+							isError ? theme.colors.onErrorContainer :
+								isWarning ? theme.colors.tertiaryContainer :
+									theme.colors.onPrimaryContainer
 					}}
 				>
 					{message}

@@ -23,7 +23,7 @@ export default function NativeBottomTab() {
 				<Icon src={require("@/assets/icons/bar-chart-2.svg")} />
 			</NativeTabs.Trigger>
 
-			<NativeTabs.Trigger name='settings'>
+			<NativeTabs.Trigger name='(settings)'>
 				<Label>Settings</Label>
 				<Icon drawable="settings" />
 			</NativeTabs.Trigger>
