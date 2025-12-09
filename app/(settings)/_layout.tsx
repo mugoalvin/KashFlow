@@ -3,7 +3,7 @@ import { Ionicons } from "@expo/vector-icons";
 import { router, Stack } from "expo-router";
 import { IconButton, useTheme } from "react-native-paper";
 
-export default function IndexLayout() {
+export default function SettingsLayout() {
 	const theme = useTheme()
 
 	return (
@@ -13,14 +13,16 @@ export default function IndexLayout() {
 				headerLeft: ({ canGoBack }) => {
 					return canGoBack && canGoBack && (
 						<IconButton
-							icon={({ color, size }) => <Ionicons name="arrow-back" size={size - 5} color={color} />}
-							onPress={() => router.back()} />
-					);
-				}
+							icon={({ color, size }) => <Ionicons name="arrow-back" size={size} color={color} />}
+							onPress={() => router.back()}
+						/>
+					)
+				},
+				headerShown: false
 			}}
 		>
-			<Stack.Screen name="index" options={{ title: "Dashboard" }} />
-			<Stack.Screen name="page" options={{ title: "Dashboard 2" }} />
-		</Stack >
+			<Stack.Screen name="index" options={{ title: "Settings" }} />
+			<Stack.Screen name="pickTheme" options={{ title: "Theme" }} />
+		</Stack>
 	)
 }

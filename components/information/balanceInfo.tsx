@@ -1,16 +1,19 @@
+import { sqliteDB } from '@/db/config';
+import { getBalance } from '@/db/db_functions';
 import { Ionicons } from '@expo/vector-icons';
 import Entypo from '@expo/vector-icons/Entypo';
+import { useEffect, useState } from 'react';
 import { View } from "react-native";
 import AnimatedNumbers from 'react-native-animated-numbers';
+import { useMMKVBoolean } from 'react-native-mmkv';
 import { IconButton, Text, useTheme } from "react-native-paper";
 import Title from "../text/title";
-import { useEffect, useState } from 'react';
-import { getBalance } from '@/db/db_functions';
-import { sqliteDB } from '@/db/config';
 
 export default function BalanceInfo() {
 	const theme = useTheme()
 	const [balance, setBalance] = useState<number>(0)
+
+	const [isBalanceHidden, setIsBalanceHidden] = useMMKVBoolean('isMpesaHidden')
 
 	useEffect(() => {
 		getBalance(sqliteDB)
@@ -24,8 +27,8 @@ export default function BalanceInfo() {
 				text="Your Balance"
 				trailingIcon={
 					<IconButton
-						icon={() => <Ionicons name='eye-off' size={16} color={theme.colors.primary} />}
-						onPress={() => { }}
+						icon={() => <Ionicons name={isBalanceHidden ? 'eye-off' : 'eye'} size={16} color={theme.colors.primary} />}
+						onPress={() => setIsBalanceHidden(prev => !prev)}
 					/>
 				}
 			/>

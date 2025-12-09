@@ -1,11 +1,11 @@
 import useDialogContext from '@/contexts/DialogContext'
 import useModalContext from '@/contexts/ModalContext.'
-import { useAnimations } from '@/contexts/useAnimations'
-import useReduceMotion from '@/hooks/useReduceMotion'
 import { MpesaParced } from '@/interface/mpesa'
+import { storage } from '@/mmkv/init'
 import FontAwesome6 from '@expo/vector-icons/FontAwesome6'
 import React from 'react'
 import { Pressable, Vibration, View } from 'react-native'
+import { useMMKVBoolean } from 'react-native-mmkv'
 import { Divider, Icon, Text, useTheme } from 'react-native-paper'
 import Animated, { FadeInLeft, FadeOutRight } from 'react-native-reanimated'
 import LightText from '../text/lightText'
@@ -21,7 +21,7 @@ export default function TransInfo({ item, index, length }: TransInfoProps) {
 	const theme = useTheme()
 	const { showDialog } = useDialogContext()
 	const { showModal } = useModalContext()
-
+	const [animationEnabled] = useMMKVBoolean('isAnimationEnabled')
 
 	const counterParty = (item.counterparty)?.toLowerCase().split(' ').map(word =>
 		word.slice(0, 1).toUpperCase().concat(word.slice(1)).concat(' ')
@@ -31,12 +31,6 @@ export default function TransInfo({ item, index, length }: TransInfoProps) {
 		: ''
 
 	const AnimatedPressable = Animated.createAnimatedComponent(Pressable)
-
-	// Animation Preferences
-	const reduceMotion = useReduceMotion()
-	const { enabled: userAnimationsEnabled } = useAnimations()
-	const animationEnabled = userAnimationsEnabled && !reduceMotion
-
 
 	return (
 		<>
