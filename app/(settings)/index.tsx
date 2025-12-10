@@ -1,11 +1,14 @@
+import GenaralSettings from "@/components/settings/generalSettings";
+import NavigationSettings from "@/components/settings/navigationSettings";
 import AnimationPreferences from "@/components/settings/paperAccordion";
 import ThemeSettings from "@/components/settings/themeSettings";
-import BodyWithBottomSheet from "@/components/ui/bottomSheet/sheet";
-import { useColorScheme } from "react-native";
-import { Appbar, useTheme } from 'react-native-paper';
-import { BottomSheetMethods } from '@gorhom/bottom-sheet/lib/typescript/types'
-import { useMemo, useRef } from "react";
 import SelectTheme from "@/components/ui/bottomSheet/selectTheme";
+import BodyWithBottomSheet from "@/components/ui/bottomSheet/sheet";
+import { BottomSheetMethods } from '@gorhom/bottom-sheet/lib/typescript/types';
+import { useMemo, useRef } from "react";
+import { useColorScheme } from "react-native";
+import { ScrollView } from "react-native-gesture-handler";
+import { Appbar, Divider, useTheme } from 'react-native-paper';
 
 export default function Settings() {
 	const theme = useTheme()
@@ -23,28 +26,22 @@ export default function Settings() {
 			</Appbar.Header>
 
 			<BodyWithBottomSheet
+				className="p-0"
 				ref={bottomSheetRef}
 				snapPoints={snapPoints}
 				initialSnapIndex={-1}
-				sheetContent={<SelectTheme closeSheet={ closeSheet } />}
+				sheetContent={<SelectTheme closeSheet={closeSheet} />}
 			>
-				<AnimationPreferences />
-				<ThemeSettings openSheet={ openSheet } />
+				<ScrollView>
+					<GenaralSettings />
+					<Divider horizontalInset />
+					<AnimationPreferences />
+					<Divider horizontalInset />
+					<ThemeSettings openSheet={openSheet} />
+					<Divider horizontalInset />
+					<NavigationSettings />
+				</ScrollView>
 			</BodyWithBottomSheet>
 		</>
 	)
 }
-
-{/*
-
-============TODO Options/Settings============
-1. Animation Preferences
-2. Theme Settings
-3. Graph Settings
-	-Data Point Visibility
-4. Tab View
-	-Horizontal Scrollability
-	-Animation Type
-5. Home Screens Balance Visibility Preference
-6. Bottom Tab Navigation label visibility mode
-*/}

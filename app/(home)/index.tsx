@@ -60,18 +60,12 @@ export default function Index() {
 
 	useLayoutEffect(() => {
 		navigation.setOptions({
-			headerRight: () => (
-				<>
-					<IconButton
-						icon={({ color, size }) => <Ionicons name="refresh-outline" color={color} size={size - 5} />}
-						onPress={() => syncDatabase(sqliteDB)}
-					/>
-					<IconButton
-						icon={({ color, size }) => <Ionicons name="arrow-redo-outline" color={color} size={size - 5} />}
-						onPress={() => router.push('/(home)/page')}
-					/>
-				</>
-			)
+			// headerRight: () => (
+			// 	<IconButton
+			// 		icon={({ color, size }) => <Ionicons name="arrow-redo-outline" color={color} size={size - 5} />}
+			// 		onPress={() => router.push('/(home)/page')}
+			// 	/>
+			// )
 		})
 	}, [navigation])
 
@@ -111,5 +105,3 @@ export default function Index() {
 		</Body>
 	);
 }
-
-// Purpose of each transaction to be added on each transaction upon long pressing

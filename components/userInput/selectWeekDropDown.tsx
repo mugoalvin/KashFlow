@@ -43,7 +43,7 @@ export default function SelectWeekDropDown({ items, selectedWeekIndex, setSelect
 	return (
 		<DropdownMenu>
 			<DropdownMenuTrigger className='justify-center'>
-				<View className='flex-row justify-between items-center p-4 rounded ' style={{ backgroundColor: theme.colors.elevation.level4 }}>
+				<View className='flex-row justify-between items-center p-4 rounded ' style={{ backgroundColor: theme.colors.elevation.level2 }}>
 					<Text>{ dateRanges[selectedWeekIndex] }</Text>
 					<Icon
 						source={() =>

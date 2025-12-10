@@ -1,12 +1,16 @@
 import { Icon, Label, NativeTabs } from "expo-router/unstable-native-tabs";
+
+import { useMMKVString } from "react-native-mmkv";
 import { useTheme } from "react-native-paper";
 
 export default function NativeBottomTab() {
 	const theme = useTheme()
+	const [mode] = useMMKVString('labelVisibilityMode')
 
 	return (
 		<NativeTabs
-			labelVisibilityMode='labeled'
+			// @ts-expect-error
+			labelVisibilityMode={mode ? mode : 'auto'}
 			backBehavior="history"
 			indicatorColor={theme.colors.secondaryContainer}
 			tintColor={theme.colors.onPrimaryContainer}

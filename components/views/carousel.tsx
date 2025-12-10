@@ -2,13 +2,13 @@ import { MpesaParced } from "@/interface/mpesa";
 import { chunkArray } from "@/utils/functions";
 import * as React from "react";
 import { Dimensions, View } from "react-native";
-import { useSharedValue } from "react-native-reanimated";
+import { useTheme } from "react-native-paper";
+import Animated, { LinearTransition, useSharedValue } from "react-native-reanimated";
 import Carousel, {
 	ICarouselInstance,
 	Pagination,
 } from "react-native-reanimated-carousel";
 import TransInfo from "../information/transInfo";
-import { useTheme } from "react-native-paper";
 
 const width = Dimensions.get("window").width - 15;
 
@@ -25,14 +25,11 @@ export default function AppCarousel({ data }: AppCarouselProps) {
 
 	const onPressPagination = (index: number) => {
 		ref.current?.scrollTo({
-			/**
-			 * Calculate the difference between the current index and the target index
-			 * to ensure that the carousel scrolls to the nearest index
-			 */
 			count: index - progress.value,
 			animated: true,
-		});
-	};
+		})
+	}
+
 	return (
 		<View className="flex-1">
 			<Carousel
@@ -42,7 +39,10 @@ export default function AppCarousel({ data }: AppCarouselProps) {
 				data={chunkedData}
 				onProgressChange={progress}
 				renderItem={({ item, index }) => (
-					<View key={index}>
+					<Animated.View
+						key={index}
+						layout={LinearTransition}
+					>
 						{item.map((transaction, i) => (
 							<TransInfo
 								key={i}
@@ -51,9 +51,21 @@ export default function AppCarousel({ data }: AppCarouselProps) {
 								length={data.length}
 							/>
 						))}
-					</View>
+					</Animated.View>
+					// <Animated.FlatList
+					// 	itemLayoutAnimation={LinearTransition}
+					// 	data={item}
+					// 	renderItem={({ item, index }) =>
+					// 		<TransInfo
+					// 			key={index}
+					// 			item={item}
+					// 			index={index}
+					// 			length={data.length}
+					// 		/>
+					// 	}
+					// />
 				)}
-				loop={false}	
+				loop={false}
 			/>
 
 			<Pagination.Custom

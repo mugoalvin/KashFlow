@@ -3,6 +3,7 @@ import Title from "@/components/text/title";
 import { MpesaParced } from "@/interface/mpesa";
 import { ReactNode } from "react";
 import { View } from "react-native";
+import { useMMKVBoolean } from "react-native-mmkv";
 import { ActivityIndicator, Divider, Text, useTheme } from 'react-native-paper';
 import HighestAndLowestTrasaction from "./highestAndLowest";
 import TopTransactions from "./topTransactions";
@@ -20,12 +21,17 @@ interface TransactionSummaryProps {
 
 export default function TransactionSummary({ title, moneyIn, moneyOut, highest, lowest, trailingIcon, topTransactions, isLoading = false }: TransactionSummaryProps) {
 	const theme = useTheme()
-
+	const [useCard] = useMMKVBoolean('useCard')
 
 	return (
 		<>
-			<Title text={title} trailingIcon={trailingIcon} />
-			<View className="gap-5 p-5 rounded-lg" style={{ backgroundColor: theme.colors.elevation.level2 }}>
+			<View className={`${!useCard && 'px-2 rounded-lg'}`} style={{ backgroundColor: !useCard ? theme.colors.elevation.level2 : theme.colors.background }}>
+				<Title text={title} trailingIcon={trailingIcon} color={theme.colors.onSurface} />
+			</View>
+
+			<View
+				className={`gap-5 ${useCard && 'px-5'} py-5 rounded-lg`}
+				style={{ backgroundColor: useCard ? theme.colors.elevation.level1 : theme.colors.background }}>
 
 				<View className="flex-row h-11">
 					{
@@ -51,7 +57,7 @@ export default function TransactionSummary({ title, moneyIn, moneyOut, highest, 
 				{
 					topTransactions && topTransactions.length > 0 &&
 					<>
-						<Divider />
+						<Divider horizontalInset />
 						<TopTransactions transactions={topTransactions} />
 					</>
 				}
@@ -59,7 +65,7 @@ export default function TransactionSummary({ title, moneyIn, moneyOut, highest, 
 				{
 					(highest && lowest) &&
 					<>
-						<Divider />
+						<Divider horizontalInset />
 						<HighestAndLowestTrasaction highest={highest} lowest={lowest} />
 					</>
 				}

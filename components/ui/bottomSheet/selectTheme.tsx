@@ -1,4 +1,4 @@
-import ColorRow from '@/components/settings/colorRow'
+import ColorRow from '@/components/ui/colorRow'
 import React from 'react'
 import { View } from 'react-native'
 import { Icon, Text, useTheme } from 'react-native-paper'
