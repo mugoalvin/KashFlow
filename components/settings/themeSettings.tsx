@@ -1,10 +1,13 @@
 import { Ionicons } from '@expo/vector-icons'
-import { router } from 'expo-router'
 import React from 'react'
 import { useMMKVBoolean } from 'react-native-mmkv'
 import { List, Switch, useTheme } from 'react-native-paper'
 
-export default function ThemeSettings() {
+interface ThemeSettingsProps {
+	openSheet: () => void
+}
+
+export default function ThemeSettings({ openSheet }: ThemeSettingsProps) {
 	const theme = useTheme()
 	const [hideMpesaBalance, setHideMpesaBalance] = useMMKVBoolean('isMpesaHidden')
 
@@ -16,7 +19,7 @@ export default function ThemeSettings() {
 		<List.Section title="Theme" titleStyle={{ color: theme.colors.onSurfaceDisabled }}>
 			<List.Item
 				title="App Theme"
-				onPress={() => router.push('/(settings)/pickTheme')}
+				onPress={openSheet}
 				right={() =>
 					<Ionicons name='chevron-forward' color={theme.colors.onSurfaceVariant} />
 				}

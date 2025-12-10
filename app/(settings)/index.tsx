@@ -1,12 +1,20 @@
 import AnimationPreferences from "@/components/settings/paperAccordion";
 import ThemeSettings from "@/components/settings/themeSettings";
-import Body from "@/components/views/body";
+import BodyWithBottomSheet from "@/components/ui/bottomSheet/sheet";
 import { useColorScheme } from "react-native";
 import { Appbar, useTheme } from 'react-native-paper';
+import { BottomSheetMethods } from '@gorhom/bottom-sheet/lib/typescript/types'
+import { useMemo, useRef } from "react";
+import SelectTheme from "@/components/ui/bottomSheet/selectTheme";
 
 export default function Settings() {
 	const theme = useTheme()
 	const colorScheme = useColorScheme()
+
+	const bottomSheetRef = useRef<BottomSheetMethods>(null)
+	const snapPoints = useMemo(() => ['50%', '75%'], [])
+	const openSheet = () => bottomSheetRef.current?.snapToIndex(0)
+	const closeSheet = () => bottomSheetRef.current?.close()
 
 	return (
 		<>
@@ -14,11 +22,15 @@ export default function Settings() {
 				<Appbar.Content title="Settings" titleMaxFontSizeMultiplier={2} />
 			</Appbar.Header>
 
-
-			<Body className="p-0">
+			<BodyWithBottomSheet
+				ref={bottomSheetRef}
+				snapPoints={snapPoints}
+				initialSnapIndex={-1}
+				sheetContent={<SelectTheme closeSheet={ closeSheet } />}
+			>
 				<AnimationPreferences />
-				<ThemeSettings />
-			</Body>
+				<ThemeSettings openSheet={ openSheet } />
+			</BodyWithBottomSheet>
 		</>
 	)
 }
