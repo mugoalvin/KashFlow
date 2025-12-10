@@ -8,7 +8,7 @@ import { useEffect, useState } from "react";
 import { View } from "react-native";
 import { IconButton, Text, useTheme } from "react-native-paper";
 import Title from "../text/title";
-import TransactionSummary from "../ui/summary/transaction";
+import TransactionSummary from "../ui/summary/transactionSummary";
 import AppCarousel from "./carousel";
 
 interface TodaysTransactionProps {
@@ -79,6 +79,17 @@ export default function TodaysTransaction({ refreshKey }: TodaysTransactionProps
 				title="Today's Summary"
 				moneyIn={moneyReceived}
 				moneyOut={moneySend}
+				trailingIcon={
+					<IconButton
+						icon={() =>
+							<MaterialIcons
+								name="sort"
+								size={16}
+								color={theme.colors.backdrop}
+							/>
+						}
+					/>
+				}
 			/>
 		</>
 	)

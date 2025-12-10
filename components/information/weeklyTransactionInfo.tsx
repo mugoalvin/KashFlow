@@ -7,8 +7,6 @@ import moment from "moment";
 import { View } from "react-native";
 import { IconButton, Text, useTheme } from "react-native-paper";
 import LineGraph from "../ui/graphs/line";
-import WeeklyTransactionSummary from "../ui/summary/weekly";
-import TransactionSummary from "../ui/summary/transaction";
 
 interface WeeklyTransactionInfoProps {
 	item: {

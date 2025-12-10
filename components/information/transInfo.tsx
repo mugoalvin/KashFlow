@@ -1,7 +1,6 @@
 import useDialogContext from '@/contexts/DialogContext'
 import useModalContext from '@/contexts/ModalContext.'
 import { MpesaParced } from '@/interface/mpesa'
-import { storage } from '@/mmkv/init'
 import FontAwesome6 from '@expo/vector-icons/FontAwesome6'
 import React from 'react'
 import { Pressable, Vibration, View } from 'react-native'
@@ -22,6 +21,7 @@ export default function TransInfo({ item, index, length }: TransInfoProps) {
 	const { showDialog } = useDialogContext()
 	const { showModal } = useModalContext()
 	const [animationEnabled] = useMMKVBoolean('isAnimationEnabled')
+	const [useCard] = useMMKVBoolean('useCard')
 
 	const counterParty = (item.counterparty)?.toLowerCase().split(' ').map(word =>
 		word.slice(0, 1).toUpperCase().concat(word.slice(1)).concat(' ')
@@ -36,7 +36,12 @@ export default function TransInfo({ item, index, length }: TransInfoProps) {
 		<>
 			{
 				index !== 0 &&
-				<Divider horizontalInset style={{ height: 1, backgroundColor: theme.colors.background }} />
+				<Divider
+					horizontalInset={useCard}
+					style={{
+						height: 1,
+						backgroundColor: useCard ? theme.colors.background : theme.colors.outlineVariant
+					}} />
 			}
 			<AnimatedPressable
 				android_ripple={{
@@ -44,8 +49,9 @@ export default function TransInfo({ item, index, length }: TransInfoProps) {
 					foreground: true
 				}}
 
+
 				className={
-					`flex-row justify-between p-4
+					`flex-row justify-between ${useCard ? 'px-4' : 'px-1'} py-4
 						${length === 1
 						? 'rounded-3xl'
 						: index === 0
@@ -59,7 +65,7 @@ export default function TransInfo({ item, index, length }: TransInfoProps) {
 				entering={animationEnabled ? FadeInLeft.duration(500).delay(index * 100) : undefined}
 				exiting={animationEnabled ? FadeOutRight.duration(500).delay(index * 80) : undefined}
 				style={{
-					backgroundColor: theme.colors.elevation.level1
+					backgroundColor: useCard ? theme.colors.elevation.level1 : theme.colors.background
 				}}
 				onPress={() => showDialog({
 					title: "Transaction Message",

@@ -9,7 +9,7 @@ import { useEffect, useState } from "react";
 import { IconButton, Text, useTheme } from "react-native-paper";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuGroup, DropdownMenuItem, DropdownMenuLabel, DropdownMenuSeparator, DropdownMenuTrigger } from "../dropdown-menu";
-import TransactionSummary from "./transaction";
+import TransactionSummary from "./transactionSummary";
 
 interface WeeklyTransactionSummaryProps {
 	year: number

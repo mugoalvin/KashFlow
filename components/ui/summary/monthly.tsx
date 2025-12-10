@@ -9,7 +9,7 @@ import React, { useEffect, useRef, useState } from "react"
 import { IconButton, Text, useTheme } from "react-native-paper"
 import { useSafeAreaInsets } from "react-native-safe-area-context"
 import { DropdownMenu, DropdownMenuContent, DropdownMenuGroup, DropdownMenuItem, DropdownMenuLabel, DropdownMenuSeparator, DropdownMenuTrigger } from "../dropdown-menu"
-import TransactionSummary from "./transaction"
+import TransactionSummary from "./transactionSummary"
 
 interface MonthyTransactionSummaryProps {
 	year: number
@@ -44,7 +44,7 @@ export default function MonthyTransactionSummary({ year, month }: MonthyTransact
 			.select()
 			.from(mpesaMessages)
 			.where(inArray(mpesaMessages.parsedDate, datesInMonth.current)) as MpesaParced[]
-	
+
 
 		setMonthTransactions(transactions)
 	}

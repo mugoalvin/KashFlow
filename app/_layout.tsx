@@ -13,9 +13,11 @@ import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import { MD3DarkTheme, MD3LightTheme, PaperProvider } from 'react-native-paper';
 import { ThemeContext } from '../contexts/ThemeContext';
 import '../global.css';
+import { useMMKVString } from 'react-native-mmkv';
 
 export default function RootLayout() {
-	const { theme, resetTheme, updateTheme } = useMaterial3Theme()
+	const [accentColor] = useMMKVString('accentColor')
+	const { theme, resetTheme, updateTheme } = useMaterial3Theme({ sourceColor: accentColor })
 	const colorScheme = useColorScheme() || 'light'
 
 	const paperTheme = useMemo(() => ({

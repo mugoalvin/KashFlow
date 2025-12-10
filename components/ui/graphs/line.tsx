@@ -1,5 +1,6 @@
 import { Dimensions, View } from "react-native";
 import { LineChartBicolor } from "react-native-gifted-charts";
+import { useMMKVBoolean } from "react-native-mmkv";
 import { Text, useTheme } from "react-native-paper";
 
 interface LineGraphProps {
@@ -14,7 +15,7 @@ export default function LineGraph({ data }: LineGraphProps) {
 	const theme = useTheme()
 	const chartWidth = Dimensions.get('window').width - 40
 	const dataPointSpacing = chartWidth / (data.length) - .5
-
+	const [ useCard ] = useMMKVBoolean('useCard')
 
 	if (data.every(d => d.value < 0)) {
 		return (
@@ -36,7 +37,7 @@ export default function LineGraph({ data }: LineGraphProps) {
 			<Text>
 				Transactions: {data.length}
 			</Text>
-			<View className="flex items-center justify-center py-5 w-full rounded-2xl" style={{ backgroundColor: theme.colors.elevation.level1 }}>
+			<View className="flex items-center justify-center py-5 w-full rounded-2xl" style={{ backgroundColor: useCard ? theme.colors.elevation.level1 : theme.colors.background }}>
 				<LineChartBicolor
 					areaChart
 					data={data}
