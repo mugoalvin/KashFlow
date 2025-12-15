@@ -2,8 +2,6 @@
 2. Yearly Summary
 	- Use a pie chart where you press a section and it displays a summary of the month's trasnactions inside a container outside the pie chart
 
-
-
 ============TODO Options/Settings============
 
 1. Animation Preferences ✅
@@ -15,3 +13,8 @@
 	-Animation Type
 5. Home Screens Balance Visibility Preference
 6. Bottom Tab Navigation label visibility mode ✅
+
+
+Features
+1. Adjust the number of summaries in tables. Defaults to 3
+2. Categories
