@@ -1,5 +1,6 @@
 import NativeBottomTab from '@/components/navigation/native_bottom_tab';
 import FallBack from '@/components/views/suspenceFallback';
+import { BottomSheetProvider } from '@/contexts/BottomSheetContext';
 import { DialogProvider } from '@/contexts/DialogContext';
 import { ModalProvider } from '@/contexts/ModalContext.';
 import { SnackbarProvider } from '@/contexts/SnackbarContext';
@@ -39,14 +40,16 @@ export default function RootLayout() {
 				<Suspense fallback={<FallBack />}>
 					<SQLiteProvider databaseName={process.env.EXPO_PUBLIC_DB_FILE_NAME as string} options={{ enableChangeListener: true }} useSuspense>
 						<SnackbarProvider>
-							<ModalProvider>
-								<DialogProvider>
-									<GestureHandlerRootView>
-										<NativeBottomTab />
-									</GestureHandlerRootView>
-								</DialogProvider>
-							</ModalProvider>
-							<PortalHost />
+							<GestureHandlerRootView>
+								<BottomSheetProvider>
+									<ModalProvider>
+										<DialogProvider>
+											<NativeBottomTab />
+										</DialogProvider>
+									</ModalProvider>
+									<PortalHost />
+								</BottomSheetProvider>
+							</GestureHandlerRootView>
 						</SnackbarProvider>
 					</SQLiteProvider>
 				</Suspense>

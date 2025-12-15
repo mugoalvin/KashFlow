@@ -1,18 +1,17 @@
+import useBottomSheetContext from '@/contexts/BottomSheetContext'
 import useSnackbarContext from '@/contexts/SnackbarContext'
 import { Ionicons } from '@expo/vector-icons'
 import { isDynamicThemeSupported } from '@pchmn/expo-material3-theme'
 import React from 'react'
 import { List, useTheme } from 'react-native-paper'
 import { getTextStyles } from '../text/styles'
+import SelectTheme from '../ui/bottomSheet/selectTheme'
 
-interface ThemeSettingsProps {
-	openSheet: () => void
-}
 
-export default function ThemeSettings({ openSheet }: ThemeSettingsProps) {
+export default function ThemeSettings() {
 	const theme = useTheme()
 	const { showSnackbar } = useSnackbarContext()
-
+	const { closeSheet, openSheet } = useBottomSheetContext()
 
 	return (
 		<List.Section title="Theme" titleStyle={getTextStyles(theme).SettingsSectionHeader}>
@@ -31,7 +30,9 @@ export default function ThemeSettings({ openSheet }: ThemeSettingsProps) {
 				title="App Theme"
 				description="Choose your desired accent color"
 				descriptionStyle={getTextStyles(theme).SettingsDescription}
-				onPress={openSheet}
+				onPress={() => openSheet({
+					content: <SelectTheme closeSheet={closeSheet} />
+				})}
 				right={() =>
 					<Ionicons name='chevron-forward' color={theme.colors.onSurfaceVariant} />
 				}
