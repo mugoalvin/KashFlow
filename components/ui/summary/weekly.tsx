@@ -88,11 +88,11 @@ export default function WeeklyTransactionSummary({ year, month, dateInWeek }: We
 					<DropdownMenuContent insets={contentInsets} sideOffset={2} className="w-56" align="start" style={{ backgroundColor: theme.colors.secondaryContainer }}>
 						<DropdownMenuLabel>Sort By</DropdownMenuLabel>
 
-						<DropdownMenuSeparator />
+						<DropdownMenuSeparator style={{ backgroundColor: theme.colors.background }} />
 
 						<DropdownMenuGroup>
 
-							<DropdownMenuItem onPress={() => setWeeklySortType('amount')} android_ripple={{ color: 'red', borderless: false }}>
+							<DropdownMenuItem onPress={() => setWeeklySortType('amount')} android_ripple={{ color: theme.colors.secondaryContainer }}>
 								<Text style={{ color: theme.colors.onSecondaryContainer }}>Cummulative Amount</Text>
 							</DropdownMenuItem>
 							<DropdownMenuItem onPress={() => setWeeklySortType('count')}>

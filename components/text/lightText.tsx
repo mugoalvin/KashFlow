@@ -9,6 +9,7 @@ export default function LightText({ color, className, text }: MyTextProps) {
 		<Text
 			className={className}
 			style={{
+				fontWeight: 'bold',
 				color: color || theme.colors.onSurfaceDisabled
 			}}
 		>

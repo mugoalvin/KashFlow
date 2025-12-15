@@ -1,6 +1,6 @@
+import AnimationPreferences from "@/components/settings/animationSettings";
 import GenaralSettings from "@/components/settings/generalSettings";
 import NavigationSettings from "@/components/settings/navigationSettings";
-import AnimationPreferences from "@/components/settings/paperAccordion";
 import ThemeSettings from "@/components/settings/themeSettings";
 import SelectTheme from "@/components/ui/bottomSheet/selectTheme";
 import BodyWithBottomSheet from "@/components/ui/bottomSheet/sheet";
@@ -26,20 +26,25 @@ export default function Settings() {
 			</Appbar.Header>
 
 			<BodyWithBottomSheet
-				className="p-0"
+				noPadding
 				ref={bottomSheetRef}
 				snapPoints={snapPoints}
 				initialSnapIndex={-1}
 				sheetContent={<SelectTheme closeSheet={closeSheet} />}
 			>
 				<ScrollView>
+
 					<GenaralSettings />
 					<Divider horizontalInset />
+
 					<AnimationPreferences />
 					<Divider horizontalInset />
+
 					<ThemeSettings openSheet={openSheet} />
 					<Divider horizontalInset />
+
 					<NavigationSettings />
+
 				</ScrollView>
 			</BodyWithBottomSheet>
 		</>

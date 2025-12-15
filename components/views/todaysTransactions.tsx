@@ -1,3 +1,4 @@
+import useSnackbarContext from "@/contexts/SnackbarContext";
 import { sqliteDB } from "@/db/config";
 import { mpesaMessages } from "@/db/sqlite";
 import { MpesaParced } from "@/interface/mpesa";
@@ -17,6 +18,7 @@ interface TodaysTransactionProps {
 
 export default function TodaysTransaction({ refreshKey }: TodaysTransactionProps) {
 	const theme = useTheme()
+	const { showSnackbar } = useSnackbarContext()
 	const [todaysTransactionParsedMessages, setTodaysTransactionParsedMessages] = useState<MpesaParced[]>([])
 	const [moneySend, setMoneySend] = useState<number>(0)
 	const [moneyReceived, setMoneyReceived] = useState<number>(0)
@@ -47,8 +49,8 @@ export default function TodaysTransaction({ refreshKey }: TodaysTransactionProps
 	return (
 		<>
 			<Title
-				leadingIcon={<Ionicons name='calendar-number-sharp' size={16} color={theme.colors.primary} />}
 				text="Today's Transactions"
+				leadingIcon={<Ionicons name='calendar-number-sharp' size={16} color={theme.colors.primary} />}
 				trailingIcon={
 					<IconButton
 						icon={() =>

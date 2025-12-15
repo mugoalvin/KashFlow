@@ -8,18 +8,15 @@ import { categoriesTable } from "@/db/sqlite";
 import migrations from '@/drizzle/migrations';
 import { addCategoryToDatabase, getTodaysDate, syncDatabase } from "@/utils/functions";
 import { requestSmsPermission } from "@/utils/permissions";
-import { Ionicons } from "@expo/vector-icons";
 import { eq } from "drizzle-orm";
 import { useMigrations } from 'drizzle-orm/expo-sqlite/migrator';
-import { router, useNavigation } from "expo-router";
-import { useEffect, useLayoutEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { RefreshControl, ScrollView, View } from "react-native";
-import { ActivityIndicator, IconButton } from "react-native-paper";
+import { ActivityIndicator } from "react-native-paper";
 
 
 export default function Index() {
 	const dateObj = new Date
-	const navigation = useNavigation()
 	const { success, error } = useMigrations(sqliteDB, migrations)
 	const [isLoading, setIsLoading] = useState<boolean>(true)
 	const [isRefreshing, setIsRefreshing] = useState<boolean>(false)
@@ -57,24 +54,10 @@ export default function Index() {
 	}, [success, error])
 
 
-
-	useLayoutEffect(() => {
-		navigation.setOptions({
-			// headerRight: () => (
-			// 	<IconButton
-			// 		icon={({ color, size }) => <Ionicons name="arrow-redo-outline" color={color} size={size - 5} />}
-			// 		onPress={() => router.push('/(home)/page')}
-			// 	/>
-			// )
-		})
-	}, [navigation])
-
 	if (isLoading) {
 		return (
-			<Body>
-				<View className="flex-1 justify-center items-center">
-					<ActivityIndicator size="large" />
-				</View>
+			<Body className="justify-center items-center">
+				<ActivityIndicator />
 			</Body>
 		);
 	}
@@ -96,7 +79,7 @@ export default function Index() {
 				}
 			>
 				<View className="gap-3">
-					<BalanceInfo />
+					<BalanceInfo refreshKey={refreshKey} />
 					<TodaysTransaction refreshKey={refreshKey} />
 					<WeeklyTransactionSummary year={dateObj.getFullYear()} month={dateObj.getMonth() + 1} dateInWeek={getTodaysDate()} />
 					<MonthyTransactionSummary year={dateObj.getFullYear()} month={dateObj.getMonth() + 1} />

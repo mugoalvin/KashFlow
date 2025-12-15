@@ -89,7 +89,7 @@ export default function MonthyTransactionSummary({ year, month }: MonthyTransact
 
 							<DropdownMenuGroup>
 
-								<DropdownMenuItem onPress={() => setSortType('amount')} android_ripple={{ color: 'red', borderless: false }}>
+								<DropdownMenuItem onPress={() => setSortType('amount')} android_ripple={{ color: theme.colors.secondaryContainer }} >
 									<Text style={{ color: theme.colors.onSecondaryContainer }}>Cummulative Amount</Text>
 								</DropdownMenuItem>
 								<DropdownMenuItem onPress={() => setSortType('count')}>

@@ -9,16 +9,19 @@ import { useMMKVBoolean } from 'react-native-mmkv';
 import { IconButton, Text, useTheme } from "react-native-paper";
 import Title from "../text/title";
 
-export default function BalanceInfo() {
+interface BalanceInfoProps {
+	refreshKey: number
+}
+
+export default function BalanceInfo({ refreshKey }: BalanceInfoProps) {
 	const theme = useTheme()
 	const [balance, setBalance] = useState<number>(0)
-
 	const [isBalanceHidden, setIsBalanceHidden] = useMMKVBoolean('isMpesaHidden')
 
 	useEffect(() => {
 		getBalance(sqliteDB)
 			.then(setBalance)
-	}, [])
+	}, [refreshKey])
 
 	return (
 		<View className="gap-3 mb-5">
@@ -41,17 +44,21 @@ export default function BalanceInfo() {
 				>
 					Ksh
 				</Text>
-				<AnimatedNumbers
-					animateToNumber={balance}
-					animationDuration={2200}
-					includeComma
-					fontStyle={{
-						fontSize: theme.fonts.headlineSmall.fontSize,
-						color: theme.colors.primary,
-						fontWeight: "bold",
-						alignSelf: "flex-end"
-					}}
-				/>
+				{
+					isBalanceHidden ?
+					<AnimatedNumbers
+						animateToNumber={balance}
+						animationDuration={2200}
+						includeComma
+						fontStyle={{
+							fontSize: theme.fonts.headlineSmall.fontSize,
+							color: theme.colors.primary,
+							fontWeight: "bold",
+							alignSelf: "flex-end"
+						}}
+						/> :
+						<Text style={{ color: theme.colors.primary, }}>_____</Text>
+				}
 			</View>
 		</View>
 	)
