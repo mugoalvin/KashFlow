@@ -2,6 +2,7 @@ import React from 'react';
 import { useMMKVBoolean, useMMKVString } from "react-native-mmkv";
 import { List, RadioButton, useTheme } from 'react-native-paper';
 import Animated, { FadeInUp, FadeOutUp } from 'react-native-reanimated';
+import { getTextStyles } from '../text/styles';
 
 export default function NavigationSettings() {
 	const theme = useTheme()
@@ -10,10 +11,12 @@ export default function NavigationSettings() {
 	const visibilityModeArray = ['Auto', 'Selected', 'Labeled', 'Unlabeled']
 
 	return (
-		<List.Section title='Navigation' titleStyle={{ color: theme.colors.onSurfaceDisabled }}>
+		<List.Section title='Navigation' titleStyle={getTextStyles(theme).SettingsSectionHeader}>
 			<List.Accordion
 				title="Label Visibility Mode"
-				description="The visibility mode of the tab item label."
+				titleStyle={getTextStyles(theme).SettingsTitle}
+				description="The visibility mode of the bottom navigation tab item label."
+				descriptionStyle={getTextStyles(theme).SettingsDescription}
 				theme={theme}
 			>
 				{
@@ -25,6 +28,8 @@ export default function NavigationSettings() {
 						>
 							<List.Item
 								title={visibilityMode}
+								titleStyle={getTextStyles(theme).SettingsTitle}
+								rippleColor={theme.colors.secondaryContainer}
 								right={() =>
 									<RadioButton
 										status={mode === visibilityMode?.toLowerCase() ? 'checked' : 'unchecked'}

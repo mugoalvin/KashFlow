@@ -1,6 +1,6 @@
 import { SortedTransaction } from "@/components/text/interface"
-import { View } from "react-native"
-import { Text, useTheme } from 'react-native-paper'
+import { Text as NativeText, View } from "react-native"
+import { Text as PaperText, useTheme } from 'react-native-paper'
 
 interface TopTransactionsProps {
 	transactions: SortedTransaction[]
@@ -12,21 +12,21 @@ export default function TopTransactions({ transactions }: TopTransactionsProps) 
 	return (
 		<View className="gap-7">
 			<View className="flex-row justify-between">
-				<Text style={{ color: theme.colors.onSurfaceDisabled }}>Counter Party</Text>
-				<Text style={{ color: theme.colors.onSurfaceDisabled }}>No. Of Transactions</Text>
-				<Text style={{ color: theme.colors.onSurfaceDisabled }}>Total Amount</Text>
+				<NativeText style={{ color: theme.colors.onSurfaceDisabled, fontWeight: 'bold' }}>Counter Party</NativeText>
+				<NativeText style={{ color: theme.colors.onSurfaceDisabled, fontWeight: 'bold' }}>No. Of Transactions</NativeText>
+				<NativeText style={{ color: theme.colors.onSurfaceDisabled, fontWeight: 'bold' }}>Total Amount</NativeText>
 			</View>
 			{
 				transactions.map((transaction, index) =>
 					<View key={index} className="flex-row items-end justify-between">
 						<View className="w-5/12">
-							<Text variant="bodySmall">{transaction.counterparty}</Text>
+							<PaperText variant="bodySmall">{transaction.counterparty}</PaperText>
 						</View>
 						<View className="w-3/12 items-center gap-1">
-							<Text>{transaction.transactionCount}</Text>
+							<PaperText>{transaction.transactionCount}</PaperText>
 						</View>
 						<View className="w-4/12 items-end gap-1">
-							<Text>Ksh {Intl.NumberFormat("en-US").format(transaction.totalSent)}</Text>
+							<PaperText>Ksh {Intl.NumberFormat("en-US").format(transaction.totalSent)}</PaperText>
 						</View>
 					</View>
 				)

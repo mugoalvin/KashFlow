@@ -1,50 +1,169 @@
-# Welcome to your Expo app 👋
+# KashFlow
 
-This is an [Expo](https://expo.dev) project created with [`create-expo-app`](https://www.npmjs.com/package/create-expo-app).
+A modern, feature-rich mobile personal finance application built with React Native and Expo. KashFlow helps you track M-Pesa transactions, manage categories, and analyze your spending patterns with an intuitive interface.
 
-## Get started
+## 📱 Features
 
-1. Install dependencies
+- **Transaction Tracking**: Record income and expenses with detailed information
+- **Smart Categories**: Organize transactions with custom categories
+- **Analytics Dashboard**: Visualize spending patterns with daily, weekly, and monthly analysis
+- **Multiple Views**: Switch between list and chart views for better insights
+- **Theme Support**: Light and dark theme with Material Design 3 integration
+- **Local Database**: SQLite-powered offline-first approach with Drizzle ORM
+- **Cross-Platform**: Currently runs Android only.
 
-   ```bash
-   npm install
-   ```
+## 🛠️ Tech Stack
 
-2. Start the app
+- **Framework**: React Native with Expo
+- **Navigation**: Expo Router (file-based routing)
+- **Database**: SQLite with Drizzle ORM
+- **Styling**: TailwindCSS (NativeWind) + Material Design 3
+- **State Management**: React Context API
+- **Build System**: Expo (EAS for production builds)
+- **Code Quality**: ESLint
 
-   ```bash
-   npx expo start
-   ```
+## 📋 Prerequisites
 
-In the output, you'll find options to open the app in a
+- Node.js 18+ and npm/yarn
+- Expo CLI: `npm install -g expo-cli`
+- Android: Android Studio with SDK tools (for Android development)
 
-- [development build](https://docs.expo.dev/develop/development-builds/introduction/)
-- [Android emulator](https://docs.expo.dev/workflow/android-studio-emulator/)
-- [iOS simulator](https://docs.expo.dev/workflow/ios-simulator/)
-- [Expo Go](https://expo.dev/go), a limited sandbox for trying out app development with Expo
+## 🚀 Getting Started
 
-You can start developing by editing the files inside the **app** directory. This project uses [file-based routing](https://docs.expo.dev/router/introduction).
-
-## Get a fresh project
-
-When you're ready, run:
+### Installation
 
 ```bash
-npm run reset-project
+# Clone the repository
+git clone https://github.com/mugoalvin/KashFlow.git
+cd KashFlow
+
+# Install dependencies
+npm install
 ```
 
-This command will move the starter code to the **app-example** directory and create a blank **app** directory where you can start developing.
+### Development
 
-## Learn more
+Kindly run the application on your Android device.
 
-To learn more about developing your project with Expo, look at the following resources:
+```bash
+# Start the Expo development server
+npx expo start
 
-- [Expo documentation](https://docs.expo.dev/): Learn fundamentals, or go into advanced topics with our [guides](https://docs.expo.dev/guides).
-- [Learn Expo tutorial](https://docs.expo.dev/tutorial/introduction/): Follow a step-by-step tutorial where you'll create a project that runs on Android, iOS, and the web.
+# Run on specific platform
+npx expo run:android  # Android Device
+```
 
-## Join the community
+<!--
+### Building
+```bash
+# Build for production (using EAS)
+eas build --platform ios
+eas build --platform android
 
-Join our community of developers creating universal apps.
+# Build locally
+npm run android  # Requires Android Studio setup
+npm run ios      # Requires Xcode setup
+``` -->
 
-- [Expo on GitHub](https://github.com/expo/expo): View our open source platform and contribute.
-- [Discord community](https://chat.expo.dev): Chat with Expo users and ask questions.
+## 📁 Project Structure
+
+```
+KashFlow/
+├── app/                    # Expo Router app directory
+│   ├── (home)/            # Home tab screen
+│   ├── (settings)/        # Settings tab screen
+│   └── (transactions)/    # Transactions tab screen
+├── components/            # Reusable UI components
+│   ├── information/       # Info display components
+│   ├── ui/               # Base UI components (buttons, chips, etc.)
+│   ├── userInput/        # Input components (forms, selectors)
+│   └── pages/            # Page-level components
+├── contexts/             # React Context providers
+├── db/                   # Database setup and functions
+├── hooks/                # Custom React hooks
+├── lib/                  # Utility libraries
+├── utils/                # Helper functions and constants
+├── drizzle/              # Database migrations
+└── assets/               # Images and icons
+```
+
+## 🗄️ Database
+
+The project uses SQLite with Drizzle ORM for type-safe database operations.
+
+### Running Migrations
+
+```bash
+# Generate migrations after schema changes
+drizzle-kit generate:sqlite
+
+# Push migrations to database
+drizzle-kit push:sqlite
+
+# View database in studio
+drizzle-kit studio
+```
+
+### Database Schema
+
+Key tables:
+
+- **Transactions**: Stores income/expense entries
+- **Categories**: User-defined transaction categories
+- **Additional tables**: Configured in `db/config.ts`
+
+## 🎨 Customization
+
+### Theming
+
+- Material Design 3 theme integration from [React Native Paper](https://reactnativepaper.com/)
+- TailwindCSS via [NativeWind](`https://www.nativewind.dev/`)
+- Theme context in `contexts/ThemeContext.ts`
+
+### Colors
+
+Custom colors defined in `utils/colors.ts`
+
+## 📦 Available Scripts
+
+```bash
+npx expo start           # Start Expo development server
+npx expo run:android     # Build and run on Android
+npm run lint        # Run ESLint
+```
+
+## 🔧 Configuration
+
+- **Expo Config**: `app.json`
+- **TypeScript**: `tsconfig.json`
+- **ESLint**: `eslint.config.js`
+- **Babel**: `babel.config.js`
+- **Database**: `drizzle.config.ts`
+
+## 📝 Environment Variables
+
+Create a `.env.local` file in the root directory with necessary configurations (see `.env.example` if available).
+
+## 🐛 Development Tips
+
+- Use `expo lint` to catch issues early
+- Check `contexts/` for global state management needs
+- Database functions are in `db/db_functions.ts`
+- Custom hooks in `hooks/` for reusable logic
+
+## 📄 License
+
+See LICENSE file for details.
+
+## 👤 Author
+
+**Alvin Mugo** - [GitHub](https://github.com/mugoalvin)
+
+## 🤝 Contributing
+
+Contributions are welcome! Please feel free to submit a Pull Request.
+
+---
+
+**Version**: 1.1.0  
+**Last Updated**: December 2025

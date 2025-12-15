@@ -13,6 +13,7 @@ export default function Title({ color, text, leadingIcon, trailingIcon }: MyText
 				<Text
 					style={{
 						fontSize: theme.fonts.labelLarge.fontSize,
+						fontWeight: theme.fonts.labelLarge.fontWeight,
 						color: color || theme.colors.onSurfaceDisabled
 					}}>
 					{text || "Title Here"}

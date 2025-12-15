@@ -10,23 +10,28 @@ import { SQLiteProvider } from 'expo-sqlite';
 import { Suspense, useMemo } from 'react';
 import { useColorScheme } from 'react-native';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
+import { useMMKVString } from 'react-native-mmkv';
 import { MD3DarkTheme, MD3LightTheme, PaperProvider } from 'react-native-paper';
 import { ThemeContext } from '../contexts/ThemeContext';
 import '../global.css';
-import { useMMKVString } from 'react-native-mmkv';
 
 export default function RootLayout() {
-	const [accentColor] = useMMKVString('accentColor')
-	const { theme, resetTheme, updateTheme } = useMaterial3Theme({ sourceColor: accentColor })
 	const colorScheme = useColorScheme() || 'light'
+	const [accentColor] = useMMKVString('accentColor')
+	const { theme, resetTheme, updateTheme } = useMaterial3Theme({ fallbackSourceColor: accentColor })
 
-	const paperTheme = useMemo(() => ({
-		...(colorScheme === 'dark' ? MD3DarkTheme : MD3LightTheme),
-		colors: {
-			...(colorScheme === 'dark' ? theme.dark : theme.light),
-			...(colorScheme === 'dark' ? darkCustomTheme : lightCustomTheme)
-		}
-	}), [colorScheme, theme.dark, theme.light])
+	const paperTheme = useMemo(() => (
+		colorScheme === 'dark' ?
+			{
+				...MD3DarkTheme,
+				colors: { ...theme.dark, ...darkCustomTheme },
+			} :
+			{
+				...MD3LightTheme,
+				colors: { ...theme.light, ...lightCustomTheme },
+			}
+	), [colorScheme, theme])
+
 
 	return (
 		<ThemeContext.Provider value={{ resetTheme, updateTheme }}>

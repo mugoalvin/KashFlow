@@ -1,15 +1,15 @@
-import Body from "@/components/views/body";
-import { useEffect, useRef, useState } from "react";
-
 import MonthlyTransactionInfo from "@/components/information/monthlyTransactionInfo";
 import SelectYearDropDown from "@/components/userInput/selectYearDropDown";
+import Body from "@/components/views/body";
 import { sqliteDB } from "@/db/config";
 import { mpesaMessages } from "@/db/sqlite";
 import { MpesaParced } from '@/interface/mpesa';
 import { getYearsFrom } from "@/utils/functions";
 import { months } from "@/utils/variable";
 import { Tab, TabView } from '@rneui/themed';
+import { useEffect, useRef, useState } from "react";
 import { View } from "react-native";
+import { useMMKVBoolean, useMMKVString } from "react-native-mmkv";
 import { useTheme } from "react-native-paper";
 
 export type transactionButtonType = 'all' | 'moneyOut' | 'moneyIn'
@@ -27,6 +27,10 @@ export default function Transactions() {
 	const chipYears = useRef<number[]>([])
 	const [firstMonth, setFirstMonth] = useState<number>(1)
 	const [firstYear, setFirstYear] = useState<number>(1)
+
+	const [tabViewAnimationType] = useMMKVString('tabViewAnimationType')
+	const [disableSwipe] = useMMKVBoolean('isSwipeDisabled')
+
 
 
 	async function getFirstTransactionInfo() {
@@ -84,9 +88,9 @@ export default function Transactions() {
 				</View>
 			</View>
 
-			<TabView value={activeIndex} onChange={setActiveIndex} animationType="spring" disableSwipe={false}>
+			<TabView value={activeIndex} onChange={setActiveIndex} animationType={tabViewAnimationType as 'spring' | 'timing' | undefined || "spring"} disableSwipe={disableSwipe}>
 				{
-					months.map((month, idx) => (
+					months.map((_, idx) => (
 						<TabView.Item
 							key={idx}
 							className="flex-1 items-center justify-center"

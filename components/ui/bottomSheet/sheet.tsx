@@ -7,6 +7,7 @@ import { useTheme } from 'react-native-paper'
 interface BodyWithBottomSheetProps {
 	children?: React.ReactNode
 	className?: string
+	noPadding?: boolean
 	sheetContent?: React.ReactNode
 	ref?: React.Ref<BottomSheetMethods>
 	initialSnapIndex?: number
@@ -14,11 +15,11 @@ interface BodyWithBottomSheetProps {
 	onChange?: (index: number) => void
 }
 
-export default function BodyWithBottomSheet({ children, className, initialSnapIndex, onChange, ref, sheetContent, snapPoints }: BodyWithBottomSheetProps) {
+export default function BodyWithBottomSheet({ children, className, noPadding, initialSnapIndex, onChange, ref, sheetContent, snapPoints }: BodyWithBottomSheetProps) {
 	const theme = useTheme()
 
 	return (
-		<Body className={className}>
+		<Body className={className} noPadding={noPadding}>
 			{children}
 			<BottomSheet
 				ref={ref}

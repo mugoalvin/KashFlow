@@ -22,6 +22,7 @@ interface TransactionSummaryProps {
 export default function TransactionSummary({ title, moneyIn, moneyOut, highest, lowest, trailingIcon, topTransactions, isLoading = false }: TransactionSummaryProps) {
 	const theme = useTheme()
 	const [useCard] = useMMKVBoolean('useCard')
+	const [useSummaryColor] = useMMKVBoolean('useSummaryColor')
 
 	return (
 		<>
@@ -42,13 +43,14 @@ export default function TransactionSummary({ title, moneyIn, moneyOut, highest, 
 							</View>
 							:
 							<>
-								<View className="flex-1 justify-around">
+								<View className="flex-1 justify-around gap-2">
 									<Text variant="bodyMedium" style={{ color: theme.colors.onSurfaceDisabled }}>Money In</Text>
-									<Text variant="headlineSmall">Ksh {Intl.NumberFormat().format(moneyIn)}</Text>
+									{/* @ts-expect-error */}
+									<Text variant="headlineSmall" style={{ color: useSummaryColor ? theme.colors.success : theme.colors.onSurface }}>Ksh {Intl.NumberFormat().format(moneyIn)}</Text>
 								</View>
-								<View className="flex-1 items-end justify-around">
+								<View className="flex-1 items-end justify-around gap-2">
 									<Text variant="bodyMedium" style={{ color: theme.colors.onSurfaceDisabled }}>Money Out</Text>
-									<Text variant="headlineSmall">Ksh {Intl.NumberFormat().format(moneyOut)}</Text>
+									<Text variant="headlineSmall" style={{ color: useSummaryColor ? theme.colors.error : theme.colors.onSurface }}>Ksh {Intl.NumberFormat().format(moneyOut)}</Text>
 								</View>
 							</>
 					}

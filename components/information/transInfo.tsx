@@ -20,8 +20,10 @@ export default function TransInfo({ item, index, length }: TransInfoProps) {
 	const theme = useTheme()
 	const { showDialog } = useDialogContext()
 	const { showModal } = useModalContext()
-	const [animationEnabled] = useMMKVBoolean('isAnimationEnabled')
 	const [useCard] = useMMKVBoolean('useCard')
+	const [animationEnabled] = useMMKVBoolean('isAnimationEnabled')
+	const [useMinTransInfo] = useMMKVBoolean('isTransInfoMin')
+
 
 	const counterParty = (item.counterparty)?.toLowerCase().split(' ').map(word =>
 		word.slice(0, 1).toUpperCase().concat(word.slice(1)).concat(' ')
@@ -35,7 +37,7 @@ export default function TransInfo({ item, index, length }: TransInfoProps) {
 	return (
 		<>
 			{
-				index !== 0 &&
+				index !== 0 && useCard &&
 				<Divider
 					horizontalInset={useCard}
 					style={{
@@ -49,9 +51,8 @@ export default function TransInfo({ item, index, length }: TransInfoProps) {
 					foreground: true
 				}}
 
-
 				className={
-					`flex-row justify-between ${useCard ? 'px-4' : 'px-1'} py-4
+					`flex-row justify-between ${useCard ? 'px-4' : 'px-1'} ${useCard ? 'py-4' : 'py-3'}
 						${length === 1
 						? 'rounded-3xl'
 						: index === 0
@@ -85,19 +86,32 @@ export default function TransInfo({ item, index, length }: TransInfoProps) {
 			>
 				<View className='flex-1 pe-2'>
 					<Text numberOfLines={1} ellipsizeMode='tail'>{counterParty}</Text>
-					<LightText className="text-sm" text={`${transactionType} : ${item.parsedTime}`} />
+					{
+						!useMinTransInfo &&
+						<LightText className="text-sm" text={`${transactionType} : ${item.parsedTime}`} />
+					}
 				</View>
-				<View className='flex-row justify-between min-w-24'>
-					<Icon source={() =>
-						<FontAwesome6
-							name={item.type === 'receive' ? "arrow-up-long" : "arrow-down-long"}
-							size={14}
-							color={item.type === 'receive' ? "green" : "red"}
+				<View className={`flex-row justify-between ${!useMinTransInfo && 'min-w-24'}`}>
+					{
+						!useMinTransInfo &&
+						<Icon source={() =>
+							<FontAwesome6
+								name={item.type === 'receive' ? "arrow-up-long" : "arrow-down-long"}
+								size={14}
+								color={item.type === 'receive' ? "green" : "red"}
+							/>
+						}
+							size={16}
 						/>
 					}
-						size={16}
-					/>
-					<Text>Ksh.{item.amount}</Text>
+					<View className='gap-1 items-end'>
+						{/* @ts-expect-error */}
+						<Text style={{ color: item.type === 'receive' ? theme.colors.success : theme.colors.error }}>{item.type === 'receive' || "- "}Ksh. {item.amount}</Text>
+						{
+							useMinTransInfo &&
+							<LightText className="text-sm" text={item.parsedTime} />
+						}
+					</View>
 				</View>
 			</AnimatedPressable>
 		</>
