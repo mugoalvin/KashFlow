@@ -15,6 +15,7 @@ interface BalanceInfoProps {
 
 export default function BalanceInfo({ refreshKey }: BalanceInfoProps) {
 	const theme = useTheme()
+	const [useCard] = useMMKVBoolean('useCard')
 	const [balance, setBalance] = useState<number>(0)
 	const [isBalanceHidden, setIsBalanceHidden] = useMMKVBoolean('isMpesaHidden')
 
@@ -25,37 +26,40 @@ export default function BalanceInfo({ refreshKey }: BalanceInfoProps) {
 
 	return (
 		<View className="gap-3 mb-5">
-			<Title
-				leadingIcon={<Entypo name="wallet" size={16} color={theme.colors.primary} />}
-				text="Your Balance"
-				trailingIcon={
-					<IconButton
-						icon={() => <Ionicons name={isBalanceHidden ? 'eye-off' : 'eye'} size={16} color={theme.colors.primary} />}
-						onPress={() => setIsBalanceHidden(prev => !prev)}
-					/>
-				}
-			/>
-			<View className='flex-row justify-center items-baseline gap-2'>
+			<View className={`${!useCard && 'px-2 rounded-lg'}`} style={{ backgroundColor: !useCard ? theme.colors.elevation.level2 : theme.colors.background }}>
+				<Title
+					leadingIcon={<Entypo name="wallet" size={16} color={theme.colors.primary} />}
+					text="Your Balance"
+					color={theme.colors.onSurface}
+					trailingIcon={
+						<IconButton
+							icon={() => <Ionicons name={isBalanceHidden ? 'eye-off' : 'eye'} size={16} color={theme.colors.primary} />}
+							onPress={() => setIsBalanceHidden(prev => !prev)}
+						/>
+					}
+				/>
+			</View>
+			<View className='flex-row justify-center items-baseline gap-1'>
 				<Text
 					variant="headlineMedium"
 					style={{
 						color: theme.colors.primary,
 					}}
 				>
-					Ksh
+					Ksh {balance < 0 ? "-" : ""}
 				</Text>
 				{
 					isBalanceHidden ?
-					<AnimatedNumbers
-						animateToNumber={balance}
-						animationDuration={2200}
-						includeComma
-						fontStyle={{
-							fontSize: theme.fonts.headlineSmall.fontSize,
-							color: theme.colors.primary,
-							fontWeight: "bold",
-							alignSelf: "flex-end"
-						}}
+						<AnimatedNumbers
+							animateToNumber={balance}
+							animationDuration={2200}
+							includeComma
+							fontStyle={{
+								fontSize: theme.fonts.headlineSmall.fontSize,
+								color: theme.colors.primary,
+								fontWeight: "bold",
+								alignSelf: "flex-end"
+							}}
 						/> :
 						<Text style={{ color: theme.colors.primary, }}>_____</Text>
 				}

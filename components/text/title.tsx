@@ -3,7 +3,7 @@ import { Text, View } from 'react-native'
 import { useTheme } from 'react-native-paper'
 import { MyTextProps } from './interface'
 
-export default function Title({ color, text, leadingIcon, trailingIcon }: MyTextProps) {
+export default function Title({ color, text, leadingIcon, trailingIcon, fontSize, fontWeight }: MyTextProps) {
 	const theme = useTheme()
 
 	return (
@@ -12,8 +12,8 @@ export default function Title({ color, text, leadingIcon, trailingIcon }: MyText
 				{leadingIcon}
 				<Text
 					style={{
-						fontSize: theme.fonts.labelLarge.fontSize,
-						fontWeight: theme.fonts.labelLarge.fontWeight,
+						fontSize: fontSize || theme.fonts.labelLarge.fontSize,
+						fontWeight: fontWeight || theme.fonts.labelLarge.fontWeight,
 						color: color || theme.colors.onSurfaceDisabled
 					}}>
 					{text || "Title Here"}

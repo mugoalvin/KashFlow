@@ -44,12 +44,12 @@ export default function TransactionSummary({ title, moneyIn, moneyOut, highest, 
 							:
 							<>
 								<View className="flex-1 justify-around gap-2">
-									<Text variant="bodyMedium" style={{ color: theme.colors.onSurfaceDisabled }}>Money In</Text>
+									<Text variant="bodyMedium" style={{ color: theme.colors.onSurfaceDisabled, fontWeight: 'bold' }}>Money In</Text>
 									{/* @ts-expect-error */}
 									<Text variant="headlineSmall" style={{ color: useSummaryColor ? theme.colors.success : theme.colors.onSurface }}>Ksh {Intl.NumberFormat().format(moneyIn)}</Text>
 								</View>
 								<View className="flex-1 items-end justify-around gap-2">
-									<Text variant="bodyMedium" style={{ color: theme.colors.onSurfaceDisabled }}>Money Out</Text>
+									<Text variant="bodyMedium" style={{ color: theme.colors.onSurfaceDisabled, fontWeight: 'bold' }}>Money Out</Text>
 									<Text variant="headlineSmall" style={{ color: useSummaryColor ? theme.colors.error : theme.colors.onSurface }}>Ksh {Intl.NumberFormat().format(moneyOut)}</Text>
 								</View>
 							</>
@@ -73,8 +73,6 @@ export default function TransactionSummary({ title, moneyIn, moneyOut, highest, 
 				}
 
 			</View>
-
-
 		</>
 	)
 }

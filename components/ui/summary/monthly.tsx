@@ -73,40 +73,38 @@ export default function MonthyTransactionSummary({ year, month }: MonthyTransact
 	}, [monthTransactions, sortType])
 
 	return (
-		<>
-			<TransactionSummary
-				title={"Monthly Summary"}
-				trailingIcon={
-					<DropdownMenu>
-						<DropdownMenuTrigger asChild>
-							<IconButton icon={() => <MaterialIcons name="sort" color={theme.colors.primary} size={16} />} />
-						</DropdownMenuTrigger>
+		<TransactionSummary
+			title={"Monthly Summary"}
+			trailingIcon={
+				<DropdownMenu>
+					<DropdownMenuTrigger asChild>
+						<IconButton icon={() => <MaterialIcons name="sort" color={theme.colors.primary} size={16} />} />
+					</DropdownMenuTrigger>
 
-						<DropdownMenuContent insets={contentInsets} sideOffset={2} className="w-56" align="start" style={{ backgroundColor: theme.colors.secondaryContainer }}>
-							<DropdownMenuLabel>Sort By</DropdownMenuLabel>
+					<DropdownMenuContent insets={contentInsets} sideOffset={2} className="w-56" align="start" style={{ backgroundColor: theme.colors.secondaryContainer }}>
+						<DropdownMenuLabel>Sort By</DropdownMenuLabel>
 
-							<DropdownMenuSeparator />
+						<DropdownMenuSeparator />
 
-							<DropdownMenuGroup>
+						<DropdownMenuGroup>
 
-								<DropdownMenuItem onPress={() => setSortType('amount')} android_ripple={{ color: theme.colors.secondaryContainer }} >
-									<Text style={{ color: theme.colors.onSecondaryContainer }}>Cummulative Amount</Text>
-								</DropdownMenuItem>
-								<DropdownMenuItem onPress={() => setSortType('count')}>
-									<Text style={{ color: theme.colors.onSecondaryContainer }}>Number Of Counts</Text>
-								</DropdownMenuItem>
+							<DropdownMenuItem onPress={() => setSortType('amount')} android_ripple={{ color: theme.colors.secondaryContainer }} >
+								<Text style={{ color: theme.colors.onSecondaryContainer }}>Cummulative Amount</Text>
+							</DropdownMenuItem>
+							<DropdownMenuItem onPress={() => setSortType('count')}>
+								<Text style={{ color: theme.colors.onSecondaryContainer }}>Number Of Counts</Text>
+							</DropdownMenuItem>
 
-							</DropdownMenuGroup>
-						</DropdownMenuContent>
-					</DropdownMenu>
-				}
-				moneyIn={moneyReceived}
-				moneyOut={moneySend}
+						</DropdownMenuGroup>
+					</DropdownMenuContent>
+				</DropdownMenu>
+			}
+			moneyIn={moneyReceived}
+			moneyOut={moneySend}
 
-				topTransactions={topTransactions}
-				highest={highestTrasaction}
-				lowest={lowestTrasaction}
-			/>
-		</>
+			topTransactions={topTransactions}
+			highest={highestTrasaction}
+			lowest={lowestTrasaction}
+		/>
 	)
 }

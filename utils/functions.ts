@@ -365,19 +365,22 @@ export function getHighestAndLowestTransaction(transactions: MpesaParced[]) {
 
 
 export function getTopCounterparties(transactions: MpesaParced[], sortBy: TransactionSortMode, numberOfTransactions?: number) {
-	const totals = new Map<string, { totalSent: number; totalReceived: number; count: number }>();
+	const totals = new Map<string, { totalSent: number; totalReceived: number; count: number; type: MpesaTransactionType }>();
 
 	for (const tx of transactions) {
 		const entry = totals.get(tx.counterparty || '') || {
 			totalSent: 0,
 			totalReceived: 0,
 			count: 0,
+			type: 'send' as MpesaTransactionType
 		};
 
 		if (tx.type === "send") {
+			entry.type = tx.type
 			entry.totalSent += tx.amount;
 			entry.count += 1;
 		} else if (tx.type === "receive") {
+			entry.type = tx.type
 			entry.totalReceived += tx.amount;
 		}
 
@@ -389,6 +392,7 @@ export function getTopCounterparties(transactions: MpesaParced[], sortBy: Transa
 			counterparty,
 			totalSent: data.totalSent,
 			transactionCount: data.count,
+			type: data.type,
 		}))
 		.sort((a, b) =>
 			sortBy === "count"

@@ -10,7 +10,8 @@
     "newArchEnabled": true,
     "ios": {
       "supportsTablet": true,
-      "bundleIdentifier": "com.mugoalvin.KashFlow"
+      "bundleIdentifier": "com.mugoalvin.KashFlow",
+      "newArchEnabled": true
     },
     "android": {
       "adaptiveIcon": {
@@ -24,7 +25,8 @@
       "package": "com.mugoalvin.KashFlow",
       "permissions": [
         "READ_SMS, RECEIVE_SMS"
-      ]
+      ],
+      "newArchEnabled": true
     },
     "web": {
       "bundler": "metro",

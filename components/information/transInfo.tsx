@@ -6,7 +6,7 @@ import React from 'react'
 import { Pressable, Vibration, View } from 'react-native'
 import { useMMKVBoolean } from 'react-native-mmkv'
 import { Divider, Icon, Text, useTheme } from 'react-native-paper'
-import Animated, { FadeInLeft, FadeOutRight } from 'react-native-reanimated'
+import Animated, { FadeInLeft, FadeOutRight, LinearTransition } from 'react-native-reanimated'
 import LightText from '../text/lightText'
 
 
@@ -65,6 +65,7 @@ export default function TransInfo({ item, index, length }: TransInfoProps) {
 
 				entering={animationEnabled ? FadeInLeft.duration(500).delay(index * 100) : undefined}
 				exiting={animationEnabled ? FadeOutRight.duration(500).delay(index * 80) : undefined}
+				layout={LinearTransition.duration(500)}
 				style={{
 					backgroundColor: useCard ? theme.colors.elevation.level1 : theme.colors.background
 				}}
@@ -109,7 +110,7 @@ export default function TransInfo({ item, index, length }: TransInfoProps) {
 						<Text style={{ color: item.type === 'receive' ? theme.colors.success : theme.colors.error }}>{item.type === 'receive' || "- "}Ksh. {item.amount}</Text>
 						{
 							useMinTransInfo &&
-							<LightText className="text-sm" text={item.parsedTime} />
+							<LightText className="text-sm"  text={item.parsedTime} fontSize={theme.fonts.bodySmall.fontSize}/>
 						}
 					</View>
 				</View>

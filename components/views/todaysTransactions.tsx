@@ -1,4 +1,3 @@
-import useSnackbarContext from "@/contexts/SnackbarContext";
 import { sqliteDB } from "@/db/config";
 import { mpesaMessages } from "@/db/sqlite";
 import { MpesaParced } from "@/interface/mpesa";
@@ -7,6 +6,7 @@ import { Ionicons, MaterialIcons } from "@expo/vector-icons";
 import { desc, eq } from "drizzle-orm";
 import { useEffect, useState } from "react";
 import { View } from "react-native";
+import { useMMKVBoolean } from "react-native-mmkv";
 import { IconButton, Text, useTheme } from "react-native-paper";
 import Title from "../text/title";
 import TransactionSummary from "../ui/summary/transactionSummary";
@@ -18,7 +18,7 @@ interface TodaysTransactionProps {
 
 export default function TodaysTransaction({ refreshKey }: TodaysTransactionProps) {
 	const theme = useTheme()
-	const { showSnackbar } = useSnackbarContext()
+	const [useCard] = useMMKVBoolean('useCard')
 	const [todaysTransactionParsedMessages, setTodaysTransactionParsedMessages] = useState<MpesaParced[]>([])
 	const [moneySend, setMoneySend] = useState<number>(0)
 	const [moneyReceived, setMoneyReceived] = useState<number>(0)
@@ -48,22 +48,26 @@ export default function TodaysTransaction({ refreshKey }: TodaysTransactionProps
 
 	return (
 		<>
-			<Title
-				text="Today's Transactions"
-				leadingIcon={<Ionicons name='calendar-number-sharp' size={16} color={theme.colors.primary} />}
-				trailingIcon={
-					<IconButton
-						icon={() =>
-							<MaterialIcons
-								name="sort"
-								size={16}
-								color={theme.colors.primary}
-							/>
-						}
-						onPress={() => { }}
-					/>
-				}
-			/>
+			<View className={`${!useCard && 'px-2 rounded-lg'}`} style={{ backgroundColor: !useCard ? theme.colors.elevation.level2 : theme.colors.background }}>
+
+				<Title
+					text="Today's Transactions"
+					color={theme.colors.onSurface}
+					leadingIcon={<Ionicons name='calendar-number-sharp' size={16} color={theme.colors.primary} />}
+					trailingIcon={
+						<IconButton
+							icon={() =>
+								<MaterialIcons
+									name="sort"
+									size={16}
+									color={theme.colors.primary}
+								/>
+							}
+							onPress={() => { }}
+						/>
+					}
+				/>
+			</View>
 
 			{
 				todaysTransactionParsedMessages.length === 0
