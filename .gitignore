@@ -2,6 +2,7 @@
 
 # dependencies
 node_modules/
+.gitignore
 
 # Expo
 .expo/
@@ -43,3 +44,4 @@ app-example
 /ios
 
 /todo.md
+/problems.md

@@ -4,7 +4,9 @@ import { MpesaParced, MpesaTransactionType } from "@/interface/mpesa"
 import moment from "moment"
 import { useEffect, useState } from "react"
 import { View } from "react-native"
+import { useTheme } from "react-native-paper"
 import LightText from "../text/lightText"
+import Title from "../text/title"
 import TransInfo from "./transInfo"
 
 interface DailyTransactionInfoProps {
@@ -15,7 +17,7 @@ interface DailyTransactionInfoProps {
 }
 
 export default function DailyTransactionInfo({ date, transactions, length, transactionType }: DailyTransactionInfoProps) {
-
+	const theme = useTheme()
 	const { showSnackbar } = useSnackbarContext()
 	const moneyInTransactions: MpesaTransactionType[] = ["receive"]
 	const moneyOutTransactions: MpesaTransactionType[] = ["airtime", "send", "fuliza", "payFuliza", "partialFulizaPay", "withdraw"]
@@ -42,7 +44,7 @@ export default function DailyTransactionInfo({ date, transactions, length, trans
 
 			default:
 				showSnackbar({
-					message: transactionType === undefined ? "No Transaction Type" : `Invalid Transaction Type: ${transactionType}`,
+					message: !transactionType ? "No Transaction Type" : `Invalid Transaction Type: ${transactionType}`,
 					isError: true
 				})
 				break;
@@ -51,10 +53,13 @@ export default function DailyTransactionInfo({ date, transactions, length, trans
 
 
 	return (
-		<View className="mb-4">
+		<View className="mb-10">
 			<View className="flex-row items-baseline justify-between">
-				<LightText
+				<Title
+					color={theme.colors.primary}
 					className="mb-2"
+					fontSize={theme.fonts.titleMedium.fontSize}
+					fontWeight="bold"
 					text={moment(date).format("ddd - Do MMM YY")}
 				/>
 			</View>
@@ -62,7 +67,7 @@ export default function DailyTransactionInfo({ date, transactions, length, trans
 				transToDisplay
 					.map((tx, i) => (
 						<TransInfo
-							key={`${date}-${i}`}
+							key={`${date}-${tx.id}`}
 							item={tx}
 							index={i}
 							length={length}

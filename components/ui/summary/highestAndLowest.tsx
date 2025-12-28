@@ -18,7 +18,7 @@ export default function HighestAndLowestTrasaction({ highest, lowest }: HighestA
 					<Text>{highest.counterparty}</Text>
 				</View>
 				<View>
-					<Text>Ksh { Intl.NumberFormat().format(highest.amount) }</Text>
+					<Text>{highest.type === 'receive' ? "+" : "-"}  Ksh {Intl.NumberFormat().format(highest.amount)}</Text>
 				</View>
 			</View>
 
@@ -28,7 +28,7 @@ export default function HighestAndLowestTrasaction({ highest, lowest }: HighestA
 					<Text>{lowest.counterparty}</Text>
 				</View>
 				<View>
-					<Text>Ksh {Intl.NumberFormat().format(lowest.amount)}</Text>
+					<Text>{lowest.type === 'receive' ? "+" : "-"} Ksh {Intl.NumberFormat().format(lowest.amount)}</Text>
 				</View>
 			</View>
 		</>

@@ -53,7 +53,7 @@ export default function ColorRow({ colors, title, closeSheet }: ColorRowProps) {
 					>
 						{
 							accentColor === backgroundColor &&
-							<Ionicons name='checkmark' size={20} />
+							<Ionicons name='checkmark' size={20} color={theme.colors.onSurface} />
 						}
 					</Pressable>
 				}

@@ -1,3 +1,4 @@
+import { MpesaTransactionType } from "@/interface/mpesa"
 import { ReactNode } from "react"
 
 export interface MyTextProps {
@@ -6,6 +7,8 @@ export interface MyTextProps {
 	color?: string
 	className?: string
 	text?: string
+	fontSize?: number
+	fontWeight?: "normal" | "bold" | "100" | "200" | "300" | "400" | "500" | "600" | "700" | "800" | "900" | 100 | 200 | 300 | 400 | 500 | 600 | 700 | 800 | 900 | "ultralight" | "thin" | "light" | "medium" | "regular" | "semibold" | "condensedBold" | "condensed" | "heavy" | "black"
 }
 
 export type TransactionSortMode = "amount" | "count"
@@ -14,6 +17,7 @@ export interface SortedTransaction {
 	counterparty: string
 	totalSent: number
 	transactionCount: number
+	type: MpesaTransactionType
 }
 
 export interface Category {
