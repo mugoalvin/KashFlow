@@ -1,7 +1,9 @@
 import React from 'react'
 import { useMMKVBoolean } from 'react-native-mmkv'
+// import { List, Switch, useTheme } from 'react-native-paper'
 import { List, Switch, useTheme } from 'react-native-paper'
 import { getTextStyles } from '../text/styles'
+
 
 export default function GenaralSettings() {
 	const theme = useTheme()
@@ -21,8 +23,8 @@ export default function GenaralSettings() {
 		setUseSummaryColor(prev => !prev)
 	}
 
-	const  [useMinTransInfo, setUseMinTransInfo] = useMMKVBoolean('isTransInfoMin')
-	function toggleUseMinTransInfo () {
+	const [useMinTransInfo, setUseMinTransInfo] = useMMKVBoolean('isTransInfoMin')
+	function toggleUseMinTransInfo() {
 		setUseMinTransInfo(prev => !prev)
 	}
 
@@ -33,6 +35,7 @@ export default function GenaralSettings() {
 				titleStyle={getTextStyles(theme).SettingsTitle}
 				description="Decide whether you want your M-Pesa balance is visible or hidden"
 				descriptionStyle={getTextStyles(theme).SettingsDescription}
+				onPress={toggleMpesaBalanceVisibility}
 				right={() =>
 					<Switch
 						value={hideMpesaBalance}

@@ -53,17 +53,18 @@ export default function TodaysTransaction({ refreshKey }: TodaysTransactionProps
 				<Title
 					text="Today's Transactions"
 					color={theme.colors.onSurface}
-					leadingIcon={<Ionicons name='calendar-number-sharp' size={16} color={theme.colors.primary} />}
+					leadingIcon={
+						<Ionicons name='calendar-number-sharp' size={16} color={theme.colors.primary} />
+					}
 					trailingIcon={
 						<IconButton
 							icon={() =>
 								<MaterialIcons
 									name="sort"
 									size={16}
-									color={theme.colors.primary}
+									color={theme.colors.background}
 								/>
 							}
-							onPress={() => { }}
 						/>
 					}
 				/>
@@ -91,7 +92,7 @@ export default function TodaysTransaction({ refreshKey }: TodaysTransactionProps
 							<MaterialIcons
 								name="sort"
 								size={16}
-								color={theme.colors.backdrop}
+								color={theme.colors.background}
 							/>
 						}
 					/>

@@ -12,7 +12,8 @@ export default function Title({ color, text, leadingIcon, trailingIcon, fontSize
 				{leadingIcon}
 				<Text
 					style={{
-						fontSize: fontSize || theme.fonts.labelLarge.fontSize,
+						// fontSize: fontSize || theme.fonts.labelLarge.fontSize,
+						fontSize: fontSize || theme.fonts.titleMedium.fontSize,
 						fontWeight: fontWeight || theme.fonts.labelLarge.fontWeight,
 						color: color || theme.colors.onSurfaceDisabled
 					}}>
