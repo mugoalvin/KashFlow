@@ -22,7 +22,7 @@ export const mpesaMessages = sqliteTable('mpesaMessages', {
 
 export const categoriesTable = sqliteTable('categories', {
 	id: integer('id').primaryKey({ autoIncrement: true }),
-	title: text('title').unique(),
+	title: text('title').unique().notNull(),
+	name: text('name').notNull(),
 	icon: text('icons'),
-	name: text('name')
 })

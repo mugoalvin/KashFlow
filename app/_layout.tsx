@@ -13,8 +13,14 @@ import { useColorScheme } from 'react-native';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import { useMMKVString } from 'react-native-mmkv';
 import { MD3DarkTheme, MD3LightTheme, PaperProvider } from 'react-native-paper';
+import { configureReanimatedLogger, ReanimatedLogLevel } from 'react-native-reanimated';
 import { ThemeContext } from '../contexts/ThemeContext';
 import '../global.css';
+
+configureReanimatedLogger({
+	level: ReanimatedLogLevel.error,
+	strict: false,
+})
 
 export default function RootLayout() {
 	const colorScheme = useColorScheme() || 'light'
