@@ -6,6 +6,7 @@ import { mpesaMessages } from "@/db/sqlite";
 import { MpesaParced } from '@/interface/mpesa';
 import { getYearsFrom } from "@/utils/functions";
 import { months } from "@/utils/variable";
+// @ts-ignore
 import { Tab, TabView } from '@rneui/themed';
 import { useEffect, useRef, useState } from "react";
 import { View } from "react-native";
@@ -107,6 +108,7 @@ export default function Transactions() {
 					))
 				}
 			</TabView>
+
 
 		</Body>
 	)

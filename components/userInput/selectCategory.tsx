@@ -8,7 +8,7 @@ import { View } from "react-native";
 import { Text, useTheme } from "react-native-paper";
 import { Category } from "../text/interface";
 import LightText from "../text/lightText";
-import CreateCategory from "./createCategory";
+// import CreateCategory from "./createCategory";
 import SelectCategoryDropDown from "./selectCategoryDropDown";
 
 interface SelectCategoryProps {
@@ -73,34 +73,28 @@ export default function SelectCategory({ closeModal, transaction }: SelectCatego
 				aspectRatio: 1
 			}}
 		>
-			{
-				isCreatingNewCategory
-					? <CreateCategory transaction={transaction} setIsCreatingNewCategory={setIsCreatingNewCategory} />
-					:
-					<>
-						<Text
-							className="uppercase"
-							variant="headlineSmall"
-							numberOfLines={2}
-							ellipsizeMode="tail"
-							style={{
-								// @ts-expect-error
-								color: transaction.type === 'receive' ? theme.colors.onSuccessContainer : theme.colors.onSecondaryContainer
-							}}>
-							{transaction.counterparty}
-						</Text>
+			<Text
+				className="uppercase"
+				variant="headlineSmall"
+				numberOfLines={2}
+				ellipsizeMode="tail"
+				style={{
+					// @ts-expect-error
+					color: transaction.type === 'receive' ? theme.colors.onSuccessContainer : theme.colors.onSecondaryContainer
+				}}>
+				{transaction.counterparty}
+			</Text>
 
-						<SelectCategoryDropDown selectedCategory={selectedCategory!} setSelectedCategory={setSelectedCategory} setIsCreatingNewCategory={setIsCreatingNewCategory} />
+			<SelectCategoryDropDown transaction={transaction} selectedCategory={selectedCategory!} closeModal={closeModal} setSelectedCategory={setSelectedCategory} setIsCreatingNewCategory={setIsCreatingNewCategory} />
 
-						<LightText text={`${transaction.parsedTime} on ${moment(transaction.parsedDate).format("ddd, Do MMM YY")}`} />
+			<LightText text={`${transaction.parsedTime} on ${moment(transaction.parsedDate).format("ddd, Do MMM YY")}`} />
 
-						<View className="flex-1 w-full">
-							<ValueDisplay title="Amount" value={`Ksh ${transaction.amount}`} />
-							<ValueDisplay title="Transaction Fee" value={`Ksh ${transaction.fee || 0}`} />
-							<ValueDisplay title="Balance" value={`Ksh ${transaction.balance}`} />
-						</View>
-					</>
-			}
+			<View className="flex-1 w-full">
+				<ValueDisplay title="Amount" value={`Ksh ${transaction.amount}`} />
+				<ValueDisplay title="Transaction Fee" value={`Ksh ${transaction.fee || 0}`} />
+				<ValueDisplay title="Balance" value={`Ksh ${transaction.balance}`} />
+			</View>
+
 		</View>
 	)
 }

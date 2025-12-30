@@ -2,8 +2,9 @@ import { sqliteDB } from '@/db/config';
 import { categoriesTable } from '@/db/sqlite';
 import { MpesaParced } from '@/interface/mpesa';
 import { Ionicons } from '@expo/vector-icons';
-import { PlatformPressable } from '@react-navigation/elements';
+import { router } from 'expo-router';
 import React, { useEffect, useState } from 'react';
+import { Pressable } from 'react-native';
 import { Icon, Text, useTheme } from 'react-native-paper';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { Category } from '../text/interface';
@@ -11,12 +12,14 @@ import { DropdownMenu, DropdownMenuContent, DropdownMenuGroup, DropdownMenuItem,
 
 
 interface SelectCategoryDropDownProps {
+	transaction: MpesaParced
 	selectedCategory: Category
+	closeModal: () => void
 	setSelectedCategory?: (category: Category) => void
 	setIsCreatingNewCategory?: (val: boolean) => void
 }
 
-export default function SelectCategoryDropDown({ selectedCategory, setSelectedCategory, setIsCreatingNewCategory }: SelectCategoryDropDownProps) {
+export default function SelectCategoryDropDown({ selectedCategory, transaction, closeModal, setSelectedCategory, setIsCreatingNewCategory }: SelectCategoryDropDownProps) {
 	const theme = useTheme()
 	const [categories, setCategories] = useState<Category[]>([])
 
@@ -30,7 +33,7 @@ export default function SelectCategoryDropDown({ selectedCategory, setSelectedCa
 
 	useEffect(() => {
 		sqliteDB.select().from(categoriesTable)
-			.then(res =>
+			.then((res: any) =>
 				setCategories(res as Category[])
 			)
 			.catch(console.error)
@@ -41,10 +44,10 @@ export default function SelectCategoryDropDown({ selectedCategory, setSelectedCa
 		return (
 			<DropdownMenu>
 				<DropdownMenuTrigger asChild>
-					<PlatformPressable className='flex-row items-baseline justify-between gap-5 px-4 py-1 rounded-full' style={{ backgroundColor: theme.colors.onTertiary }}>
+					<Pressable className='flex-row items-baseline justify-between gap-5 px-4 py-1 rounded-full' style={{ backgroundColor: theme.colors.onTertiary }}>
 						<Text>{selectedCategory?.icon || ""} {selectedCategory.title}</Text>
 						<Icon source={() => <Ionicons name='chevron-down' color={theme.colors.onTertiaryContainer} />} size={20} />
-					</PlatformPressable>
+					</Pressable>
 				</DropdownMenuTrigger>
 
 				<DropdownMenuContent insets={contentInsets} sideOffset={2} alignOffset={-70} className="w-56" align="start" style={{ backgroundColor: theme.colors.background }}>
@@ -54,7 +57,7 @@ export default function SelectCategoryDropDown({ selectedCategory, setSelectedCa
 
 						{
 							categories.map(category =>
-								<DropdownMenuItem key={category.name} onPress={() => setSelectedCategory&& setSelectedCategory(category)}>
+								<DropdownMenuItem key={category.name} onPress={() => setSelectedCategory && setSelectedCategory(category)}>
 									<Text>{category.title}</Text>
 									<DropdownMenuShortcut>{category?.icon || ""}</DropdownMenuShortcut>
 								</DropdownMenuItem>
@@ -63,7 +66,16 @@ export default function SelectCategoryDropDown({ selectedCategory, setSelectedCa
 
 						<DropdownMenuSeparator />
 
-						<DropdownMenuItem onPress={() => setIsCreatingNewCategory && setIsCreatingNewCategory(true)}>
+						<DropdownMenuItem onPress={() => {
+							closeModal()
+							router.push({
+								pathname: '/(home)/categories',
+								params: {
+									transactionString: JSON.stringify(transaction)
+								}
+							})
+						}}
+						>
 							<Text>Add Category</Text>
 						</DropdownMenuItem>
 

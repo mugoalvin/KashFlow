@@ -15,7 +15,7 @@ export const darkCustomTheme = {
     onSuccess: "rgb(16, 57, 0)",
     successContainer: "rgb(27, 82, 0)",
     onSuccessContainer: "rgb(128, 255, 71)",
-    
+
     warning: "rgb(225, 198, 39)",
     onWarning: "rgb(57, 48, 0)",
     warningContainer: "rgb(82, 71, 0)",

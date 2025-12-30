@@ -62,7 +62,7 @@ export default function TodaysTransaction({ refreshKey }: TodaysTransactionProps
 								<MaterialIcons
 									name="sort"
 									size={16}
-									color={theme.colors.background}
+									color={useCard ? theme.colors.background : theme.colors.elevation.level2}
 								/>
 							}
 						/>
@@ -92,7 +92,7 @@ export default function TodaysTransaction({ refreshKey }: TodaysTransactionProps
 							<MaterialIcons
 								name="sort"
 								size={16}
-								color={theme.colors.background}
+								color={useCard ? theme.colors.background : theme.colors.elevation.level2}
 							/>
 						}
 					/>
