@@ -7,6 +7,7 @@ import { View } from 'react-native'
 import { IconButton, Text, useTheme } from 'react-native-paper'
 import Animated, { FadeInDown, FadeOutDown } from 'react-native-reanimated'
 import { Category } from '../text/interface'
+import { useMMKVBoolean } from 'react-native-mmkv'
 
 interface CategoryCardProps {
 	category: Category
@@ -16,7 +17,9 @@ interface CategoryCardProps {
 
 export default function CategoryCard({ category, index, refreshKey }: CategoryCardProps) {
 	const theme = useTheme()
+	const [useCard] = useMMKVBoolean('useCard')
 	const [distinctCount, setDistinctCount] = useState<number>(0)
+
 
 	useEffect(() => {
 		sqliteDB
@@ -30,9 +33,9 @@ export default function CategoryCard({ category, index, refreshKey }: CategoryCa
 	return (
 		<Animated.View
 			key={category.name}
-			className='flex-row items-center justify-between h-20 rounded-lg mb-3'
+			className={`flex-row items-center justify-between h-20 rounded-lg ${ useCard && 'mb-3' }`}
 			style={{
-				backgroundColor: theme.colors.elevation.level1
+				backgroundColor: useCard ? theme.colors.elevation.level1 : theme.colors.background
 			}}
 			entering={FadeInDown.duration(500).delay(index * 200)}
 			exiting={FadeOutDown.duration(500).delay(index * 200)}
@@ -46,8 +49,8 @@ export default function CategoryCard({ category, index, refreshKey }: CategoryCa
 				<View className='gap-1'>
 					<Text variant='bodyLarge' style={{ fontWeight: 'bold' }}>{category.title}</Text>
 					{
-						distinctCount &&
-							<Text variant='bodySmall'>{distinctCount} Counter Parties</Text>
+						distinctCount !== 0 &&
+						<Text variant='bodySmall'>{distinctCount} Counter Parties</Text>
 					}
 				</View>
 			</View>
