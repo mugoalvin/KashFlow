@@ -1,13 +1,17 @@
+// @ts-check
 import { sqliteDB } from '@/db/config'
 import { mpesaMessages } from '@/db/sqlite'
 import MaterialDesignIcons from '@react-native-vector-icons/material-design-icons'
 import { eq } from 'drizzle-orm'
 import React, { useEffect, useState } from 'react'
 import { View } from 'react-native'
-import { IconButton, Text, useTheme } from 'react-native-paper'
-import Animated, { FadeInDown, FadeOutDown } from 'react-native-reanimated'
-import { Category } from '../text/interface'
+import Swipeable from 'react-native-gesture-handler/ReanimatedSwipeable'
 import { useMMKVBoolean } from 'react-native-mmkv'
+import { IconButton, Text, useTheme } from 'react-native-paper'
+import Animated, { FadeInDown, ZoomOut } from 'react-native-reanimated'
+import RightActionCategorySwipable from '../animations/rightActionCaregorySwipable'
+import { Category } from '../text/interface'
+import LeftActionCategorySwipable from '../animations/leftActionCategorySwipable'
 
 interface CategoryCardProps {
 	category: Category
@@ -20,7 +24,6 @@ export default function CategoryCard({ category, index, refreshKey }: CategoryCa
 	const [useCard] = useMMKVBoolean('useCard')
 	const [distinctCount, setDistinctCount] = useState<number>(0)
 
-
 	useEffect(() => {
 		sqliteDB
 			.selectDistinct({ counter: mpesaMessages.counterparty })
@@ -31,35 +34,50 @@ export default function CategoryCard({ category, index, refreshKey }: CategoryCa
 	}, [refreshKey])
 
 	return (
-		<Animated.View
-			key={category.name}
-			className={`flex-row items-center justify-between h-20 rounded-lg ${ useCard && 'mb-3' }`}
-			style={{
-				backgroundColor: useCard ? theme.colors.elevation.level1 : theme.colors.background
+		<Swipeable
+			friction={1}
+			overshootRight
+			overshootFriction={4}
+			renderLeftActions={(progress, translationX) => 
+				<LeftActionCategorySwipable translationX={translationX} />
+			}
+			renderRightActions={(progress, translateX) =>
+				<RightActionCategorySwipable translationX={translateX} />
+			}
+			containerStyle={{
+				marginVertical: useCard ? 5 : 0
 			}}
-			entering={FadeInDown.duration(500).delay(index * 200)}
-			exiting={FadeOutDown.duration(500).delay(index * 200)}
 		>
-			<View className='flex-row items-center'>
+			<Animated.View
+				key={category.name}
+				className='flex-row items-center justify-between h-20 rounded-lg'
+				style={{
+					backgroundColor: useCard ? theme.colors.elevation.level1 : theme.colors.background
+				}}
+				entering={FadeInDown.duration(500).delay(index * 200)}
+				exiting={ZoomOut.duration(500).delay(index * 200)}
+			>
+				<View className='flex-row items-center'>
+					<IconButton
+						icon={() =>
+							<MaterialDesignIcons name='minus-circle' size={20} color={theme.colors.primary} />
+						}
+					/>
+					<View className='gap-1'>
+						<Text variant='bodyLarge' style={{ fontWeight: 'bold' }}>{category.title}</Text>
+						{
+							distinctCount !== 0 &&
+							<Text variant='bodySmall'>{distinctCount} Counter Parties</Text>
+						}
+					</View>
+				</View>
+
 				<IconButton
 					icon={() =>
-						<MaterialDesignIcons name='minus-circle' size={20} color={theme.colors.primary} />
+						<MaterialDesignIcons name='pencil-outline' size={20} color={theme.colors.primary} />
 					}
 				/>
-				<View className='gap-1'>
-					<Text variant='bodyLarge' style={{ fontWeight: 'bold' }}>{category.title}</Text>
-					{
-						distinctCount !== 0 &&
-						<Text variant='bodySmall'>{distinctCount} Counter Parties</Text>
-					}
-				</View>
-			</View>
-
-			<IconButton
-				icon={() =>
-					<MaterialDesignIcons name='pencil-outline' size={20} color={theme.colors.primary} />
-				}
-			/>
-		</Animated.View>
+			</Animated.View>
+		</Swipeable>
 	)
 }

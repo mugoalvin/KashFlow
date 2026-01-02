@@ -3,13 +3,10 @@ import AddCategory from "@/components/userInput/addCategory";
 import Body from "@/components/views/body";
 import CategoryCard from "@/components/views/categoryCard";
 import useBottomSheetContext from "@/contexts/BottomSheetContext";
-import useSnackbarContext from "@/contexts/SnackbarContext";
 import { sqliteDB } from "@/db/config";
 import { categoriesTable } from "@/db/sqlite";
-import { MpesaParced } from "@/interface/mpesa";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
-import { useLocalSearchParams } from "expo-router";
-import { JSX, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { FlatList, RefreshControl } from "react-native";
 import { useMMKVNumber } from "react-native-mmkv";
 import { FAB, useTheme } from "react-native-paper";
@@ -17,10 +14,9 @@ import { FAB, useTheme } from "react-native-paper";
 
 export default function Categories() {
 	const theme = useTheme()
-	const { showSnackbar } = useSnackbarContext()
 	const { openSheet } = useBottomSheetContext()
-	const { transactionString } = useLocalSearchParams()
-	const transaction = JSON.parse(transactionString as string) as MpesaParced
+	// const { transactionString } = useLocalSearchParams()
+	// const transaction = JSON.parse(transactionString as string) as MpesaParced
 	const [isPageRefreshing, setIsPageRefreshing] = useState<boolean>(false)
 	const [availableCategories, setAvailableCategories] = useState<Category[]>([])
 	const [newCategoryRefreshKey] = useMMKVNumber('newCategoryRefreshKey')
