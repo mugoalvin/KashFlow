@@ -67,7 +67,7 @@ export default function AddCategory() {
 							icon={() => <Entypo name="emoji-flirt" size={20} color={theme.colors.primary} />}
 						/>
 					}
-					placeholder='eg. Bills'
+					placeholder='eg. 😃'
 					label="Emoji"
 					right={
 						<TextInput.Affix
@@ -100,7 +100,7 @@ export default function AddCategory() {
 						title: category!.trim(),
 						icon: emoji,
 					})
-					
+
 					setNewCategoryRefreshKey(prev => prev ? prev + 1 : 1)
 
 					if (res?.changes && res?.changes > 0) {
