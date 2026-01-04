@@ -1,5 +1,5 @@
 import { getStackScreenOptions } from "@/utils/screenOptions";
-import { Ionicons, MaterialIcons } from '@expo/vector-icons';
+import { Ionicons } from '@expo/vector-icons';
 import { router, Stack } from "expo-router";
 import { IconButton, useTheme } from "react-native-paper";
 
@@ -19,20 +19,7 @@ export default function IndexLayout() {
 				}
 			}}
 		>
-			<Stack.Screen name="index" options={{
-				title: "Dashboard",
-				headerRight(props) {
-					return (
-						<IconButton
-							icon={() => <MaterialIcons name="category" color={props.tintColor} size={18} />}
-							onPress={() =>
-								router.push('/categories')
-								// router.push('/gesture')
-							}
-						/>
-					)
-				}
-			}} />
+			<Stack.Screen name="index" options={{ title: "Dashboard" }} />
 			<Stack.Screen name="categories" options={{ title: "Categories" }} />
 			<Stack.Screen name="gesture" options={{ title: "Gestures" }} />
 		</Stack >
