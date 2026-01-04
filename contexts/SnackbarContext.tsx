@@ -1,14 +1,18 @@
+import { MaterialCommunityIcons } from "@expo/vector-icons";
 import { createContext, ReactNode, useContext, useState } from "react";
 import { Snackbar, Text, useTheme } from "react-native-paper";
 
 export type SnackbarParams = {
-	message?: string;
-	isError?: boolean;
-	isWarning?: boolean;
-};
-type SnackbarContextType = {
-	showSnackbar: ({ message, isError, isWarning }: SnackbarParams) => void
+	message?: string
+	isError?: boolean
+	isWarning?: boolean
+	onUndo?: () => void
 }
+
+type SnackbarContextType = {
+	showSnackbar: ({ message, isError, isWarning, onUndo }: SnackbarParams) => void
+}
+
 export const SnackbarContext = createContext<SnackbarContextType | undefined>(undefined)
 
 export const SnackbarProvider = ({ children }: { children: ReactNode }) => {
@@ -17,15 +21,15 @@ export const SnackbarProvider = ({ children }: { children: ReactNode }) => {
 	const [message, setMessage] = useState<string>('')
 	const [isError, setIsError] = useState<boolean>(false)
 	const [isWarning, setIsWarning] = useState<boolean>(false)
+	const [onUndo, setOnUndo] = useState<(() => void) | undefined>()
 
 
-	const showSnackbar = ({ message, isError = false, isWarning = false }: SnackbarParams) => {
-		// console.log("Snackbar called:", { message, isError, isWarning }) // Debug
-
+	const showSnackbar = ({ message, isError = false, isWarning = false, onUndo }: SnackbarParams) => {
 		setMessage(message!)
 		setIsVisible(true)
 		setIsError(isError)
 		setIsWarning(isWarning)
+		setOnUndo(() => onUndo)
 	}
 
 	return (
@@ -54,6 +58,20 @@ export const SnackbarProvider = ({ children }: { children: ReactNode }) => {
 							isWarning ? theme.colors.tertiaryContainer :
 								theme.colors.primaryContainer
 				}}
+				icon={({ size }) =>
+					<MaterialCommunityIcons
+						name="undo-variant"
+						color={
+							isError ? theme.colors.onErrorContainer :
+								isWarning ? theme.colors.onTertiaryContainer :
+									theme.colors.onPrimaryContainer
+						}
+						size={size}
+					/>
+				}
+				onIconPress={() =>
+					onUndo && onUndo()
+				}
 			>
 				<Text
 					style={{

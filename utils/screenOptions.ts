@@ -22,7 +22,7 @@ export function getTabScreenOptions(theme: Material3Theme, colorScheme: "light" 
 export function getStackScreenOptions(theme: MD3Theme) {
 	return {
 		headerStyle: {
-			backgroundColor: theme.colors.elevation.level2
+			backgroundColor: theme.dark ? theme.colors.elevation.level1 : theme.colors.elevation.level2
 		},
 		// headerTransparent: true,
 		contentStyle: {
