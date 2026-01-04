@@ -26,6 +26,11 @@ export default function NativeBottomTab() {
 				<Icon drawable='ic_menu_recent_history' />
 			</NativeTabs.Trigger>
 
+			<NativeTabs.Trigger name="(categories)">
+				<Label>Categories</Label>
+				<Icon drawable='ic_search_category_default' />
+			</NativeTabs.Trigger>
+
 			<NativeTabs.Trigger name='(settings)'>
 				<Label>Settings</Label>
 				{/* <Icon drawable="settings" /> */}
