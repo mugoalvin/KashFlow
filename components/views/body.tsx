@@ -7,9 +7,10 @@ interface BodyProps {
 	className?: string
 	noPadding?: boolean
 	style?: StyleProp<ViewProps>
+	noBottomNav?: boolean
 }
 
-export default function Body({ children, noPadding = false, className, style }: BodyProps) {
+export default function Body({ children, noPadding = false, className, style, noBottomNav }: BodyProps) {
 	const theme = useTheme()
 	const colorScheme = useColorScheme()
 
@@ -19,7 +20,7 @@ export default function Body({ children, noPadding = false, className, style }: 
 				className={`flex-1 ${noPadding ? "p-0" : "p-2"} ${className}`}
 				style={{
 					backgroundColor: theme.colors.background,
-					marginBottom: 80,
+					marginBottom: noBottomNav ? 0 : 80,
 					...(typeof style === "object" && !Array.isArray(style) ? style : {})
 				}}
 			>

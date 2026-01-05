@@ -56,7 +56,7 @@ export default function Categories() {
 				refreshControl={
 					<RefreshControl
 						refreshing={isPageRefreshing}
-						progressBackgroundColor={theme.colors.tertiaryContainer}
+						progressBackgroundColor={theme.colors.primaryContainer}
 						colors={[theme.colors.primary]}
 						onRefresh={() => {
 							setIsPageRefreshing(true)

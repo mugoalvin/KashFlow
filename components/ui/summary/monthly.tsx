@@ -3,6 +3,7 @@ import { sqliteDB } from "@/db/config"
 import { mpesaMessages } from "@/db/sqlite"
 import { MpesaParced } from "@/interface/mpesa"
 import { getDatesInMonth, getHighestAndLowestTransaction, getMoneyInAndOut, getTopCounterparties } from "@/utils/functions"
+import { getDropDownMenuItemAndroidRipple, getDropDownStyles } from "@/utils/styles"
 import { MaterialIcons } from "@expo/vector-icons"
 import { inArray } from "drizzle-orm"
 import React, { useEffect, useRef, useState } from "react"
@@ -81,17 +82,24 @@ export default function MonthyTransactionSummary({ year, month }: MonthyTransact
 						<IconButton icon={() => <MaterialIcons name="sort" color={theme.colors.primary} size={16} />} />
 					</DropdownMenuTrigger>
 
-					<DropdownMenuContent insets={contentInsets} sideOffset={2} className="w-56" align="start" style={{ backgroundColor: theme.colors.secondaryContainer }}>
+					<DropdownMenuContent insets={contentInsets} sideOffset={2} className="w-56" align="start" style={getDropDownStyles(theme).menuContent}>
 						<DropdownMenuLabel>Sort By</DropdownMenuLabel>
 
-						<DropdownMenuSeparator />
+						<DropdownMenuSeparator style={getDropDownStyles(theme).separator} />
 
 						<DropdownMenuGroup>
 
-							<DropdownMenuItem onPress={() => setSortType('amount')} android_ripple={{ color: theme.colors.secondaryContainer }} >
+							<DropdownMenuItem
+								onPress={() => setSortType('amount')}
+								android_ripple={getDropDownMenuItemAndroidRipple(theme)}
+								className="active:bg-transparent">
 								<Text style={{ color: theme.colors.onSecondaryContainer }}>Cummulative Amount</Text>
 							</DropdownMenuItem>
-							<DropdownMenuItem onPress={() => setSortType('count')}>
+							<DropdownMenuItem
+								onPress={() => setSortType('count')}
+								android_ripple={getDropDownMenuItemAndroidRipple(theme)}
+								className="active:bg-transparent"
+							>
 								<Text style={{ color: theme.colors.onSecondaryContainer }}>Number Of Counts</Text>
 							</DropdownMenuItem>
 

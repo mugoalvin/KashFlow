@@ -12,10 +12,11 @@ import { eq } from "drizzle-orm";
 import { useMigrations } from 'drizzle-orm/expo-sqlite/migrator';
 import { useEffect, useState } from "react";
 import { RefreshControl, ScrollView, View } from "react-native";
-import { ActivityIndicator } from "react-native-paper";
+import { ActivityIndicator, useTheme } from "react-native-paper";
 
 
 export default function Index() {
+	const theme = useTheme()
 	const dateObj = new Date
 	const { success, error } = useMigrations(sqliteDB, migrations)
 	const [isLoading, setIsLoading] = useState<boolean>(true)
@@ -69,6 +70,8 @@ export default function Index() {
 				refreshControl={
 					<RefreshControl
 						refreshing={isRefreshing}
+						progressBackgroundColor={theme.colors.primaryContainer}
+						colors={[theme.colors.primary]}
 						onRefresh={async () => {
 							setIsRefreshing(true)
 							await syncDatabase(sqliteDB)

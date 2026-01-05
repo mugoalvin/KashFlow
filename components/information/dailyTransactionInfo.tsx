@@ -1,4 +1,4 @@
-import { transactionButtonType } from "@/app/(transactions)"
+import { transactionButtonType } from "@/app/(tabs)/(transactions)"
 import useSnackbarContext from "@/contexts/SnackbarContext"
 import { MpesaParced, MpesaTransactionType } from "@/interface/mpesa"
 import moment from "moment"

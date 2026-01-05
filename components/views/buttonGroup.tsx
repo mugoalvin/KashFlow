@@ -1,4 +1,4 @@
-import { transactionButtonType } from "@/app/(transactions)";
+import { transactionButtonType } from "@/app/(tabs)/(transactions)";
 import { useEffect, useState } from "react";
 import { Pressable, View } from "react-native";
 import { Text, useTheme } from "react-native-paper";
