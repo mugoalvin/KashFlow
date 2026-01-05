@@ -1,4 +1,4 @@
-import NativeBottomTab from '@/components/navigation/native_bottom_tab';
+import AppStackNavigation from '@/components/navigation/app_stack_navigation';
 import FallBack from '@/components/views/suspenceFallback';
 import { BottomSheetProvider } from '@/contexts/BottomSheetContext';
 import { DialogProvider } from '@/contexts/DialogContext';
@@ -50,7 +50,7 @@ export default function RootLayout() {
 								<BottomSheetProvider>
 									<ModalProvider>
 										<DialogProvider>
-											<NativeBottomTab />
+											<AppStackNavigation />
 										</DialogProvider>
 									</ModalProvider>
 									<PortalHost />

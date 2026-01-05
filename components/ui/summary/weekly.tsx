@@ -3,6 +3,7 @@ import { sqliteDB } from "@/db/config";
 import { mpesaMessages } from "@/db/sqlite";
 import { MpesaParced } from "@/interface/mpesa";
 import { getDatesInMonth, getMoneyInAndOut, getTopCounterparties, groupDatesByWeek } from "@/utils/functions";
+import { getDropDownMenuItemAndroidRipple, getDropDownStyles } from "@/utils/styles";
 import { MaterialIcons } from "@expo/vector-icons";
 import { inArray } from "drizzle-orm";
 import { useEffect, useState } from "react";
@@ -85,17 +86,26 @@ export default function WeeklyTransactionSummary({ year, month, dateInWeek }: We
 						<IconButton icon={() => <MaterialIcons name="sort" color={theme.colors.primary} size={16} />} />
 					</DropdownMenuTrigger>
 
-					<DropdownMenuContent insets={contentInsets} sideOffset={2} className="w-56" align="start" style={{ backgroundColor: theme.colors.secondaryContainer }}>
+					<DropdownMenuContent insets={contentInsets} sideOffset={2} className="w-56" align="start" style={getDropDownStyles(theme).menuContent}>
 						<DropdownMenuLabel>Sort By</DropdownMenuLabel>
 
-						<DropdownMenuSeparator style={{ backgroundColor: theme.colors.background }} />
+						<DropdownMenuSeparator style={getDropDownStyles(theme).separator} />
 
 						<DropdownMenuGroup>
 
-							<DropdownMenuItem onPress={() => setWeeklySortType('amount')} android_ripple={{ color: theme.colors.secondaryContainer }}>
+							<DropdownMenuItem
+								onPress={() => setWeeklySortType('amount')}
+								android_ripple={getDropDownMenuItemAndroidRipple(theme)}
+								className="active:bg-transparent"
+							>
 								<Text style={{ color: theme.colors.onSecondaryContainer }}>Cummulative Amount</Text>
 							</DropdownMenuItem>
-							<DropdownMenuItem onPress={() => setWeeklySortType('count')}>
+
+							<DropdownMenuItem
+								onPress={() => setWeeklySortType('count')}
+								android_ripple={getDropDownMenuItemAndroidRipple(theme)}
+								className="active:bg-transparent"
+							>
 								<Text style={{ color: theme.colors.onSecondaryContainer }}>Number Of Counts</Text>
 							</DropdownMenuItem>
 

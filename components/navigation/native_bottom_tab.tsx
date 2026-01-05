@@ -15,9 +15,8 @@ export default function NativeBottomTab() {
 			backgroundColor={theme.dark ? theme.colors.elevation.level1 : theme.colors.elevation.level2}
 		>
 
-			<NativeTabs.Trigger name='(home)'>
+			<NativeTabs.Trigger name='(a_home)'>
 				<Label>Home</Label>
-				{/* <Icon drawable='home' /> */}
 				<Icon drawable='ic_menu_mylocation' />
 			</NativeTabs.Trigger>
 
@@ -29,12 +28,6 @@ export default function NativeBottomTab() {
 			<NativeTabs.Trigger name="(categories)">
 				<Label>Categories</Label>
 				<Icon drawable='ic_search_category_default' />
-			</NativeTabs.Trigger>
-
-			<NativeTabs.Trigger name='(settings)'>
-				<Label>Settings</Label>
-				{/* <Icon drawable="settings" /> */}
-				<Icon drawable='ic_menu_manage' />
 			</NativeTabs.Trigger>
 
 		</NativeTabs>
