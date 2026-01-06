@@ -6,7 +6,6 @@ import { mpesaMessages } from "@/db/sqlite";
 import { MpesaParced } from '@/interface/mpesa';
 import { getYearsFrom } from "@/utils/functions";
 import { months } from "@/utils/variable";
-// @ts-ignore
 import { Tab, TabView } from '@rneui/themed';
 import { useEffect, useRef, useState } from "react";
 import { View } from "react-native";
@@ -65,23 +64,29 @@ export default function Transactions() {
 					}}
 				>
 					{
-						months.map((month, index) => (
-							<Tab.Item
-								key={month.identifier}
-								disabled={index > currentMonthIndex || (year === firstYear && index + 1 < firstMonth)}
-								title={month.title}
-								titleStyle={{
-									fontSize: theme.fonts.bodySmall.fontSize,
-									color: theme.colors.onBackground
-								}}
-								containerStyle={(active: boolean) => ({
-									backgroundColor: active ? theme.colors.elevation.level1 : theme.colors.elevation.level0
-								})}
-								disabledStyle={{
-									backgroundColor: theme.colors.background,
-								}}
-							/>
-						))
+						months.map((month, index) => {
+							const isDisabled =
+								(year === currentYear && index > currentMonthIndex) ||
+								(year === firstYear && (index + 1) < firstMonth) ||
+								(year > currentYear);
+							return (
+								<Tab.Item
+									key={month.identifier}
+									disabled={isDisabled}
+									title={month.title}
+									titleStyle={{
+										fontSize: theme.fonts.bodySmall.fontSize,
+										color: theme.colors.onBackground
+									}}
+									containerStyle={(active: boolean) => ({
+										backgroundColor: active ? theme.colors.elevation.level1 : theme.colors.elevation.level0
+									})}
+									disabledStyle={{
+										backgroundColor: theme.colors.background,
+									}}
+								/>
+							)
+						})
 					}
 				</Tab>
 				<View className="w-4/12 h-full">
@@ -96,19 +101,19 @@ export default function Transactions() {
 							key={idx}
 							className="flex-1 items-center justify-center"
 						>
-							{activeIndex === idx ? (
-								<MonthlyTransactionInfo
-									monthDateString={`${year}-${(idx + 1).toString().padStart(2, '0')}`}
-									initialData={monthCache[`${year}-${(idx + 1).toString().padStart(2, '0')}`] ?? null}
-									onDataLoaded={(data) => setMonthCache(prev => ({ ...prev, [`${year}-${(idx + 1).toString().padStart(2, '0')}`]: data }))}
-								/>
-							) : null
+							{
+								activeIndex === idx ? (
+									<MonthlyTransactionInfo
+										monthDateString={`${year}-${(idx + 1).toString().padStart(2, '0')}`}
+										initialData={monthCache[`${year}-${(idx + 1).toString().padStart(2, '0')}`] ?? null}
+										onDataLoaded={(data) => setMonthCache(prev => ({ ...prev, [`${year}-${(idx + 1).toString().padStart(2, '0')}`]: data }))}
+									/>
+								) : null
 							}
 						</TabView.Item>
 					))
 				}
 			</TabView>
-
 
 		</Body>
 	)

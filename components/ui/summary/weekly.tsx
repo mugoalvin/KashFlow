@@ -1,15 +1,11 @@
 import { SortedTransaction, TransactionSortMode } from "@/components/text/interface";
+import SummaryDropDown from "@/components/userInput/summaryDropDown";
 import { sqliteDB } from "@/db/config";
 import { mpesaMessages } from "@/db/sqlite";
 import { MpesaParced } from "@/interface/mpesa";
 import { getDatesInMonth, getMoneyInAndOut, getTopCounterparties, groupDatesByWeek } from "@/utils/functions";
-import { getDropDownMenuItemAndroidRipple, getDropDownStyles } from "@/utils/styles";
-import { MaterialIcons } from "@expo/vector-icons";
 import { inArray } from "drizzle-orm";
 import { useEffect, useState } from "react";
-import { IconButton, Text, useTheme } from "react-native-paper";
-import { useSafeAreaInsets } from "react-native-safe-area-context";
-import { DropdownMenu, DropdownMenuContent, DropdownMenuGroup, DropdownMenuItem, DropdownMenuLabel, DropdownMenuSeparator, DropdownMenuTrigger } from "../dropdown-menu";
 import TransactionSummary from "./transactionSummary";
 
 interface WeeklyTransactionSummaryProps {
@@ -19,7 +15,6 @@ interface WeeklyTransactionSummaryProps {
 }
 
 export default function WeeklyTransactionSummary({ year, month, dateInWeek }: WeeklyTransactionSummaryProps) {
-	const theme = useTheme()
 	const [weekTransactions, setWeekTransactions] = useState<MpesaParced[]>([])
 	const [moneySend, setMoneySend] = useState<number>(0)
 	const [moneyReceived, setMoneyReceived] = useState<number>(0)
@@ -28,14 +23,8 @@ export default function WeeklyTransactionSummary({ year, month, dateInWeek }: We
 
 	const [topTransactions, setWeeklyTopTransactions] = useState<SortedTransaction[]>([])
 	const [weeklySortType, setWeeklySortType] = useState<TransactionSortMode>('amount')
-
-	const insets = useSafeAreaInsets();
-	const contentInsets = {
-		top: insets.top,
-		bottom: insets.bottom,
-		left: 4,
-		right: 4,
-	};
+	const [isAscending, setIsAscending] = useState<boolean>(false)
+	const [noTransactions, setNoTransactions] = useState<number>(3)
 
 
 	useEffect(() => {
@@ -43,12 +32,10 @@ export default function WeeklyTransactionSummary({ year, month, dateInWeek }: We
 			week.includes(dateInWeek)
 		)
 
-		// If .find() doesn't match anything it returns undefined — default to []
 		setDatesInThisWeek(week ?? [])
 	}, [year, month, dateInWeek])
 
 	useEffect(() => {
-		// datesInThisWeek may be undefined if the finder returned nothing earlier — guard against that
 		if (!datesInThisWeek || datesInThisWeek.length === 0) return;
 		(async () => {
 			const transactions = await sqliteDB
@@ -71,51 +58,26 @@ export default function WeeklyTransactionSummary({ year, month, dateInWeek }: We
 
 	useEffect(() => {
 		setWeeklyTopTransactions(
-			getTopCounterparties(weekTransactions, weeklySortType)
+			getTopCounterparties(weekTransactions, weeklySortType, isAscending, noTransactions)
 		)
-	}, [weekTransactions, weeklySortType])
+	}, [weekTransactions, weeklySortType, isAscending, noTransactions])
 
 	return (
 		<TransactionSummary
 			title={"Weekly Summary"}
 			moneyIn={moneyReceived}
 			moneyOut={moneySend}
-			trailingIcon={
-				<DropdownMenu>
-					<DropdownMenuTrigger asChild>
-						<IconButton icon={() => <MaterialIcons name="sort" color={theme.colors.primary} size={16} />} />
-					</DropdownMenuTrigger>
-
-					<DropdownMenuContent insets={contentInsets} sideOffset={2} className="w-56" align="start" style={getDropDownStyles(theme).menuContent}>
-						<DropdownMenuLabel>Sort By</DropdownMenuLabel>
-
-						<DropdownMenuSeparator style={getDropDownStyles(theme).separator} />
-
-						<DropdownMenuGroup>
-
-							<DropdownMenuItem
-								onPress={() => setWeeklySortType('amount')}
-								android_ripple={getDropDownMenuItemAndroidRipple(theme)}
-								className="active:bg-transparent"
-							>
-								<Text style={{ color: theme.colors.onSecondaryContainer }}>Cummulative Amount</Text>
-							</DropdownMenuItem>
-
-							<DropdownMenuItem
-								onPress={() => setWeeklySortType('count')}
-								android_ripple={getDropDownMenuItemAndroidRipple(theme)}
-								className="active:bg-transparent"
-							>
-								<Text style={{ color: theme.colors.onSecondaryContainer }}>Number Of Counts</Text>
-							</DropdownMenuItem>
-
-						</DropdownMenuGroup>
-					</DropdownMenuContent>
-				</DropdownMenu>
-			}
-
 			isLoading={isPageLoading}
 			topTransactions={topTransactions}
+
+			isAscending={isAscending}
+			currentSortType={weeklySortType}
+			setSortType={setWeeklySortType}
+			setOrderType={setIsAscending}
+
+			trailingIcon={
+				<SummaryDropDown setNoTransactions={setNoTransactions} />
+			}
 		/>
 	)
 }

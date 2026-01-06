@@ -45,25 +45,13 @@ export default function AppCarousel({ data }: AppCarouselProps) {
 					>
 						{item.map((transaction, i) => (
 							<TransInfo
-								key={i}
+								key={transaction.id}
 								item={transaction}
 								index={i}
 								length={data.length}
 							/>
 						))}
 					</Animated.View>
-					// <Animated.FlatList
-					// 	itemLayoutAnimation={LinearTransition}
-					// 	data={item}
-					// 	renderItem={({ item, index }) =>
-					// 		<TransInfo
-					// 			key={index}
-					// 			item={item}
-					// 			index={index}
-					// 			length={data.length}
-					// 		/>
-					// 	}
-					// />
 				)}
 				loop={false}
 			/>
