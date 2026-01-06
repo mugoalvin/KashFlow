@@ -18,7 +18,7 @@ export default function Settings() {
 				<Appbar.BackAction onPress={() => router.back()} />
 			</Appbar.Header>
 
-			<Body noBottomNav>
+			<Body noBottomNav noPadding>
 				<ScrollView>
 
 					<GenaralSettings />

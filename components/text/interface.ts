@@ -26,3 +26,8 @@ export interface Category {
 	name: string
 	icon?: string
 }
+
+export enum SummaryOrderType {
+	Ascending,
+	Descending
+} 

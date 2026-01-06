@@ -1,21 +1,57 @@
-import { SortedTransaction } from "@/components/text/interface"
-import { Text as NativeText, View } from "react-native"
-import { Text as PaperText, useTheme } from 'react-native-paper'
+import { SortedTransaction, TransactionSortMode } from "@/components/text/interface"
+import {
+	Tooltip,
+	TooltipContent,
+	TooltipTrigger,
+} from '@/components/ui/tooltip'
+import { Text as ReusableText } from "@/components/ui/text"
+import { FontAwesome } from "@expo/vector-icons"
+import React from "react"
+import { Text as NativeText, Pressable, View } from "react-native"
+import { Icon, Text as PaperText, useTheme } from 'react-native-paper'
 import Animated, { FadeInLeft, FadeOutRight, LinearTransition } from "react-native-reanimated"
 
 interface TopTransactionsProps {
 	transactions: SortedTransaction[]
+	isAscending?: boolean
+	currentSortType?: TransactionSortMode
+	setSortType?: (type: TransactionSortMode) => void
+	setOrderType?: (type: boolean) => void
 }
 
-export default function TopTransactions({ transactions }: TopTransactionsProps) {
+export default function TopTransactions({ transactions, currentSortType, isAscending, setSortType, setOrderType }: TopTransactionsProps) {
 	const theme = useTheme()
 
 	return (
 		<View className="gap-7">
 			<View className="flex-row justify-between">
 				<NativeText style={{ color: theme.colors.onSurfaceDisabled, fontWeight: 'bold' }}>Counter Party</NativeText>
-				<NativeText style={{ color: theme.colors.onSurfaceDisabled, fontWeight: 'bold' }}>No. Of Transactions</NativeText>
-				<NativeText style={{ color: theme.colors.onSurfaceDisabled, fontWeight: 'bold' }}>Total Amount</NativeText>
+				<Pressable className="flex-row items-center gap-2"
+					onPress={() =>
+						currentSortType === 'count' ?
+							setOrderType && setOrderType(!isAscending) :
+							setSortType && setSortType('count')
+					}
+				>
+					<NativeText className="text-center" style={{ color: theme.colors.onSurfaceDisabled, fontWeight: 'bold' }}>Transactions{'\n'}Count</NativeText>
+					<Icon
+						source={() => <FontAwesome name="sort" color={theme.colors.secondary} />}
+						size={10}
+					/>
+				</Pressable>
+				<Pressable className="flex-row items-center gap-2"
+					onPress={() =>
+						currentSortType === 'amount' ?
+							setOrderType && setOrderType(!isAscending) :
+							setSortType && setSortType('amount')
+					}
+				>
+					<NativeText className="text-center" style={{ color: theme.colors.onSurfaceDisabled, fontWeight: 'bold' }}>Total{'\n'}Amount</NativeText>
+					<Icon
+						source={() => <FontAwesome name="sort" color={theme.colors.secondary} />}
+						size={10}
+					/>
+				</Pressable>
 			</View>
 			{
 				transactions.map((transaction, i) =>
@@ -26,14 +62,21 @@ export default function TopTransactions({ transactions }: TopTransactionsProps) 
 						exiting={FadeOutRight.delay(i * 100).duration(500)}
 						className="flex-row items-end justify-between"
 					>
-						<View className="w-5/12">
-							<PaperText>{transaction.counterparty}</PaperText>
-						</View>
+						<Tooltip  className="w-5/12">
+							<TooltipTrigger>
+								<PaperText numberOfLines={1} ellipsizeMode="tail">{transaction.counterparty}</PaperText>
+							</TooltipTrigger>
+							<TooltipContent style={{ backgroundColor: theme.colors.background, outlineWidth: 1, outlineColor: theme.colors.outline, }}>
+								<ReusableText style={{ color: theme.colors.onTertiaryContainer }}>
+									{transaction.counterparty}
+								</ReusableText>
+							</TooltipContent>
+						</Tooltip>
 						<View className="w-3/12 items-center gap-1">
 							<PaperText>{transaction.transactionCount}</PaperText>
 						</View>
 						<View className="w-4/12 items-end gap-1">
-							<PaperText>{ transaction.type === 'receive' ? "+" : "-" } Ksh {Intl.NumberFormat("en-US").format(transaction.totalSent)}</PaperText>
+							<PaperText>{transaction.type === 'receive' ? "+" : "-"} Ksh {Intl.NumberFormat("en-US").format(transaction.totalSent)}</PaperText>
 						</View>
 					</Animated.View>
 				)

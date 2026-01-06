@@ -364,7 +364,7 @@ export function getHighestAndLowestTransaction(transactions: MpesaParced[]) {
 }
 
 
-export function getTopCounterparties(transactions: MpesaParced[], sortBy: TransactionSortMode, numberOfTransactions?: number) {
+export function getTopCounterparties(transactions: MpesaParced[], sortBy: TransactionSortMode, isAscending: boolean , numberOfTransactions?: number) {
 	const totals = new Map<string, { totalSent: number; totalReceived: number; count: number; type: MpesaTransactionType }>();
 
 	for (const tx of transactions) {
@@ -394,11 +394,21 @@ export function getTopCounterparties(transactions: MpesaParced[], sortBy: Transa
 			transactionCount: data.count,
 			type: data.type,
 		}))
-		.sort((a, b) =>
-			sortBy === "count"
-				? b.transactionCount - a.transactionCount
-				: b.totalSent - a.totalSent
-		)
+		// .sort((a, b) =>
+		// 	sortBy === "count"
+		// 		? b.transactionCount - a.transactionCount
+		// 		: b.totalSent - a.totalSent
+		// )
+		.sort((a, b) => {
+			const valA = (sortBy === "count" ? a.transactionCount : a.totalSent) ?? 0;
+			const valB = (sortBy === "count" ? b.transactionCount : b.totalSent) ?? 0;
+
+			// if (valA === valB) {
+			// 	return a.title.localeCompare(b.title); // Keep alphabetical if numbers match
+			// }
+
+			return isAscending ? valA - valB : valB - valA;
+		})
 		.slice(0, numberOfTransactions || 3)
 
 	return sorted;

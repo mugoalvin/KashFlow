@@ -1,4 +1,4 @@
-import { SortedTransaction } from "@/components/text/interface";
+import { SortedTransaction, TransactionSortMode } from "@/components/text/interface";
 import Title from "@/components/text/title";
 import { MpesaParced } from "@/interface/mpesa";
 import { ReactNode } from "react";
@@ -17,9 +17,13 @@ interface TransactionSummaryProps {
 	trailingIcon?: ReactNode
 	topTransactions?: SortedTransaction[]
 	isLoading?: boolean
+	isAscending?: boolean
+	currentSortType?: TransactionSortMode
+	setSortType?: (type: TransactionSortMode) => void
+	setOrderType?: (type: boolean) => void
 }
 
-export default function TransactionSummary({ title, moneyIn, moneyOut, highest, lowest, trailingIcon, topTransactions, isLoading = false }: TransactionSummaryProps) {
+export default function TransactionSummary({ title, moneyIn, moneyOut, highest, lowest, trailingIcon, topTransactions, isLoading, currentSortType, isAscending, setSortType, setOrderType }: TransactionSummaryProps) {
 	const theme = useTheme()
 	const [useCard] = useMMKVBoolean('useCard')
 	const [useSummaryColor] = useMMKVBoolean('useSummaryColor')
@@ -60,7 +64,13 @@ export default function TransactionSummary({ title, moneyIn, moneyOut, highest, 
 					topTransactions && topTransactions.length > 0 &&
 					<>
 						<Divider horizontalInset />
-						<TopTransactions transactions={topTransactions} />
+						<TopTransactions
+							transactions={topTransactions}
+							currentSortType={currentSortType}
+							isAscending={isAscending}
+							setSortType={setSortType}
+							setOrderType={setOrderType}
+						/>
 					</>
 				}
 

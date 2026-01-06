@@ -1,6 +1,7 @@
 import { View } from 'react-native'
 import { Icon, Text, useTheme } from 'react-native-paper'
 
+import { getDropDownStyles } from '@/utils/styles'
 import { Ionicons } from '@expo/vector-icons'
 import { useSafeAreaInsets } from 'react-native-safe-area-context'
 import { DropdownMenu, DropdownMenuContent, DropdownMenuGroup, DropdownMenuItem, DropdownMenuLabel, DropdownMenuSeparator, DropdownMenuTrigger } from '../ui/dropdown-menu'
@@ -35,9 +36,9 @@ export default function SelectYearDropDown({ chipYears, selectedYear, setYear }:
 				</View>
 			</DropdownMenuTrigger>
 
-			<DropdownMenuContent style={{ backgroundColor: theme.colors.secondaryContainer }} insets={contentInsets} sideOffset={2} className="w-56" align="start">
+			<DropdownMenuContent insets={contentInsets} sideOffset={2} className="w-56" align="start" style={getDropDownStyles(theme).menuContent}>
 				<DropdownMenuLabel>Select Year</DropdownMenuLabel>
-				<DropdownMenuSeparator style={{ backgroundColor: theme.colors.secondary }} />
+				<DropdownMenuSeparator style={getDropDownStyles(theme).separator} />
 				<DropdownMenuGroup>
 					{
 						chipYears.reverse().map(year => [
