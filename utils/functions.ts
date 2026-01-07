@@ -25,7 +25,6 @@ function parseDate(inputString: string) {
 }
 
 
-// export function parseMpesaMessage(messageID: string, message: string, date: string): MpesaParced {
 export function parseMpesaMessage(messageID: string, message: string, date: string) {
 	const id = Number(messageID)
 	let
@@ -51,7 +50,11 @@ export function parseMpesaMessage(messageID: string, message: string, date: stri
 		}
 	}
 
-	let amount = extractAmount(message)
+	let amount
+
+	if (type !== 'payFuliza') {
+		amount = extractAmount(message)
+	}
 
 	const balanceMatch = message.match(/New M-PESA balance is Ksh([\d,]+\.\d{2})/);
 	balance = balanceMatch ? parseFloat(balanceMatch[1].replace(/,/g, '')) : undefined;
@@ -308,21 +311,14 @@ export function getTodaysDate(): string {
 
 
 export function getMoneyInAndOut(transactions: MpesaParced[]): { receive: number, send: number } {
-
-	// console.log(
-	// 	transactions
-	// 		.filter(t => t.type === "withdraw")
-	// 		.reduce((sum, t) => sum + t.amount, 0)
-	// )
-
 	if (transactions.length === 0) return { receive: 0, send: 0 }
 
 	let receive: number = 0
 	let send: number = 0
 
 	for (const { type, amount } of transactions) {
-		if (type === 'receive') receive += amount
-		else if (type === 'send') send += amount
+		if (type === 'receive' || type === 'fuliza') receive += amount
+		else send += amount
 	}
 
 	return {
@@ -364,8 +360,8 @@ export function getHighestAndLowestTransaction(transactions: MpesaParced[]) {
 }
 
 
-export function getTopCounterparties(transactions: MpesaParced[], sortBy: TransactionSortMode, isAscending: boolean , numberOfTransactions?: number) {
-	const totals = new Map<string, { totalSent: number; totalReceived: number; count: number; type: MpesaTransactionType }>();
+export function getTopCounterparties(transactions: MpesaParced[], sortBy: TransactionSortMode, isAscending: boolean, numberOfTransactions?: number) {
+	const totals = new Map<string, { totalSent: number; totalReceived: number; count: number, type: MpesaTransactionType }>();
 
 	for (const tx of transactions) {
 		const entry = totals.get(tx.counterparty || '') || {
@@ -375,15 +371,34 @@ export function getTopCounterparties(transactions: MpesaParced[], sortBy: Transa
 			type: 'send' as MpesaTransactionType
 		};
 
-		if (tx.type === "send") {
-			entry.type = tx.type
-			entry.totalSent += tx.amount;
-			entry.count += 1;
-		} else if (tx.type === "receive") {
-			entry.type = tx.type
-			entry.totalReceived += tx.amount;
+		switch (tx.type) {
+			case 'receive':
+				entry.totalReceived += tx.amount;
+				break;
+			case 'send':
+				entry.totalSent += tx.amount;
+				break;
+			case 'airtime':
+				entry.totalSent += tx.amount;
+				break
+			case 'fuliza':
+				entry.totalReceived += tx.amount;
+				break
+			case 'partialFulizaPay':
+				entry.totalSent += tx.amount;
+				break
+			case 'payFuliza':
+				entry.totalSent += tx.paid!
+				break
+			case 'withdraw':
+				entry.totalSent += tx.amount;
+				break
+			default:
+				break;
 		}
 
+		entry.type = tx.type
+		entry.count += 1
 		totals.set(tx.counterparty || '', entry);
 	}
 
@@ -391,25 +406,21 @@ export function getTopCounterparties(transactions: MpesaParced[], sortBy: Transa
 		.map(([counterparty, data]) => ({
 			counterparty,
 			totalSent: data.totalSent,
+			totalReceived: data.totalReceived,
 			transactionCount: data.count,
 			type: data.type,
 		}))
-		// .sort((a, b) =>
-		// 	sortBy === "count"
-		// 		? b.transactionCount - a.transactionCount
-		// 		: b.totalSent - a.totalSent
-		// )
 		.sort((a, b) => {
-			const valA = (sortBy === "count" ? a.transactionCount : a.totalSent) ?? 0;
-			const valB = (sortBy === "count" ? b.transactionCount : b.totalSent) ?? 0;
+			const valA = sortBy === "count" ? a.transactionCount : (a.totalSent + a.totalReceived);
+			const valB = sortBy === "count" ? b.transactionCount : (b.totalSent + b.totalReceived);
 
-			// if (valA === valB) {
-			// 	return a.title.localeCompare(b.title); // Keep alphabetical if numbers match
-			// }
+			if (valA === valB) {
+				return a.counterparty.localeCompare(b.counterparty);
+			}
 
 			return isAscending ? valA - valB : valB - valA;
 		})
-		.slice(0, numberOfTransactions || 3)
+		.slice(0, numberOfTransactions || 3);
 
 	return sorted;
 }

@@ -1,8 +1,14 @@
 import Body from '@/components/views/body'
+import { sqliteDB } from '@/db/config'
+import { mpesaMessages } from '@/db/sqlite'
+import { MpesaParced } from '@/interface/mpesa'
+import { getTopCounterparties, parseMpesaMessage } from '@/utils/functions'
+import { eq } from 'drizzle-orm'
 import React from 'react'
 import { Gesture, GestureDetector } from 'react-native-gesture-handler'
-import { useTheme } from 'react-native-paper'
+import { Button, useTheme } from 'react-native-paper'
 import Animated, { useAnimatedStyle, useSharedValue, withSpring } from 'react-native-reanimated'
+import * as Haptics from 'expo-haptics'
 
 export default function GesturePage() {
 	const theme = useTheme()
@@ -10,6 +16,7 @@ export default function GesturePage() {
 	const translateX = useSharedValue<number>(0)
 	const translateY = useSharedValue<number>(0)
 	const color = useSharedValue<string>(theme.colors.primary)
+
 
 	const animatedStyle = useAnimatedStyle(() => {
 		return {
@@ -47,6 +54,54 @@ export default function GesturePage() {
 					}, animatedStyle]}
 				/>
 			</GestureDetector>
+
+			<Button
+				onPress={() => {
+					sqliteDB
+						.select()
+						.from(mpesaMessages)
+						.where(eq(mpesaMessages.type, 'fuliza'))
+						.limit(5)
+
+
+
+						.then(res => {
+							console.log(
+								getTopCounterparties(res as MpesaParced[], 'amount', true)
+							)
+						})
+				}}
+
+				onLongPress={() => {
+					Haptics.performAndroidHapticsAsync(
+						Haptics.AndroidHaptics.Long_Press
+					)
+					
+					sqliteDB
+						.select()
+						.from(mpesaMessages)
+						.where(eq(mpesaMessages.type, 'fuliza'))
+						.limit(5)
+
+						.then(res => {
+							console.log(
+								getTopCounterparties(
+									res.map(tx => {
+										return parseMpesaMessage(
+											tx.id.toString(),
+											tx.message,
+											'2025-03-05'
+										)
+									}).filter(tx => tx.amount !== undefined) as MpesaParced[],
+									'amount',
+									true
+								)
+							)
+						})
+				}}
+			>
+				Parse 1 Fulia Payment Transaction
+			</Button>
 		</Body>
 	)
 }

@@ -89,7 +89,7 @@ export default function TransInfo({ item, index, length }: TransInfoProps) {
 					<Text numberOfLines={1} ellipsizeMode='tail'>{counterParty}</Text>
 					{
 						!useMinTransInfo &&
-						<LightText className="text-sm" text={`${transactionType} : ${item.parsedTime}`} />
+						<LightText fontSize={12} text={`${transactionType} : ${item.parsedTime}`} />
 					}
 				</View>
 				<View className={`flex-row justify-between ${!useMinTransInfo && 'min-w-24'}`}>
@@ -107,10 +107,10 @@ export default function TransInfo({ item, index, length }: TransInfoProps) {
 					}
 					<View className='gap-1 items-end'>
 						{/* @ts-expect-error */}
-						<Text style={{ color: item.type === 'receive' ? theme.colors.success : theme.colors.error }}>{item.type === 'receive' || "- "}Ksh. {item.amount}</Text>
+						<Text style={{ color: item.type === 'receive' || item.type === 'fuliza' ? theme.colors.success : theme.colors.error }}>{item.type === 'receive' || item.type === 'fuliza' || "- "}Ksh. {item.amount || item.paid}</Text>
 						{
 							useMinTransInfo &&
-							<LightText className="text-sm"  text={item.parsedTime} fontSize={theme.fonts.bodySmall.fontSize}/>
+							<LightText className="text-sm" text={item.parsedTime} fontSize={theme.fonts.bodySmall.fontSize} />
 						}
 					</View>
 				</View>

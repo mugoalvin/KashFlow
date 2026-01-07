@@ -16,6 +16,7 @@ export type TransactionSortMode = "amount" | "count"
 export interface SortedTransaction {
 	counterparty: string
 	totalSent: number
+	totalReceived: number
 	transactionCount: number
 	type: MpesaTransactionType
 }

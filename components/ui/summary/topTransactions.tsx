@@ -1,10 +1,10 @@
 import { SortedTransaction, TransactionSortMode } from "@/components/text/interface"
+import { Text as ReusableText } from "@/components/ui/text"
 import {
 	Tooltip,
 	TooltipContent,
 	TooltipTrigger,
 } from '@/components/ui/tooltip'
-import { Text as ReusableText } from "@/components/ui/text"
 import { FontAwesome } from "@expo/vector-icons"
 import React from "react"
 import { Text as NativeText, Pressable, View } from "react-native"
@@ -62,7 +62,7 @@ export default function TopTransactions({ transactions, currentSortType, isAscen
 						exiting={FadeOutRight.delay(i * 100).duration(500)}
 						className="flex-row items-end justify-between"
 					>
-						<Tooltip  className="w-5/12">
+						<Tooltip className="w-5/12">
 							<TooltipTrigger>
 								<PaperText numberOfLines={1} ellipsizeMode="tail">{transaction.counterparty}</PaperText>
 							</TooltipTrigger>
@@ -76,7 +76,11 @@ export default function TopTransactions({ transactions, currentSortType, isAscen
 							<PaperText>{transaction.transactionCount}</PaperText>
 						</View>
 						<View className="w-4/12 items-end gap-1">
-							<PaperText>{transaction.type === 'receive' ? "+" : "-"} Ksh {Intl.NumberFormat("en-US").format(transaction.totalSent)}</PaperText>
+							{
+								transaction.type === 'receive'
+									? <PaperText>+ Ksh {Intl.NumberFormat("en-US").format(transaction.totalReceived)}</PaperText>
+									: <PaperText>- Ksh {Intl.NumberFormat("en-US").format(transaction.totalSent)}</PaperText>
+							}
 						</View>
 					</Animated.View>
 				)
