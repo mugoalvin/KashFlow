@@ -1,15 +1,22 @@
-import useBottomSheetContext from '@/contexts/BottomSheetContext';
-import useSnackbarContext from '@/contexts/SnackbarContext';
-import { addCategoryToDatabase } from '@/utils/functions';
-import Entypo from '@expo/vector-icons/Entypo';
-import MaterialIcons from '@expo/vector-icons/MaterialIcons';
-import React, { useState } from 'react';
-import { View } from 'react-native';
-import { useMMKVNumber } from 'react-native-mmkv';
-import { Button, TextInput, useTheme } from 'react-native-paper';
-import Title from '../text/title';
+import useBottomSheetContext from '@/contexts/BottomSheetContext'
+import useSnackbarContext from '@/contexts/SnackbarContext'
+import { sqliteDB } from '@/db/config'
+import { categoriesTable } from '@/db/sqlite'
+import { updateCategoryToDatabase } from '@/utils/functions'
+import { Entypo, MaterialIcons } from '@expo/vector-icons'
+import { eq } from 'drizzle-orm'
+import { useEffect, useState } from 'react'
+import { View } from 'react-native'
+import { useMMKVNumber } from 'react-native-mmkv'
+import { Button, TextInput, useTheme } from 'react-native-paper'
+import { Category } from '../text/interface'
+import Title from '../text/title'
 
-export default function AddCategory() {
+interface EditCategoryProps {
+	id: number
+}
+
+export default function EditCategory({ id }: EditCategoryProps) {
 	const theme = useTheme()
 	const { closeSheet } = useBottomSheetContext()
 	const { showSnackbar } = useSnackbarContext()
@@ -17,10 +24,30 @@ export default function AddCategory() {
 	const [emojiCount, setEmojiCount] = useState<number>(1)
 	const [textCount, setTextCount] = useState<number>(highestTextLength)
 
-	const [category, setCategory] = useState<string>()
-	const [emoji, setEmoji] = useState<string>()
+	const [currentCategory, setCurrentCategory] = useState<Category>()
+	const [category, setCategory] = useState<string>(currentCategory?.title || '')
+	const [emoji, setEmoji] = useState<string>(currentCategory?.icon || '')
 
 	const [, setNewCategoryRefreshKey] = useMMKVNumber('newCategoryRefreshKey')
+
+	useEffect(() => {
+		sqliteDB
+			.select()
+			.from(categoriesTable)
+			.where(eq(categoriesTable.id, id))
+
+			.then(categories =>
+				// @ts-ignore
+				setCurrentCategory(categories[0])
+			)
+	}, [id])
+
+	useEffect(() => {
+		if (currentCategory) {
+			setCategory(currentCategory.title)
+			setEmoji(currentCategory.icon)
+		}
+	}, [currentCategory])
 
 	return (
 		<View className='py-5 gap-3'>
@@ -40,6 +67,7 @@ export default function AddCategory() {
 					}
 					placeholder='eg. Bills'
 					label="Title"
+					value={category}
 					right={
 						<TextInput.Affix
 							text={`/${textCount}`}
@@ -58,7 +86,6 @@ export default function AddCategory() {
 				/>
 			</View>
 
-
 			<View className='w-full'>
 				<TextInput
 					mode='outlined'
@@ -69,6 +96,7 @@ export default function AddCategory() {
 					}
 					placeholder='eg. 😃'
 					label="Emoji"
+					value={emoji}
 					right={
 						<TextInput.Affix
 							text={`/${emojiCount}`}
@@ -92,20 +120,20 @@ export default function AddCategory() {
 			<Button
 				disabled={!category || !emoji}
 				mode='contained'
-
 				onPress={async () => {
 					closeSheet()
 
-					const res = await addCategoryToDatabase({
+					const res = await updateCategoryToDatabase({
+						id,
 						title: category!.trim(),
-						icon: emoji!,
+						icon: emoji,
 					})
 
 					setNewCategoryRefreshKey(prev => prev ? prev + 1 : 1)
 
 					if (res?.changes && res?.changes > 0) {
 						showSnackbar({
-							message: `New Category inserted: ${category}`
+							message: `Category Updated: ${category}`
 						})
 					}
 
@@ -113,9 +141,8 @@ export default function AddCategory() {
 					setEmoji('')
 				}}
 			>
-				Create
+				Update
 			</Button>
-
 		</View>
 	)
 }

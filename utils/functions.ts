@@ -434,21 +434,36 @@ export function chunkArray<T>(arr: T[], size: number) {
 	return result;
 }
 
+function generateCategoryName(title: string) {
+	return title.replaceAll(" ", "_").toLowerCase()
+}
 
 export async function addCategoryToDatabase(category: Omit<Category, "id" | "name">) {
-
-	function generateName(title: string) {
-		return title.replaceAll(" ", "_").toLowerCase()
-	}
-
 	try {
 		return await sqliteDB
 			.insert(categoriesTable)
 			.values({
 				title: category.title,
-				name: generateName(category.title),
+				name: generateCategoryName(category.title),
 				icon: category.icon
 			})
+	} catch (err: any) {
+		console.error(err)
+		throw new Error(err.message)
+	}
+}
+
+
+export async function updateCategoryToDatabase(category: Omit<Category, 'name'>) {
+	try {
+		return await sqliteDB
+			.update(categoriesTable)
+			.set({
+				name: generateCategoryName(category.title),
+				title: category.title,
+				icon: category.icon
+			})
+			.where(eq(categoriesTable.id, category.id!))
 	} catch (err: any) {
 		console.error(err)
 		throw new Error(err.message)

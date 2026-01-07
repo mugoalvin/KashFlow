@@ -4,7 +4,7 @@ import MaterialDesignIcons from '@react-native-vector-icons/material-design-icon
 import { eq } from 'drizzle-orm'
 import React, { useEffect, useState } from 'react'
 import { View } from 'react-native'
-import Swipeable from 'react-native-gesture-handler/ReanimatedSwipeable'
+import Swipeable, { SwipeDirection } from 'react-native-gesture-handler/ReanimatedSwipeable'
 import { useMMKVBoolean } from 'react-native-mmkv'
 import { IconButton, Text, useTheme } from 'react-native-paper'
 import Animated, { ZoomIn, ZoomOut } from 'react-native-reanimated'
@@ -16,10 +16,11 @@ interface CategoryCardProps {
 	category: Category
 	index: number
 	refreshKey: number
+	onEdit?: (id: number) => void
 	onDelete?: (id: number) => void
 }
 
-export default function CategoryCard({ category, index, refreshKey, onDelete }: CategoryCardProps) {
+export default function CategoryCard({ category, index, refreshKey, onEdit, onDelete }: CategoryCardProps) {
 	const theme = useTheme()
 	const [useCard] = useMMKVBoolean('useCard')
 	const [counterParties, setCounterParties] = useState<string[]>([])
@@ -55,11 +56,16 @@ export default function CategoryCard({ category, index, refreshKey, onDelete }: 
 				friction={1}
 				overshootRight
 				overshootFriction={4}
-				renderLeftActions={(progress, translationX) =>
-					<LeftActionCategorySwipable translationX={translationX} />
+				renderLeftActions={(progress, translationX, methods) =>
+					<LeftActionCategorySwipable category_id={category.id!} translationX={translationX} onEdit={onEdit} />
 				}
 				renderRightActions={(progress, translateX) =>
 					<RightActionCategorySwipable category_id={category.id!} translationX={translateX} onDelete={onDelete} />
+				}
+				onSwipeableOpen={(direction: SwipeDirection) =>
+					direction === 'right' ?
+						onEdit!(category.id!) :
+						onDelete!(category.id!)
 				}
 				containerStyle={{
 					marginVertical: useCard ? 5 : 0
