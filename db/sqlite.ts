@@ -2,13 +2,13 @@ import { integer, sqliteTable, text } from 'drizzle-orm/sqlite-core'
 
 export const mpesaMessages = sqliteTable('mpesaMessages', {
 	id: integer('id').primaryKey({ autoIncrement: false }),
-	counterparty: text('counterparty'),
+	counterparty: text('counterparty').notNull(),
 	amount: integer('amount'),
 	balance: integer('balance'),
 	categoryId: integer('categoryId'),
 	number: integer('number'),
 	dueDate: text('dueDate'),
-	message: text('message'),
+	message: text('message').notNull(),
 	parsedDate: text('parsedDate'),
 	parsedTime: text('parsedTime'),
 	account: text('account'),

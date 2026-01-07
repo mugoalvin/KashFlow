@@ -41,7 +41,7 @@ export default function SummaryDropDown({ setNoTransactions }: SummaryDropDownPr
 								outlineStyle: 'dashed'
 							}}>
 							{
-								[1, 2, 3, 4, 5].map(number =>
+								[1, 2, 3, 4, 5, 10].map(number =>
 									<DropdownMenuItem key={number}
 										className="active:bg-transparent"
 										android_ripple={getDropDownMenuItemAndroidRipple(theme)}
