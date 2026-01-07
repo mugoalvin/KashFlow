@@ -1,5 +1,6 @@
 import { Category } from "@/components/text/interface";
 import AddCategory from "@/components/userInput/addCategory";
+import EditCategory from "@/components/userInput/editCategory";
 import Body from "@/components/views/body";
 import CategoryCard from "@/components/views/categoryCard";
 import useBottomSheetContext from "@/contexts/BottomSheetContext";
@@ -72,6 +73,11 @@ export default function Categories() {
 						refreshKey={newCategoryRefreshKey || 0}
 						index={index}
 						category={item}
+						onEdit={(id: number) => {
+							openSheet({
+								content: <EditCategory id={id} />
+							})
+						}}
 						onDelete={async (id: number) => {
 							const categoryToRestore = availableCategories.find(cat => cat.id === id)
 							if (!categoryToRestore) return

@@ -1,14 +1,16 @@
 import { Pressable } from 'react-native'
+import { SwipeableMethods } from 'react-native-gesture-handler/lib/typescript/components/ReanimatedSwipeable'
 import { Icon, useTheme } from 'react-native-paper'
 import Animated, { interpolateColor, SharedValue, useAnimatedStyle } from 'react-native-reanimated'
 
 interface RightActionCategorySwipableProps {
 	category_id: number
 	translationX: SharedValue<number>
+	methods?: SwipeableMethods
 	onDelete?: (id: number) => void
 }
 
-export default function RightActionCategorySwipable({ category_id, translationX, onDelete }: RightActionCategorySwipableProps) {
+export default function RightActionCategorySwipable({ category_id, translationX, methods, onDelete }: RightActionCategorySwipableProps) {
 	const theme = useTheme()
 	const ACTION_WIDTH = 80
 
@@ -35,6 +37,7 @@ export default function RightActionCategorySwipable({ category_id, translationX,
 				}}
 				onPress={async () => {
 					onDelete && onDelete(category_id)
+					methods?.close()
 				}}
 			>
 				<Icon
