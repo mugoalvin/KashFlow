@@ -9,7 +9,6 @@ import { Divider, Icon, Text, useTheme } from 'react-native-paper'
 import Animated, { FadeInLeft, FadeOutRight, LinearTransition } from 'react-native-reanimated'
 import LightText from '../text/lightText'
 
-
 interface TransInfoProps {
 	item: MpesaParced
 	index: number
@@ -97,9 +96,9 @@ export default function TransInfo({ item, index, length }: TransInfoProps) {
 						!useMinTransInfo &&
 						<Icon source={() =>
 							<FontAwesome6
-								name={item.type === 'receive' ? "arrow-up-long" : "arrow-down-long"}
+								name={(item.type === 'receive' || item.type === 'fuliza') ? "arrow-up-long" : "arrow-down-long"}
 								size={14}
-								color={item.type === 'receive' ? "green" : "red"}
+								color={(item.type === 'receive' || item.type === 'fuliza') ? "green" : "red"}
 							/>
 						}
 							size={16}
@@ -107,7 +106,7 @@ export default function TransInfo({ item, index, length }: TransInfoProps) {
 					}
 					<View className='gap-1 items-end'>
 						{/* @ts-expect-error */}
-						<Text style={{ color: item.type === 'receive' || item.type === 'fuliza' ? theme.colors.success : theme.colors.error }}>{item.type === 'receive' || item.type === 'fuliza' || "- "}Ksh. {item.amount || item.paid}</Text>
+						<Text style={{ color: item.type === 'receive' || item.type === 'fuliza' ? theme.colors.success : theme.colors.error }}>{item.type === 'receive' || item.type === 'fuliza' || "- "}Ksh. {item.amount || item.outstanding}</Text>
 						{
 							useMinTransInfo &&
 							<LightText className="text-sm" text={item.parsedTime} fontSize={theme.fonts.bodySmall.fontSize} />

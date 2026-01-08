@@ -107,7 +107,6 @@ export default function MonthlyTransactionInfo({ monthDateString, initialData = 
 						<WeeklyTransactionSummary
 							year={Number(year)}
 							month={Number(month)}
-							// use non-destructive access to the last date
 							dateInWeek={currentWeek.data[currentWeek.data.length - 1].date}
 						/>
 					)}
