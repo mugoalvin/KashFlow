@@ -1,13 +1,11 @@
 import HeaderBackArrow from "@/components/navigation/header_back_arrow";
 import HeaderRight from "@/components/navigation/header_right";
-import useSnackbarContext from "@/contexts/SnackbarContext";
 import { getStackScreenOptions } from "@/utils/screenOptions";
 import { router, Stack } from "expo-router";
 import { useTheme } from "react-native-paper";
 
 export default function IndexLayout() {
 	const theme = useTheme()
-	const { showSnackbar } = useSnackbarContext()
 
 	return (
 		<Stack
@@ -25,6 +23,12 @@ export default function IndexLayout() {
 						items={[{
 							label: "Gesture",
 							onPress: () => router.push('/gesture')
+						},
+						{
+							label: "Accordion",
+							onPress() {
+								router.push('/(tabs)/(a_home)/reusableAccordion')
+							}
 						}]}
 					/>
 				}}
@@ -34,6 +38,12 @@ export default function IndexLayout() {
 				options={{
 					title: "Gestures",
 					headerRight: ({ tintColor }) => <HeaderRight tintColor={tintColor!} />
+				}}
+			/>
+			<Stack.Screen
+				name="reusableAccordion"
+				options={{
+					title: 'Accordion'
 				}}
 			/>
 		</Stack >

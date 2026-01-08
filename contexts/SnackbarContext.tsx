@@ -58,7 +58,7 @@ export const SnackbarProvider = ({ children }: { children: ReactNode }) => {
 							isWarning ? theme.colors.tertiaryContainer :
 								theme.colors.primaryContainer
 				}}
-				icon={({ size }) =>
+				icon={onUndo ? ({ size }) =>
 					<MaterialCommunityIcons
 						name="undo-variant"
 						color={
@@ -67,7 +67,7 @@ export const SnackbarProvider = ({ children }: { children: ReactNode }) => {
 									theme.colors.onPrimaryContainer
 						}
 						size={size}
-					/>
+					/> : undefined
 				}
 				onIconPress={() =>
 					onUndo && onUndo()

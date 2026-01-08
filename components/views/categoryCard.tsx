@@ -3,7 +3,7 @@ import { mpesaMessages } from '@/db/sqlite'
 import MaterialDesignIcons from '@react-native-vector-icons/material-design-icons'
 import { eq } from 'drizzle-orm'
 import React, { useEffect, useState } from 'react'
-import { View } from 'react-native'
+import { Dimensions, View } from 'react-native'
 import Swipeable, { SwipeDirection } from 'react-native-gesture-handler/ReanimatedSwipeable'
 import { useMMKVBoolean } from 'react-native-mmkv'
 import { IconButton, Text, useTheme } from 'react-native-paper'
@@ -25,6 +25,7 @@ export default function CategoryCard({ category, index, refreshKey, onEdit, onDe
 	const [useCard] = useMMKVBoolean('useCard')
 	const [counterParties, setCounterParties] = useState<string[]>([])
 	const [isInitialRender, setIsInitialRender] = useState<boolean>(true)
+	const screenWidth = Dimensions.get('window').width
 
 	useEffect(() => {
 		const timer = setTimeout(() => setIsInitialRender(false), 1000);
@@ -51,6 +52,7 @@ export default function CategoryCard({ category, index, refreshKey, onEdit, onDe
 					ZoomIn.duration(500)
 			}
 			exiting={ZoomOut.duration(500)}
+			style={{ zIndex: -1, width: screenWidth - 16 }}
 		>
 			<Swipeable
 				friction={1}
@@ -68,6 +70,7 @@ export default function CategoryCard({ category, index, refreshKey, onEdit, onDe
 						onDelete!(category.id!)
 				}
 				containerStyle={{
+					flex: 1,
 					marginVertical: useCard ? 5 : 0
 				}}
 			>

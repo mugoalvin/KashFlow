@@ -60,7 +60,7 @@ export default function WeeklyTransactionInfo({ item }: WeeklyTransactionInfoPro
 						// store the heavy payload in a short-lived in-memory cache
 						const id = `${Date.now()}-${Math.random().toString(36).slice(2, 9)}`
 						storeNavData(id, item.data)
-						router.push({ pathname: '/(transactions)/weekTransactions', params: { id, dateRange } })
+						router.push({ pathname: '/(tabs)/(transactions)/weekTransactions', params: { id, dateRange } })
 					}}
 				/>
 			</View>
