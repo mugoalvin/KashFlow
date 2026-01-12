@@ -1,17 +1,14 @@
-import SelectCategory from "@/components/userInput/selectCategory";
-import { MpesaParced } from "@/interface/mpesa";
 import { createContext, ReactNode, useContext, useState } from "react";
 import { Modal } from "react-native-paper";
 
 type ShowModalParams = {
 	visibility: boolean
-	transaction?: MpesaParced
+	content: ReactNode
 }
 
 type ModalContextType = {
-	// visibility: boolean
 	closeModal: () => void
-	showModal: ({ transaction, visibility }: ShowModalParams) => void
+	showModal: ({ visibility, content }: ShowModalParams) => void
 }
 
 export const ModalContext = createContext<ModalContextType | undefined>(undefined)
@@ -19,22 +16,23 @@ export const ModalContext = createContext<ModalContextType | undefined>(undefine
 
 export const ModalProvider = ({ children }: { children: ReactNode }) => {
 	const [visibility, setVisibility] = useState<boolean>(false)
-	const [transaction, setTransaction] = useState<MpesaParced>()
+	const [content, setContent] = useState<ReactNode>()
 
-	const showModal = ({ transaction, visibility }: ShowModalParams) => {
-		setTransaction(transaction)
+	const showModal = ({ content, visibility }: ShowModalParams) => {
+		setContent(content)
 		setVisibility(visibility)
 	}
 
 	const closeModal = () => {
 		setVisibility(false)
+		setContent(null)
 	}
 
 	return ( // @ts-ignore
 		<ModalContext.Provider value={{ showModal, closeModal }}>
 			{children}
 			<Modal visible={visibility} onDismiss={closeModal}>
-				<SelectCategory closeModal={closeModal} transaction={transaction!} />
+				{content}
 			</Modal>
 		</ModalContext.Provider>
 	)

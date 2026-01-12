@@ -13,7 +13,7 @@ import { eq } from "drizzle-orm";
 import { AndroidHaptics, performAndroidHapticsAsync } from 'expo-haptics';
 import React, { useEffect, useRef, useState } from 'react';
 import { RefreshControl } from 'react-native';
-import { useMMKVNumber } from 'react-native-mmkv';
+import { useMMKVNumber, useMMKVString } from 'react-native-mmkv';
 import { useTheme } from 'react-native-paper';
 import Animated, { LinearTransition } from "react-native-reanimated";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
@@ -28,6 +28,7 @@ export default function AccordionAndContentMenu() {
 	const { showSnackbar } = useSnackbarContext()
 	const { openSheet } = useBottomSheetContext()
 	const [newCategoryRefreshKey] = useMMKVNumber('newCategoryRefreshKey')
+	const [accordionType] = useMMKVString('accordionType')
 
 	const insets = useSafeAreaInsets();
 	const contentInsets = {
@@ -99,14 +100,14 @@ export default function AccordionAndContentMenu() {
 	}, [availableCategories]);
 
 	return (
-		<Accordion type="single" className="w-full max-w-lg" defaultValue="item-1">
+		<Accordion type={accordionType as 'single' | 'multiple'} className="w-full max-w-lg" defaultValue="item-1">
 			<Animated.FlatList
 				data={availableCategories}
 				itemLayoutAnimation={
 					LinearTransition
-						// .springify()
-						// .damping(60)
-						// .mass(5)
+					// .springify()
+					// .damping(60)
+					// .mass(5)
 				}
 				keyExtractor={item => item.name}
 				refreshControl={
@@ -154,7 +155,7 @@ export default function AccordionAndContentMenu() {
 						</ContextMenu>
 
 						<AccordionContent className="flex flex-col gap-4 text-balance">
-							<CategoryAccordionContent category={item} refreshKey={newCategoryRefreshKey || 0}/>
+							<CategoryAccordionContent category={item} refreshKey={newCategoryRefreshKey || 0} />
 						</AccordionContent>
 					</AccordionItem>
 				}

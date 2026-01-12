@@ -25,7 +25,7 @@ export interface Category {
 	id: number
 	title: string
 	name: string
-	icon: string
+	icon: string | null
 }
 
 export interface SubCategory {
