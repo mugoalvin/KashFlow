@@ -1,14 +1,17 @@
 import React from 'react'
-import { useMMKVBoolean } from 'react-native-mmkv'
+import { useMMKVBoolean, useMMKVString } from 'react-native-mmkv'
 // import { List, Switch, useTheme } from 'react-native-paper'
-import { List, Switch, useTheme } from 'react-native-paper'
+import { List, RadioButton, Switch, useTheme } from 'react-native-paper'
 import { getTextStyles } from '../text/styles'
+import Animated, { FadeInUp, FadeOutUp } from 'react-native-reanimated'
 
 
 export default function GenaralSettings() {
 	const theme = useTheme()
+	const [isAnimationEnabled] = useMMKVBoolean('isAnimationEnabled')
 
 	const [hideMpesaBalance, setHideMpesaBalance] = useMMKVBoolean('isMpesaHidden')
+	
 	function toggleMpesaBalanceVisibility() {
 		setHideMpesaBalance(prev => !prev)
 	}
@@ -27,6 +30,9 @@ export default function GenaralSettings() {
 	function toggleUseMinTransInfo() {
 		setUseMinTransInfo(prev => !prev)
 	}
+
+	
+	const [accordionType, setAccordionType] = useMMKVString('accordionType')
 
 	return (
 		<List.Section title='General' titleStyle={getTextStyles(theme).SettingsSectionHeader}>
@@ -78,6 +84,39 @@ export default function GenaralSettings() {
 					/>
 				}
 			/>
+
+			<List.Accordion
+				title='Categories Accordion Type'
+				titleStyle={getTextStyles(theme).SettingsTitle}
+			>
+				<Animated.View
+					entering={isAnimationEnabled ? FadeInUp.duration(100) : undefined}
+					exiting={isAnimationEnabled ? FadeOutUp.duration(100) : undefined}
+				>
+					<List.Item
+						title='Single'
+						rippleColor={theme.colors.secondaryContainer}
+						right={() =>
+							<RadioButton
+								status={accordionType === 'single' ? 'checked' : 'unchecked'}
+								value={'single'}
+								onPress={() => setAccordionType('single')}
+							/>
+						}
+					/>
+					<List.Item
+						title='Multiple'
+						rippleColor={theme.colors.secondaryContainer}
+						right={() =>
+							<RadioButton
+								status={accordionType === 'multiple' ? 'checked' : 'unchecked'}
+								value={'multiple'}
+								onPress={() => setAccordionType('multiple')}
+							/>
+						}
+					/>
+				</Animated.View>
+			</List.Accordion>
 		</List.Section>
 	)
 }

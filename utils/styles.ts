@@ -11,10 +11,15 @@ export function getDropDownStyles(theme: MD3Theme) {
 		separator: {
 			backgroundColor: theme.colors.outlineVariant
 		},
+		subContent: {
+			backgroundColor: theme.colors.background,
+			outlineWidth: 1,
+			outlineColor: theme.colors.outlineVariant,
+			outlineStyle: 'dashed'
+		},
 		contextMenuContent: {
 			width: 200,
-			// backgroundColor: theme.colors.elevation.level1,
-		}
+		},
 	})
 }
 

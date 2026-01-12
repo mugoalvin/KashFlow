@@ -8,6 +8,7 @@ import { useMMKVBoolean } from 'react-native-mmkv'
 import { Divider, Icon, Text, useTheme } from 'react-native-paper'
 import Animated, { FadeInLeft, FadeOutRight, LinearTransition } from 'react-native-reanimated'
 import LightText from '../text/lightText'
+import SelectCategory from '../userInput/selectCategory'
 
 interface TransInfoProps {
 	item: MpesaParced
@@ -18,7 +19,7 @@ interface TransInfoProps {
 export default function TransInfo({ item, index, length }: TransInfoProps) {
 	const theme = useTheme()
 	const { showDialog } = useDialogContext()
-	const { showModal } = useModalContext()
+	const { showModal, closeModal } = useModalContext()
 	const [useCard] = useMMKVBoolean('useCard')
 	const [animationEnabled] = useMMKVBoolean('isAnimationEnabled')
 	const [useMinTransInfo] = useMMKVBoolean('isTransInfoMin')
@@ -79,8 +80,8 @@ export default function TransInfo({ item, index, length }: TransInfoProps) {
 				onLongPress={() => {
 					Vibration.vibrate(75)
 					showModal({
+						content: <SelectCategory closeModal={closeModal} transaction={item} />,
 						visibility: true,
-						transaction: item
 					})
 				}}
 			>

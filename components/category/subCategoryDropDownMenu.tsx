@@ -11,6 +11,7 @@ import { IconButton, Text, useTheme } from 'react-native-paper'
 import { useSafeAreaInsets } from 'react-native-safe-area-context'
 import { SubCategory } from '../text/interface'
 import { DropdownMenu, DropdownMenuContent, DropdownMenuGroup, DropdownMenuItem, DropdownMenuSeparator, DropdownMenuTrigger } from '../ui/dropdown-menu'
+import MoveSubCategory from './moveSubcategory'
 import RenameSubCategory from './renameSubCategory'
 
 interface SubCategoryDropDownMenuProps {
@@ -50,6 +51,12 @@ export default function SubCategoryDropDownMenu({ subCategory }: SubCategoryDrop
 		})
 	}
 
+	function onMove() {
+		openSheet({
+			content: <MoveSubCategory subCategory={subCategory} />
+		})
+	}
+
 	return (
 		<DropdownMenu>
 			<DropdownMenuTrigger asChild>
@@ -57,7 +64,6 @@ export default function SubCategoryDropDownMenu({ subCategory }: SubCategoryDrop
 					icon={({ color, size }) =>
 						<Ionicons name='ellipsis-vertical' color={color} size={size - 10} />
 					}
-					onPress={() => { }}
 				/>
 			</DropdownMenuTrigger>
 			<DropdownMenuContent
@@ -71,7 +77,7 @@ export default function SubCategoryDropDownMenu({ subCategory }: SubCategoryDrop
 					<DropdownMenuItem onPress={onRename}>
 						<Text>Rename</Text>
 					</DropdownMenuItem>
-					<DropdownMenuItem>
+					<DropdownMenuItem onPress={onMove}>
 						<Text>Move</Text>
 					</DropdownMenuItem>
 				</DropdownMenuGroup>

@@ -500,3 +500,22 @@ export async function renameSubCategoryInDatabase({ id, newCategoryTitle }: { id
 		throw new Error(err.message)
 	}
 }
+
+
+
+export async function updateCounterpartyCategory(newCategoryId: number, counterparty: string) {
+	try {
+		return await sqliteDB
+			.update(mpesaMessages)
+			.set({
+				categoryId: newCategoryId
+			})
+			.where(
+				eq(mpesaMessages.counterparty, counterparty)
+			)
+	}
+	catch (err: any) {
+		console.error(err)
+		throw new Error(err.message)
+	}
+}

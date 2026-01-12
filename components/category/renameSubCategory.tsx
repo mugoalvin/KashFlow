@@ -24,9 +24,9 @@ export default function RenameSubCategory({ subCategory }: RenameSubCategoryProp
 
 	return (
 		<View className='p-3 gap-3'>
-			<Text className='text-xl'>Rename</Text>
+			<Text className='text-sm'>Rename</Text>
 			<Text className='text-3xl font-bold'>{subCategory.title}</Text>
-			<Text className='text-xl'>to</Text>
+			<Text className='text-sm'>to</Text>
 
 			<View className='w-full'>
 				<TextInput

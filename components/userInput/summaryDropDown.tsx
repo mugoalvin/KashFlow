@@ -34,12 +34,7 @@ export default function SummaryDropDown({ setNoTransactions }: SummaryDropDownPr
 						</DropdownMenuSubTrigger>
 
 						<DropdownMenuSubContent
-							style={{
-								backgroundColor: theme.colors.background,
-								outlineWidth: 1,
-								outlineColor: theme.colors.outlineVariant,
-								outlineStyle: 'dashed'
-							}}>
+							style={getDropDownStyles(theme).subContent}>
 							{
 								[1, 2, 3, 4, 5, 10].map(number =>
 									<DropdownMenuItem key={number}
