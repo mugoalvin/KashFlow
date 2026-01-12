@@ -26,3 +26,10 @@ export const categoriesTable = sqliteTable('categories', {
 	name: text('name').notNull(),
 	icon: text('icons'),
 })
+
+export const subCategoriesTable = sqliteTable('subCategories', {
+	id: integer('id').primaryKey({ autoIncrement: true }).notNull(),
+	categoryId: integer('categoryId').notNull(),
+	title: text('title').unique().notNull(),
+	name: text('name').notNull(),
+})

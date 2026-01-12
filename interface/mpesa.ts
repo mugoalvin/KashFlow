@@ -21,7 +21,7 @@ export interface MpesaParced {
 	amount: number
 	account?: string
 	balance?: number
-	counterparty?: string
+	counterparty: string
 	dueDate?: string
 	fee?: number
 	limit?: number

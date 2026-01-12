@@ -22,11 +22,19 @@ export interface SortedTransaction {
 }
 
 export interface Category {
-	id?: number
+	id: number
 	title: string
 	name: string
 	icon: string
 }
+
+export interface SubCategory {
+	id: number
+	categoryId: number
+	title: string
+	name: string
+}
+
 
 export enum SummaryOrderType {
 	Ascending,
