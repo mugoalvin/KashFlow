@@ -64,6 +64,13 @@
       "when": 1764252281883,
       "tag": "0008_lethal_network",
       "breakpoints": true
+    },
+    {
+      "idx": 9,
+      "version": "6",
+      "when": 1767870477525,
+      "tag": "0009_striped_emma_frost",
+      "breakpoints": true
     }
   ]
 }

@@ -1,6 +1,6 @@
-import { Category, TransactionSortMode } from "@/components/text/interface";
+import { Category, SubCategory, TransactionSortMode } from "@/components/text/interface";
 import { sqliteDB } from "@/db/config";
-import { categoriesTable, mpesaMessages } from "@/db/sqlite";
+import { categoriesTable, mpesaMessages, subCategoriesTable } from "@/db/sqlite";
 import { Mpesa, MpesaParced, MpesaTransactionType, typeMap } from "@/interface/mpesa";
 import { desc, eq, isNull, or, sql } from "drizzle-orm";
 import { ExpoSQLiteDatabase } from "drizzle-orm/expo-sqlite";
@@ -464,6 +464,37 @@ export async function updateCategoryToDatabase(category: Omit<Category, 'name'>)
 				icon: category.icon
 			})
 			.where(eq(categoriesTable.id, category.id!))
+	} catch (err: any) {
+		console.error(err)
+		throw new Error(err.message)
+	}
+}
+
+export async function addSubCategoryToDatabase(subCategory: Omit<SubCategory, 'id' | 'name'>) {
+	try {
+		return await sqliteDB
+			.insert(subCategoriesTable)
+			.values({
+				categoryId: subCategory.categoryId,
+				title: subCategory.title,
+				name: generateCategoryName(subCategory.title),
+			})
+	} catch (err: any) {
+		console.error(err)
+		throw new Error(err.message)
+	}
+}
+
+
+export async function renameSubCategoryInDatabase({ id, newCategoryTitle }: { id: number, newCategoryTitle: string }) {
+	try {
+		return await sqliteDB
+			.update(subCategoriesTable)
+			.set({
+				title: newCategoryTitle,
+				name: generateCategoryName(newCategoryTitle)
+			})
+			.where(eq(subCategoriesTable.id, id))
 	} catch (err: any) {
 		console.error(err)
 		throw new Error(err.message)

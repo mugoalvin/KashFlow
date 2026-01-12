@@ -1,5 +1,5 @@
 import { sqliteDB } from '@/db/config'
-import { mpesaMessages } from '@/db/sqlite'
+import { subCategoriesTable } from '@/db/sqlite'
 import MaterialDesignIcons from '@react-native-vector-icons/material-design-icons'
 import { eq } from 'drizzle-orm'
 import React, { useEffect, useState } from 'react'
@@ -23,7 +23,7 @@ interface CategoryCardProps {
 export default function CategoryCard({ category, index, refreshKey, onEdit, onDelete }: CategoryCardProps) {
 	const theme = useTheme()
 	const [useCard] = useMMKVBoolean('useCard')
-	const [counterParties, setCounterParties] = useState<string[]>([])
+	const [subCategoriesCount, setSubCategoriesCount] = useState<number>()
 	const [isInitialRender, setIsInitialRender] = useState<boolean>(true)
 	const screenWidth = Dimensions.get('window').width
 
@@ -34,13 +34,13 @@ export default function CategoryCard({ category, index, refreshKey, onEdit, onDe
 
 	useEffect(() => {
 		sqliteDB
-			.selectDistinct({ counter: mpesaMessages.counterparty })
-			.from(mpesaMessages)
-			.where(eq(mpesaMessages.categoryId, category.id!))
+			.selectDistinct({ count: subCategoriesTable.title })
+			.from(subCategoriesTable)
+			.where(eq(subCategoriesTable.categoryId, category.id!))
 
-			.then(rows => setCounterParties(
+			.then(rows => setSubCategoriesCount(
 				// @ts-ignore
-				rows.reduce((acc, row) => acc.concat(row.counter), [])
+				rows.reduce((acc, row) => acc.concat(row.counter), []).length
 			))
 	}, [refreshKey])
 
@@ -89,17 +89,11 @@ export default function CategoryCard({ category, index, refreshKey, onEdit, onDe
 						<View className='gap-1'>
 							<Text variant='bodyLarge' style={{ fontWeight: 'bold' }}>{category.title}</Text>
 							{
-								counterParties.length !== 0 &&
-								<Text variant='bodySmall'>{counterParties.length} Counter Parties</Text>
+								subCategoriesCount !== 0 &&
+								<Text variant='bodySmall'>{subCategoriesCount} Counter Parties</Text>
 							}
 						</View>
 					</View>
-
-					<IconButton
-						icon={() =>
-							<MaterialDesignIcons name='dots-vertical' size={20} color={theme.colors.primary} />
-						}
-					/>
 				</Animated.View>
 			</Swipeable>
 		</Animated.View>

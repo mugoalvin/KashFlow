@@ -10,6 +10,10 @@ export function getDropDownStyles(theme: MD3Theme) {
 		},
 		separator: {
 			backgroundColor: theme.colors.outlineVariant
+		},
+		contextMenuContent: {
+			width: 200,
+			// backgroundColor: theme.colors.elevation.level1,
 		}
 	})
 }
