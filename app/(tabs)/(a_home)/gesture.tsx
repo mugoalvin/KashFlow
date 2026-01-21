@@ -1,14 +1,11 @@
 import Body from '@/components/views/body'
 import { sqliteDB } from '@/db/config'
-import { mpesaMessages } from '@/db/sqlite'
-import { MpesaParced } from '@/interface/mpesa'
-import { getTopCounterparties, parseMpesaMessage } from '@/utils/functions'
-import { eq } from 'drizzle-orm'
+import { subCategoriesTable } from '@/db/sqlite'
+import * as Haptics from 'expo-haptics'
 import React from 'react'
 import { Gesture, GestureDetector } from 'react-native-gesture-handler'
 import { Button, useTheme } from 'react-native-paper'
 import Animated, { useAnimatedStyle, useSharedValue, withSpring } from 'react-native-reanimated'
-import * as Haptics from 'expo-haptics'
 
 export default function GesturePage() {
 	const theme = useTheme()
@@ -57,50 +54,23 @@ export default function GesturePage() {
 
 			<Button
 				onPress={() => {
-					sqliteDB
-						.select()
-						.from(mpesaMessages)
-						.where(eq(mpesaMessages.type, 'fuliza'))
-						.limit(5)
-
-
-
-						.then(res => {
-							console.log(
-								getTopCounterparties(res as MpesaParced[], 'amount', true)
-							)
-						})
-				}}
-
-				onLongPress={() => {
 					Haptics.performAndroidHapticsAsync(
 						Haptics.AndroidHaptics.Long_Press
 					)
-					
+
 					sqliteDB
 						.select()
-						.from(mpesaMessages)
-						.where(eq(mpesaMessages.type, 'fuliza'))
-						.limit(5)
+						// .from(categoriesTable)
+						.from(subCategoriesTable)
 
 						.then(res => {
 							console.log(
-								getTopCounterparties(
-									res.map(tx => {
-										return parseMpesaMessage(
-											tx.id.toString(),
-											tx.message,
-											'2025-03-05'
-										)
-									}).filter(tx => tx.amount !== undefined) as MpesaParced[],
-									'amount',
-									true
-								)
+								res
 							)
 						})
 				}}
 			>
-				Parse 1 Fulia Payment Transaction
+				Perform Action
 			</Button>
 		</Body>
 	)

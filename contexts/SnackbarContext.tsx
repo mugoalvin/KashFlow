@@ -82,7 +82,7 @@ export const SnackbarProvider = ({ children }: { children: ReactNode }) => {
 
 						color:
 							isError ? theme.colors.onErrorContainer :
-								isWarning ? theme.colors.tertiaryContainer :
+								isWarning ? theme.colors.onTertiaryContainer :
 									theme.colors.onPrimaryContainer
 					}}
 				>

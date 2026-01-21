@@ -28,7 +28,7 @@ export default function SelectCategoryDropDown({ transaction, closeModal }: Sele
 	const theme = useTheme()
 	const didSetInitialCategory = useRef(false)
 	const [categories, setCategories] = useState<CategoryWithSubs[]>([])
-	const [selectedSubCategory, setSelectedSubCategory] = useState<SubCategory>()
+	// const [selectedSubCategory, setSelectedSubCategory] = useState<SubCategory>()
 	const [categoryNameToDisplay, setCategoryNameToDisplay] = useState<string>()
 
 	const insets = useSafeAreaInsets();
@@ -55,37 +55,36 @@ export default function SelectCategoryDropDown({ transaction, closeModal }: Sele
 		}
 	}
 
+	const fetchMenuData = async () => {
+		try {
+			const [cats, subs] = await Promise.all([
+				sqliteDB.select().from(categoriesTable),
+				sqliteDB.select().from(subCategoriesTable)
+			]);
+
+			const nestedData = cats.map(category => ({
+				...category,
+				subCategories: subs.filter(sub => sub.categoryId === category.id)
+			}));
+
+			setCategories(nestedData);
+		} catch (error) {
+			console.error("Failed to fetch menu data:", error);
+		}
+	};
+
 
 	useEffect(() => {
-		const fetchMenuData = async () => {
-			try {
-				const [cats, subs] = await Promise.all([
-					sqliteDB.select().from(categoriesTable),
-					sqliteDB.select().from(subCategoriesTable)
-				]);
-
-				const nestedData = cats.map(category => ({
-					...category,
-					subCategories: subs.filter(sub => sub.categoryId === category.id)
-				}));
-
-				setCategories(nestedData);
-			} catch (error) {
-				console.error("Failed to fetch menu data:", error);
-			}
-		};
-
 		sqliteDB
 			.select()
 			.from(subCategoriesTable)
 			.where(
-				eq(subCategoriesTable.id, transaction.categoryId || 2)
+				eq(subCategoriesTable.id, transaction.categoryId!)
 			)
 			.limit(1)
 
 			.then(categories => {
-				setSelectedSubCategory(categories[0] as SubCategory)
-				setCategoryNameToDisplay(categories[0].title)
+				setCategoryNameToDisplay(categories[0]?.title || 'Default')
 			})
 
 		fetchMenuData()
@@ -93,59 +92,58 @@ export default function SelectCategoryDropDown({ transaction, closeModal }: Sele
 	}, [])
 
 
-	if (selectedSubCategory)
-		return (
-			<DropdownMenu>
-				<DropdownMenuTrigger asChild>
-					<Pressable className='flex-row items-baseline justify-between gap-5 px-4 py-1 rounded-full' style={{ backgroundColor: theme.colors.onTertiary }}>
-						<Text>{categoryNameToDisplay}</Text>
-						<Icon source={() => <Ionicons name='chevron-down' color={theme.colors.onTertiaryContainer} />} size={20} />
-					</Pressable>
-				</DropdownMenuTrigger>
+	return (
+		<DropdownMenu>
+			<DropdownMenuTrigger asChild>
+				<Pressable className='flex-row items-baseline justify-between gap-5 px-4 py-1 rounded-full' style={{ backgroundColor: theme.colors.onTertiary }}>
+					<Text>{categoryNameToDisplay}</Text>
+					<Icon source={() => <Ionicons name='chevron-down' color={theme.colors.onTertiaryContainer} />} size={20} />
+				</Pressable>
+			</DropdownMenuTrigger>
 
-				<DropdownMenuContent insets={contentInsets} sideOffset={2} alignOffset={-70} className="w-56" align="start" style={getDropDownStyles(theme).menuContent}>
-					<DropdownMenuLabel>Select Sub Category</DropdownMenuLabel>
+			<DropdownMenuContent insets={contentInsets} sideOffset={2} alignOffset={-70} className="w-56" align="start" style={getDropDownStyles(theme).menuContent}>
+				<DropdownMenuLabel>Select Sub Category</DropdownMenuLabel>
+				<DropdownMenuSeparator />
+				<DropdownMenuGroup>
+
+					{
+						categories.map(category =>
+							<DropdownMenuSub key={category.name}>
+								<DropdownMenuSubTrigger>
+									<Text>{category.title}</Text>
+								</DropdownMenuSubTrigger>
+								<DropdownMenuSubContent style={getDropDownStyles(theme).subContent}>
+									{
+										category.subCategories.map(subCategory =>
+											<DropdownMenuItem key={subCategory.name}
+												onPress={() => onUpdate(subCategory)}
+											>
+												<Text>{subCategory.title}</Text>
+											</DropdownMenuItem>
+										)
+									}
+								</DropdownMenuSubContent>
+							</DropdownMenuSub>
+						)
+					}
+
 					<DropdownMenuSeparator />
-					<DropdownMenuGroup>
 
-						{
-							categories.map(category =>
-								<DropdownMenuSub key={category.name}>
-									<DropdownMenuSubTrigger>
-										<Text>{category.title}</Text>
-									</DropdownMenuSubTrigger>
-									<DropdownMenuSubContent style={getDropDownStyles(theme).subContent}>
-										{
-											category.subCategories.map(subCategory =>
-												<DropdownMenuItem key={subCategory.name}
-													onPress={() => onUpdate(subCategory)}
-												>
-													<Text>{subCategory.title}</Text>
-												</DropdownMenuItem>
-											)
-										}
-									</DropdownMenuSubContent>
-								</DropdownMenuSub>
-							)
-						}
+					<DropdownMenuItem onPress={() => {
+						closeModal()
+						router.push({
+							pathname: '/(tabs)/(categories)',
+							params: {
+								transactionString: JSON.stringify(transaction)
+							}
+						})
+					}}
+					>
+						<Text>Add Category</Text>
+					</DropdownMenuItem>
 
-						<DropdownMenuSeparator />
-
-						<DropdownMenuItem onPress={() => {
-							closeModal()
-							router.push({
-								pathname: '/(tabs)/(categories)',
-								params: {
-									transactionString: JSON.stringify(transaction)
-								}
-							})
-						}}
-						>
-							<Text>Add Category</Text>
-						</DropdownMenuItem>
-
-					</DropdownMenuGroup>
-				</DropdownMenuContent>
-			</DropdownMenu>
-		)
+				</DropdownMenuGroup>
+			</DropdownMenuContent>
+		</DropdownMenu>
+	)
 }

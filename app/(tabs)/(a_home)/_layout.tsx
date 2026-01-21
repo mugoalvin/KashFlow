@@ -23,12 +23,6 @@ export default function IndexLayout() {
 						items={[{
 							label: "Gesture",
 							onPress: () => router.push('/gesture')
-						},
-						{
-							label: "Accordion",
-							onPress() {
-								router.push('/(tabs)/(a_home)/reusableAccordion')
-							}
 						}]}
 					/>
 				}}
@@ -38,12 +32,6 @@ export default function IndexLayout() {
 				options={{
 					title: "Gestures",
 					headerRight: ({ tintColor }) => <HeaderRight tintColor={tintColor!} />
-				}}
-			/>
-			<Stack.Screen
-				name="reusableAccordion"
-				options={{
-					title: 'Accordion'
 				}}
 			/>
 		</Stack >
