@@ -13,7 +13,6 @@ interface RenameSubCategoryProps {
 }
 
 export default function RenameSubCategory({ subCategory }: RenameSubCategoryProps) {
-	console.log(subCategory)
 	const theme = useTheme()
 	const { closeSheet } = useBottomSheetContext()
 	const { showSnackbar } = useSnackbarContext()

@@ -6,7 +6,7 @@ import EditCategory from "@/components/userInput/editCategory";
 import useBottomSheetContext from '@/contexts/BottomSheetContext';
 import useSnackbarContext from "@/contexts/SnackbarContext";
 import { sqliteDB } from '@/db/config';
-import { nullifyCategoryIdsInMpesaMessages } from "@/db/db_functions";
+import { deleteSubCategoriesUnderCategory, nullifyCategoryIdsInMpesaMessages } from "@/db/db_functions";
 import { categoriesTable } from '@/db/sqlite';
 import { getDropDownStyles } from "@/utils/styles";
 import { eq } from "drizzle-orm";
@@ -78,10 +78,11 @@ export default function AccordionAndContentMenu() {
 			if (isStillDeleted) {
 				console.log("Snackbar unmounted. Permanently deleting...");
 				try {
-					await nullifyCategoryIdsInMpesaMessages(sqliteDB, id);
+					await nullifyCategoryIdsInMpesaMessages(sqliteDB, id)
+					await deleteSubCategoriesUnderCategory(sqliteDB, id)
 					await sqliteDB
 						.delete(categoriesTable)
-						.where(eq(categoriesTable.id, id));
+						.where(eq(categoriesTable.id, id))
 				} catch (error) {
 					console.error("Database deletion failed:", error);
 				}

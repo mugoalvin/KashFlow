@@ -1,6 +1,6 @@
 import { desc, eq } from "drizzle-orm";
 import { ExpoSQLiteDatabase } from "drizzle-orm/expo-sqlite";
-import { mpesaMessages } from "./sqlite";
+import { mpesaMessages, subCategoriesTable } from "./sqlite";
 
 export async function getBalance(db: ExpoSQLiteDatabase): Promise<number> {
 	const rows = await db
@@ -20,12 +20,33 @@ export async function getBalance(db: ExpoSQLiteDatabase): Promise<number> {
 	return 0
 }
 
-
 export async function nullifyCategoryIdsInMpesaMessages(db: ExpoSQLiteDatabase, categoryIdToDelete: number): Promise<{ changes: number }> {
-	const res = await db
+	return await db
 		.update(mpesaMessages)
 		.set({ categoryId: null })
 		.where(eq(mpesaMessages.categoryId, categoryIdToDelete))
+}
 
-	return { changes: res.changes ?? 0 }
+export async function deleteSubCategoriesUnderCategory(db: ExpoSQLiteDatabase, categoryIdToDelete: number) {
+	try {
+		await db
+			.delete(subCategoriesTable)
+			.where(eq(subCategoriesTable.categoryId, categoryIdToDelete))
+	} catch (error) {
+		console.error(`Error deleting subcategories for category ${categoryIdToDelete}:`, error);
+		throw error;
+	}
+}
+
+export async function fetchMpesaMessagesByCategory(db: ExpoSQLiteDatabase, categoryId: number) {
+	try {
+		return await db
+			.selectDistinct({ counterparty: mpesaMessages.counterparty })
+			.from(mpesaMessages)
+			.where(eq(mpesaMessages.categoryId, categoryId))
+			.orderBy(desc(mpesaMessages.id))
+
+	} catch (error) {
+		throw error
+	}
 }

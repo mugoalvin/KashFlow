@@ -90,7 +90,7 @@ export default function CategoryCard({ category, index, refreshKey, onEdit, onDe
 							<Text variant='bodyLarge' style={{ fontWeight: 'bold' }}>{category.title}</Text>
 							{
 								subCategoriesCount !== 0 &&
-								<Text variant='bodySmall'>{subCategoriesCount} Counter Parties</Text>
+								<Text variant='bodySmall'>{subCategoriesCount} Sub Categories</Text>
 							}
 						</View>
 					</View>

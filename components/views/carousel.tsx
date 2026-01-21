@@ -17,6 +17,8 @@ interface AppCarouselProps {
 }
 
 export default function AppCarousel({ data }: AppCarouselProps) {
+	const heightRef = React.useRef<number>(width * .88);
+
 	const theme = useTheme()
 	const chunkedData = React.useMemo(() => chunkArray(data, 5), [data]);
 
@@ -30,12 +32,16 @@ export default function AppCarousel({ data }: AppCarouselProps) {
 		})
 	}
 
+	React.useEffect(() => {
+		heightRef.current = data.length < 5 ? data.length * (width * .88) / 5 : width * .88
+	}, [data])
+
 	return (
 		<View className="flex-1">
 			<Carousel
 				ref={ref}
 				width={width}
-				height={width * .88}
+				height={heightRef.current}
 				data={chunkedData}
 				onProgressChange={progress}
 				renderItem={({ item, index }) => (
